@@ -10,3 +10,12 @@
 [submodule "SceneManager"]
 	path = SceneManager
 	url = https://github.com/JSchpp12/SceneManager.git
+[submodule "external/glfw"]
+	path = external/glfw
+	url = https://github.com/glfw/glfw.git
+[submodule "external/googletest"]
+	path = external/googletest
+	url = https://github.com/google/googletest.git
+[submodule "external/glm"]
+	path = external/glm
+	url = https://github.com/g-truc/glm.git
