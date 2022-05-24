@@ -1,0 +1,4 @@
+newmtl material_0
+map_bump material0_normal.png
+norm material0_normal.png
+map_Kd material0_basecolor.png
