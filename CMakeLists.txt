@@ -19,47 +19,6 @@ project("HelloSquareTextured")
 
 find_package(Vulkan REQUIRED FATAL_ERROR)
 
-if (GIT_FOUND)
-	if(GIT_SUBMODULE AND PULL_SUBMODULE)
-		message(STATUS "Submodule update")
-		execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
-			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-			RESULT_VARIABLE GIT_SUBMOD_RESULT)
-		if(NOT GIT_SUBMOD_RESULT EQUAL "0")
-			message(FATAL_ERROR "git submodule update --init --recursive failed with ${GIT_SUBMOD_RESULT}, please checkout submodules")
-		endif()
-	endif()
-
-	if(PREP_EXTERNAL_PACKAGES)
-		message("Preparing requirenments for external dependencies")
-		message("Preparing dependencies for spirvtools")
-		find_library(EFFCEE_LIB NAME effcee HINTS ${CMAKE_CURRENT_SOURCE_DIR}/external/spirvtools/external)
-		if (NOT EFFCEE_LIB AND NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/external/spirvtools/external/effcee")
-			message("effcee is required for spirvtools and was not found, fetching...")
-			execute_process(COMMAND ${GIT_EXECUTABLE} clone https://github.com/google/effcee.git
-				WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/external/spirvtools/external"
-				RESULT_VARIABLE GIT_EFFCEE_RESULT
-			)
-			if (NOT GIT_EFFCEE_RESULT EQUAL "0")
-				message(FATAL_ERROR "effcee is needed for building spirvtools, fetch into required dir")
-			endif()
-		endif()
-
-		find_library(RE2_LIB NAME re2 HINTS ${CMAKE_CURRENT_SOURCE_DIR}/external/spirvtools/external)
-		if (NOT RE2_LIB AND NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/external/spirvtools/external/re2")
-			message("re2 is required for spirvtools and was not found, fetching...")
-			execute_process(COMMAND ${GIT_EXECUTABLE} clone https://github.com/google/re2.git
-				WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/external/spirvtools/external"
-				RESULT_VARIABLE GIT_RE2_RESULT
-			)
-			if (NOT GIT_RE2_RESULT EQUAL "0")
-				message(FATAL_ERROR "re2 is needed for building spirvtools, fetch into required dir")
-			endif()
-		endif()
-	endif()
-	message("Prep Complete")
-endif()
-
 set(LINK_INCLUDE "")		#list of libs found on system
 set(LINK_SUBMODULE "")
 

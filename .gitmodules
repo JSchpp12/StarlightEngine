@@ -19,3 +19,15 @@
 [submodule "external/glm"]
 	path = external/glm
 	url = https://github.com/g-truc/glm.git
+[submodule "libs/RenderEngine"]
+	path = libs/RenderEngine
+	url = https://github.com/JSchpp12/RenderEngine.git
+[submodule "libs/SceneManager"]
+	path = libs/SceneManager
+	url = https://github.com/JSchpp12/SceneManager.git
+[submodule "libs/ShaderManager"]
+	path = libs/ShaderManager
+	url = https://github.com/JSchpp12/ShaderManager.git
+[submodule "libs/StarlightCommon"]
+	path = libs/StarlightCommon
+	url = https://github.com/JSchpp12/StarlightCommon.git

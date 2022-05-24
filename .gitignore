@@ -1,10 +1,10 @@
 ﻿################################################################################
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
-/SceneManager
-/ShaderManager
-/StarlightCommon
-/RenderEngine
+/libs/SceneManager
+/libs/ShaderManager
+/libs/StarlightCommon
+/libs/RenderEngine
 /.devcontainer
 /.vs
 /out/build/x64-Debug
