@@ -1,0 +1,12 @@
+[submodule "ShaderManager"]
+	path = ShaderManager
+	url = https://github.com/JSchpp12/ShaderManager.git
+[submodule "RenderEngine"]
+	path = RenderEngine
+	url = https://github.com/JSchpp12/RenderEngine.git
+[submodule "StarlightCommon"]
+	path = StarlightCommon
+	url = https://github.com/JSchpp12/StarlightCommon.git
+[submodule "SceneManager"]
+	path = SceneManager
+	url = https://github.com/JSchpp12/SceneManager.git
