@@ -7,6 +7,14 @@ find_package(Git)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_MACOSX_RPATH 1)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+cmake_policy(SET CMP0071 NEW)
+cmake_policy(SET CMP0076 NEW)
+
+set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
+set(CMAKE_POLICY_DEFAULT_CMP0079 NEW)
+
+project("StarlightEngine")
 
 #TODO: add ability to rely on installed libraries 
 #THIS IS NEEDED FOR NOW...
@@ -15,14 +23,33 @@ option(BUILD_LIBRARIES "Build external libraries" ON)
 option(UPDATE_SUBMODULES "If building external libraries, check for updates and existence of needed submodules" ON)
 option(PULL_SUBMODULE "Check and pull updates for git submodules if needed" ON)
 
-project("HelloSquareTextured")
-
 find_package(Vulkan REQUIRED FATAL_ERROR)
 
 set(LINK_INCLUDE "")		#list of libs found on system
 set(LINK_SUBMODULE "")
 
 find_library(TINY_OBJ_LOADER_LIB NAMES tinyobjloader)
+
+add_executable(${PROJECT_NAME} "src/StarlightEngine.cpp")
+
+set(gtest_force_shared_crt ON)
+set(BUILD_GMOCK ON)
+add_subdirectory("external/googletest")
+
+add_subdirectory("libs/StarlightCommon")
+set(COMMON_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/libs/StarlightCommon/include")
+
+add_subdirectory("libs/ShaderManager")
+
+target_include_directories(${PROJECT_NAME}
+	PRIVATE 
+		${CMAKE_CURRENT_BINARY_DIR}
+)
+
+target_link_libraries(${PROJECT_NAME}
+	PUBLIC StarCommon
+	PRIVATE ShaderManager
+)
 
 #set(gtest_force_shared_crt on)
 #add_subdirectory("external/googletest")
@@ -31,7 +58,7 @@ find_library(TINY_OBJ_LOADER_LIB NAMES tinyobjloader)
 if(BUILD_LIBRARIES)
 	# Suppress all warnings from external projects.
 	#set_property(DIRECTORY APPEND PROPERTY COMPILE_OPTIONS -w)
-	set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
+
 
 	set(gtest_force_shared_crt ON)
 	set(BUILD_GMOCK ON)
@@ -80,7 +107,7 @@ find_library(glslang_machineind NAME machineindependent HINTS "$ENV{VULKAN_SDK}/
 find_library(glslang_machineind_DEBUG NAME machineindependentd HINTS "$ENV{VULKAN_SDK}/lib")
 find_library(SPIRV_TOOLS_STATIC NAME spirv-tools-static HINTS "$ENV{VULKAN_SDK}/lib")
 find_library(SPIRV_TOOLS_STATIC NAME spirv-tools-staticd HINTS "$ENV{VULKAN_SDK}/lib")]]
-
+#[[
 link_directories(HelloSquareTextured "$ENV{VULKAN_SDK}/lib")
 link_directories(HelloSquareTextured "external")
 
@@ -161,3 +188,4 @@ endif()
 #pass needed directories to application
 
 # TODO: Add tests and install targets if needed.
+]]

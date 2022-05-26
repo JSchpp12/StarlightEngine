@@ -5,6 +5,7 @@
 /libs/ShaderManager
 /libs/StarlightCommon
 /libs/RenderEngine
+/build
 /.devcontainer
 /.vs
 /out/build/x64-Debug
