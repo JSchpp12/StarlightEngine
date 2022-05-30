@@ -7,3 +7,9 @@
 [submodule "external/glm"]
 	path = external/glm
 	url = https://github.com/g-truc/glm.git
+[submodule "StarlightCore"]
+	path = StarlightCore
+	url = https://github.com/JSchpp12/StarlightCore.git
+[submodule "StarlightCommon"]
+	path = StarlightCommon
+	url = https://github.com/JSchpp12/StarlightCommon.git
