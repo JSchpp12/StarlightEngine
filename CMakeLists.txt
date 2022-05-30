@@ -29,27 +29,46 @@ set(LINK_INCLUDE "")		#list of libs found on system
 set(LINK_SUBMODULE "")
 
 find_library(TINY_OBJ_LOADER_LIB NAMES tinyobjloader)
+#set(STAR_COMMON_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/libs/StarlightCommon/include")
+
+add_subdirectory("StarCommon")
+
+add_subdirectory("EngineCore")
 
 add_executable(${PROJECT_NAME} "src/StarlightEngine.cpp")
+set(CMAKE_MEDIA_DIR "${CMAKE_CURRENT_BINARY_DIR}/media")
+configure_file("Engine.cfg" "Engine.cfg")
 
 set(gtest_force_shared_crt ON)
 set(BUILD_GMOCK ON)
 add_subdirectory("external/googletest")
 
-add_subdirectory("libs/StarlightCommon")
-set(COMMON_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/libs/StarlightCommon/include")
-
-add_subdirectory("libs/ShaderManager")
+set(STAR_COMMON_DIR "${CMAKE_CURRENT_SOURCE_DIR}/libs/StarlightCommon")
+set(STAR_COMMON_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/libs/StarlightCommon/include")
+set(STAR_COMMON_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR})
+message("star build - ${STAR_COMMON_BUILD_DIR}")
 
 target_include_directories(${PROJECT_NAME}
 	PRIVATE 
 		${CMAKE_CURRENT_BINARY_DIR}
+		${StarlightCommon_INCLUDE_DIR}
 )
 
 target_link_libraries(${PROJECT_NAME}
-	PUBLIC StarCommon
-	PRIVATE ShaderManager
+	PUBLIC 
+		StarlightEngineCore
+	PRIVATE 
+		StarlightCommon::StarlightCommon
 )
+
+#TODO: NEED BETTER SOLUTION FOR MEDIA FILES
+file(COPY "${CMAKE_SOURCE_DIR}/media/images/texture.png" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/media/images")
+file(COPY "${CMAKE_SOURCE_DIR}/media/shaders/fragShader.frag" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/media/shaders")
+file(COPY "${CMAKE_SOURCE_DIR}/media/shaders/vertShader.vert" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/media/shaders")
+file(COPY "${CMAKE_SOURCE_DIR}/media/models/lion-statue/source/rapid.obj" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/media/models/lion-statue/source")
+file(COPY "${CMAKE_SOURCE_DIR}/media/models/lion-statue/source/material0_basecolor.png" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/media/models/lion-statue/source")
+file(COPY "${CMAKE_SOURCE_DIR}/media/models/lion-statue/vertShader.vert" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/media/models/lion-statue")
+file(COPY "${CMAKE_SOURCE_DIR}/media/models/lion-statue/fragShader.frag" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/media/models/lion-statue")
 
 #set(gtest_force_shared_crt on)
 #add_subdirectory("external/googletest")
@@ -136,15 +155,6 @@ set_property(TARGET HelloSquareTextured PROPERTY CXX_STANDARD 17)
 
 #configure_file("${cmake_source_dir}/shaders/vertshader_7.vert" "${cmake_current_binary_dir}" copyonly)
 #configure_file("${cmake_source_dir}/shaders/fragShader_3.frag" "${cmake_current_binary_dir}" copyonly)
-
-#TODO: NEED BETTER SOLUTION FOR MEDIA FILES
-file(COPY "${CMAKE_SOURCE_DIR}/media/images/texture.png" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/media/images")
-file(COPY "${CMAKE_SOURCE_DIR}/media/shaders/fragShader.frag" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/media/shaders")
-file(COPY "${CMAKE_SOURCE_DIR}/media/shaders/vertShader.vert" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/media/shaders")
-file(COPY "${CMAKE_SOURCE_DIR}/media/models/lion-statue/source/rapid.obj" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/media/models/lion-statue/source")
-file(COPY "${CMAKE_SOURCE_DIR}/media/models/lion-statue/source/material0_basecolor.png" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/media/models/lion-statue/source")
-file(COPY "${CMAKE_SOURCE_DIR}/media/models/lion-statue/vertShader.vert" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/media/models/lion-statue")
-file(COPY "${CMAKE_SOURCE_DIR}/media/models/lion-statue/fragShader.frag" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/media/models/lion-statue")
 
 file(GLOB_RECURSE GLSL_SOURCE_FILES
     "media/shaders/*.frag"
