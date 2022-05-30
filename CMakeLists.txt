@@ -31,9 +31,9 @@ set(LINK_SUBMODULE "")
 find_library(TINY_OBJ_LOADER_LIB NAMES tinyobjloader)
 #set(STAR_COMMON_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/libs/StarlightCommon/include")
 
-add_subdirectory("StarCommon")
+add_subdirectory("StarlightCommon")
 
-add_subdirectory("EngineCore")
+add_subdirectory("StarlightCore")
 
 add_executable(${PROJECT_NAME} "src/StarlightEngine.cpp")
 set(CMAKE_MEDIA_DIR "${CMAKE_CURRENT_BINARY_DIR}/media")
