@@ -1,5 +1,6 @@
 #include "StarlightEngine.h"
 #include "SC/Shader.h"
+#include "SC/FileHelpers.h"
 #include "ShaderManager/ShaderManager.h"
 
 #include <memory>
@@ -12,9 +13,14 @@ int main() {
 
     shadermanager::ShaderManager shaderManager = shadermanager::ShaderManager(configFile); 
 
-    auto vertShaderPath = configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "shaders/vertShader.vert"; 
+    auto vertShaderPath = configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "/shaders/vertShader.vert"; 
+    auto fragShaderPath = configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "/shaders/fragShader.frag"; 
 
-    shaderManager.AddShader(vertShaderPath); 
+    auto test = star::common::FileHelpers::ReadFile(vertShaderPath); 
+
+    auto vertShaderHandle = shaderManager.AddShader(vertShaderPath); 
+    auto fragShaderHandle = shaderManager.AddShader(fragShaderPath); 
+
 
     std::cout << "YAY" << std::endl; 
 }

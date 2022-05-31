@@ -36,7 +36,7 @@ add_subdirectory("StarlightCommon")
 add_subdirectory("StarlightCore")
 
 add_executable(${PROJECT_NAME} "src/StarlightEngine.cpp")
-set(CMAKE_MEDIA_DIR "${CMAKE_CURRENT_BINARY_DIR}/media")
+set(CMAKE_MEDIA_DIR "${CMAKE_CURRENT_SOURCE_DIR}/media")
 configure_file("Engine.cfg" "Engine.cfg")
 
 set(gtest_force_shared_crt ON)
