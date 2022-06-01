@@ -31,6 +31,8 @@ set(LINK_SUBMODULE "")
 find_library(TINY_OBJ_LOADER_LIB NAMES tinyobjloader)
 #set(STAR_COMMON_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/libs/StarlightCommon/include")
 
+add_subdirectory("external/glm")
+
 add_subdirectory("StarlightCommon")
 
 add_subdirectory("StarlightCore")
@@ -88,8 +90,6 @@ if(BUILD_LIBRARIES)
 
 	set(GLFW_STANDALONE OFF CACHE BOOL "" FORCE)
 	add_subdirectory("external/glfw")
-
-	add_subdirectory("external/glm")
 
 	#prevent spirv from building tests 
 	set(SPIRV_SKIP_EXECUTABLES ON CACHE BOOL "" FORCE)

@@ -1,7 +1,6 @@
 #include "StarlightEngine.h"
-#include "SC/Shader.h"
-#include "SC/FileHelpers.h"
 #include "ShaderManager/ShaderManager.h"
+#include "ObjectManager/ObjectManager.h"
 
 #include <memory>
 
@@ -11,16 +10,17 @@ int main() {
     // std::unique_ptr<shadermanager::ShaderManager> shaderManager(new shadermanager::ShaderManager()); 
     std::shared_ptr<common::ConfigFile> configFile(new common::ConfigFile("../Engine.cfg")); 
 
-    shadermanager::ShaderManager shaderManager = shadermanager::ShaderManager(configFile); 
+    core::ShaderManager shaderManager = core::ShaderManager(); 
+    core::ObjectManager objectManager = core::ObjectManager(); 
 
     auto vertShaderPath = configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "/shaders/vertShader.vert"; 
     auto fragShaderPath = configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "/shaders/fragShader.frag"; 
 
-    auto test = star::common::FileHelpers::ReadFile(vertShaderPath); 
+    auto vertShaderHandle = shaderManager.Add(vertShaderPath); 
+    auto fragShaderHandle = shaderManager.Add(fragShaderPath); 
 
-    auto vertShaderHandle = shaderManager.AddShader(vertShaderPath); 
-    auto fragShaderHandle = shaderManager.AddShader(fragShaderPath); 
-
+    auto objPath = configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "/models/lion-statue/source/rapid.obj"; 
+    objectManager.Add(objPath); 
 
     std::cout << "YAY" << std::endl; 
 }
