@@ -33,11 +33,26 @@ find_library(TINY_OBJ_LOADER_LIB NAMES tinyobjloader)
 
 add_subdirectory("external/glm")
 
+set(STB_DIRECTORY ${PROJECT_SOURCE_DIR}/external/stb)
+if (NOT IS_DIRECTORY ${STB_DIRECTORY})
+	message(FATAL_ERROR "Stb is needed for compilation. Pull copy into external directory.")
+endif()
+
 add_subdirectory("StarlightCommon")
 
 add_subdirectory("StarlightCore")
 
-add_executable(${PROJECT_NAME} "src/StarlightEngine.cpp")
+set(${PROJECT_NAME}_SOURCE 
+	"src/StarlightEngine.cpp"
+	"src/ObjectApp.cpp"
+)
+
+set(${PROJECT_NAME}_HEADERS 
+	"src/StarlightEngine.h"
+	"src/ObjectApp.h"
+)
+
+add_executable(${PROJECT_NAME} "${${PROJECT_NAME}_SOURCE};${${PROJECT_NAME}_HEADERS}")
 set(CMAKE_MEDIA_DIR "${CMAKE_CURRENT_SOURCE_DIR}/media")
 configure_file("Engine.cfg" "Engine.cfg")
 
@@ -48,10 +63,10 @@ add_subdirectory("external/googletest")
 set(STAR_COMMON_DIR "${CMAKE_CURRENT_SOURCE_DIR}/libs/StarlightCommon")
 set(STAR_COMMON_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/libs/StarlightCommon/include")
 set(STAR_COMMON_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR})
-message("star build - ${STAR_COMMON_BUILD_DIR}")
 
 target_include_directories(${PROJECT_NAME}
 	PRIVATE 
+		${STB_DIRECTORY}
 		${CMAKE_CURRENT_BINARY_DIR}
 		${StarlightCommon_INCLUDE_DIR}
 )
