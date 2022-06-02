@@ -33,13 +33,17 @@ find_library(TINY_OBJ_LOADER_LIB NAMES tinyobjloader)
 
 add_subdirectory("external/glm")
 
+set(GLFW_STANDALONE OFF CACHE BOOL "" FORCE)
+add_subdirectory("external/glfw")
+
+#prepare vars for child projects
 set(STB_DIRECTORY ${PROJECT_SOURCE_DIR}/external/stb)
 if (NOT IS_DIRECTORY ${STB_DIRECTORY})
 	message(FATAL_ERROR "Stb is needed for compilation. Pull copy into external directory.")
 endif()
 
+#add child projects
 add_subdirectory("StarlightCommon")
-
 add_subdirectory("StarlightCore")
 
 set(${PROJECT_NAME}_SOURCE 
@@ -102,9 +106,6 @@ if(BUILD_LIBRARIES)
 
 	set(SPIRV_HEADERS_SKIP_EXAMPLES ON CACHE BOOL "" FORCE)
 	add_subdirectory("external/spirvheaders")
-
-	set(GLFW_STANDALONE OFF CACHE BOOL "" FORCE)
-	add_subdirectory("external/glfw")
 
 	#prevent spirv from building tests 
 	set(SPIRV_SKIP_EXECUTABLES ON CACHE BOOL "" FORCE)

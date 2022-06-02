@@ -6,6 +6,8 @@
 #include "ObjectManager.h"
 #include "TextureManager.h"
 
+#include <GLFW/glfw3.h>
+
 #include <string> 
 #include <memory> 
 
@@ -14,9 +16,11 @@ namespace star{
     public: 
         ObjectApp(common::ConfigFile* configFile, core::ShaderManager* shaderManager, core::ObjectManager* objectManager, core::TextureManager* textureManager); 
 
-        virtual void Load(); 
+        void Load(); 
 
-        virtual void Update(); 
+        static void GLFWKeyHandle(GLFWwindow* window, int key, int scancode, int action, int mods); 
+
+        void Update(); 
 
     protected: 
 
