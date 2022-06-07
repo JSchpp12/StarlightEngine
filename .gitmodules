@@ -13,3 +13,6 @@
 [submodule "StarlightCommon"]
 	path = StarlightCommon
 	url = https://github.com/JSchpp12/StarlightCommon.git
+[submodule "external/stb"]
+	path = external/stb
+	url = https://github.com/nothings/stb.git

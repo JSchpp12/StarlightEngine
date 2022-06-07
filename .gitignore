@@ -3,6 +3,7 @@
 ################################################################################
 /StarlightCommon
 /build
+*/stb
 /.devcontainer
 /.vs
 /out/build/x64-Debug
