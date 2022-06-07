@@ -12,9 +12,9 @@
 #include <memory> 
 
 namespace star{
-    class ObjectApp : public common::Application{
+    class ObjectApp : public common::Application<core::ShaderManager, core::ObjectManager, core::TextureManager>{
     public: 
-        ObjectApp(common::ConfigFile* configFile, core::ShaderManager* shaderManager, core::ObjectManager* objectManager, core::TextureManager* textureManager); 
+        ObjectApp(common::ConfigFile* configFile, std::vector<common::Handle>* objectList, core::ShaderManager* shaderManager, core::ObjectManager* objectManager, core::TextureManager* textureManager); 
 
         void Load(); 
 
