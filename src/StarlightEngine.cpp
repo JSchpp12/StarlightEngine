@@ -3,7 +3,6 @@
 #include "ShaderManager.h"
 #include "ObjectManager.h"
 #include "TextureManager.h"
-#include "Windowing.h"
 #include "VulkanRenderer.h"
 
 #include "ObjectApp.h"
@@ -19,8 +18,6 @@ const uint32_t HEIGHT = 600;
 
 int main() {
     // std::unique_ptr<shadermanager::ShaderManager> shaderManager(new shadermanager::ShaderManager()); 
-    uint32_t numRequiredExtensions; 
-
     std::unique_ptr<common::ConfigFile> configFile(new common::ConfigFile("Engine.cfg")); 
     auto defaultVertShader = configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "/shaders/vertShader.vert";
     auto defaultFragShader = configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "/shaders/fragShader.frag";
@@ -34,19 +31,17 @@ int main() {
     auto application = star::ObjectApp(configFile.get(), objectList.get(), shaderManager.get(), objectManager.get(), textureManager.get()); 
     application.Load(); 
 
-    //prepare window 
-    auto window = star::core::Windowing(WIDTH, HEIGHT, star::ObjectApp::GLFWKeyHandle); 
-    auto requiredExtensions = window.getRequiredExtensions(numRequiredExtensions); 
     //prepare renderer 
     //TODO: give main() ownership of object list, not application 
     auto renderer = star::core::VulkanRenderer(configFile.get(), shaderManager.get(), objectManager.get(), textureManager.get(), objectList.get()); 
-    renderer.prepareGLFW(requiredExtensions, numRequiredExtensions, window.glfwWindow); 
+    renderer.prepareGLFW(WIDTH, HEIGHT, star::ObjectApp::GLFWKeyHandle);
     renderer.prepare(); 
 
     try{
-        while(!window.shouldCloseWindow()){
-            window.pollWindowEvents(); 
-            application.Update(); 
+        while(!renderer.shouldCloseWindow()){
+            renderer.pollEvents(); 
+            application.Update();
+            renderer.draw(); 
 
         }
     }catch(const std::exception& e){
