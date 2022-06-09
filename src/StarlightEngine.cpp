@@ -41,7 +41,7 @@ int main() {
     //prepare renderer 
     //TODO: give main() ownership of object list, not application 
     auto renderer = star::core::VulkanRenderer(configFile.get(), shaderManager.get(), objectManager.get(), textureManager.get(), objectList.get()); 
-    renderer.prepareGLFW(WIDTH, HEIGHT, star::ObjectApp::GLFWKeyHandle);
+    renderer.prepareGLFW(WIDTH, HEIGHT, star::ObjectApp::GLFWKeyHandle, star::ObjectApp::GLFWMouseButtonCallback, star::ObjectApp::GLFWMouseMovement, star::ObjectApp::GLFWScrollCallback);
     renderer.prepare(); 
 
     try{
