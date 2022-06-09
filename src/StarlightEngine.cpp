@@ -1,4 +1,6 @@
 #include "SC/Application.hpp"
+#include "SC/Time.hpp"
+
 #include "StarlightEngine.h"
 #include "ShaderManager.h"
 #include "ObjectManager.h"
@@ -10,13 +12,18 @@
 #include <GLFW/glfw3.h>
 
 #include <memory>
+#include <chrono>
 
 using namespace star;
+
+//setup timing 
+std::chrono::steady_clock::time_point common::Time::lastFrameTime = std::chrono::steady_clock::now(); 
 
 const uint32_t WIDTH = 800;
 const uint32_t HEIGHT = 600;
 
 int main() {
+
     // std::unique_ptr<shadermanager::ShaderManager> shaderManager(new shadermanager::ShaderManager()); 
     std::unique_ptr<common::ConfigFile> configFile(new common::ConfigFile("Engine.cfg")); 
     auto defaultVertShader = configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "/shaders/vertShader.vert";
@@ -34,7 +41,7 @@ int main() {
     //prepare renderer 
     //TODO: give main() ownership of object list, not application 
     auto renderer = star::core::VulkanRenderer(configFile.get(), shaderManager.get(), objectManager.get(), textureManager.get(), objectList.get()); 
-    renderer.prepareGLFW(WIDTH, HEIGHT, star::ObjectApp::GLFWKeyHandle);
+    renderer.prepareGLFW(WIDTH, HEIGHT, star::ObjectApp::GLFWKeyHandle, star::ObjectApp::GLFWMouseButtonCallback, star::ObjectApp::GLFWMouseMovement, star::ObjectApp::GLFWScrollCallback);
     renderer.prepare(); 
 
     try{
@@ -43,6 +50,7 @@ int main() {
             application.Update();
             renderer.draw(); 
 
+            common::Time::updateLastFrameTime(); 
         }
     }catch(const std::exception& e){
         std::cerr << e.what() << std::endl;
