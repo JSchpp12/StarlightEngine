@@ -16,23 +16,17 @@ star::ObjectApp::ObjectApp(common::ConfigFile* configFile, std::vector<common::H
 star::common::Application<core::ShaderManager, core::ObjectManager, core::TextureManager>(configFile, objectList, shaderManager, objectManager, textureManager) { }
 
 void star::ObjectApp::Load(){
-/*    auto vertShaderPath = configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "/shaders/vertShader.vert"; 
-    auto fragShaderPath = configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "/shaders/fragShader.frag";*/ 
-
-    //auto vertShaderHandle = this->shaderManager->Add(vertShaderPath); 
-    //auto fragShaderHandle = this->shaderManager->Add(fragShaderPath); 
-
-    //auto objectPath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "/models/cube/cube.obj"; 
-    //auto texturePath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "/models/cube/cubeTexture.png"; 
-    //auto textureHandle = this->textureManager->Add(texturePath); 
     auto objectPath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "/models/lion-statue/source/rapid.obj"; 
     auto texturePath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "/models/lion-statue/source/material0_basecolor.png";
     auto textureHandle = this->textureManager->Add(texturePath); 
 
-    //auto objPath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "/models/lion-statue/source/rapid.obj"; 
     this->objectList->push_back(this->objectManager->Add(objectPath, textureHandle));
-
     this->currentObject = this->objectManager->Get(this->objectList->at(0));
+
+    std::cout << "Controls: " << std::endl;
+    std::cout << "Use the arrow keys to move the object" << std::endl;
+    std::cout << "Click and drag on the window to spin the object" << std::endl;
+    std::cout << "Scroll to zoom (slightly broken)" << std::endl; 
 }
 
 void star::ObjectApp::Update(){
@@ -68,8 +62,9 @@ void star::ObjectApp::Update(){
             currentObject->rotateRelative(ammount, glm::vec3{ mouseMovement.x, mouseMovement.y, 0.f });
     }
     if (zoomDir != 0) {
+        //TODO: scaling is not being applied correctly
         auto currScale = currentObject->getScale(); 
-        std::cout << "cuyrr scale: " << currScale.x << "," << currScale.y << "," << currScale.z << std::endl;
+        //std::cout << "cuyrr scale: " << currScale.x << "," << currScale.y << "," << currScale.z << std::endl;
         currentObject->setScale(glm::vec3{
                 currScale.x + (zoomDir * scaleAmt),
                 currScale.y + (zoomDir * scaleAmt),
@@ -110,15 +105,12 @@ void star::ObjectApp::GLFWMouseMovement(GLFWwindow* window, double xpos, double 
             currMousePosition.x - prevMousePosition.x,
             currMousePosition.y - prevMousePosition.y
         };
-            
-            
-        //currMousePosition - prevMousePosition;
 
-        ammount = glm::distance(currMousePosition, prevMousePosition);
-        std::cout << currMousePosition.x << "," << currMousePosition.y << std::endl;
-        std::cout << prevMousePosition.x << "," << prevMousePosition.y << std::endl;
+        ammount = glm::distance(currMousePosition, prevMousePosition) * 0.05;
+        //std::cout << currMousePosition.x << "," << currMousePosition.y << std::endl;
+        //std::cout << prevMousePosition.x << "," << prevMousePosition.y << std::endl;
+        //std::cout << ammount << std::endl;
 
-        std::cout << ammount << std::endl;
         mouseMovement = mouseMovementDirection * ammount; 
         prevMousePosition = currMousePosition; 
     }
@@ -138,7 +130,7 @@ void star::ObjectApp::GLFWMouseButtonCallback(GLFWwindow* window, int button, in
 
 void star::ObjectApp::GLFWScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    std::cout << yoffset << std::endl; 
+    //std::cout << yoffset << std::endl; 
     zoomDir = yoffset; 
     prevMousePosition = glm::vec2{ xoffset, yoffset }; 
 }
