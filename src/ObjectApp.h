@@ -25,6 +25,7 @@ namespace star{
     protected: 
 
     private: 
-        
+        common::Object* currentObject = nullptr; 
+        bool moved = false; 
     }; 
 }

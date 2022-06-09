@@ -26,5 +26,14 @@ void star::ObjectApp::GLFWKeyHandle(GLFWwindow* window, int key, int scancode, i
 }
 
 void star::ObjectApp::Update(){
+    common::Object* object = this->objectManager->Get(this->objectList->at(0)); 
 
+    if (!this->moved) {
+        this->moved = true; 
+    }
+
+    //object->moveRelative(glm::vec3{ 0.001f, 0.f, 0.f });
+    object->rotateRelative(0.1, glm::vec3{ 0.f, 1.f, 0.f }); 
+
+    auto test = object->getModelMatrix(); 
 }
