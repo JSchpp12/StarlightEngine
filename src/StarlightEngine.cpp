@@ -26,10 +26,10 @@ int main() {
     try {
         // std::unique_ptr<shadermanager::ShaderManager> shaderManager(new shadermanager::ShaderManager()); 
         std::unique_ptr<common::ConfigFile> configFile(new common::ConfigFile("Engine.cfg"));
-        auto defaultVertShader = configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "/shaders/vertShader.vert";
-        auto defaultFragShader = configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "/shaders/fragShader.frag";
-        auto defaultCube = configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "/models/cube/cub.obj";
-        auto defaultCubeTexture = configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "/models/cube/cubeTexture.png";
+        auto defaultVertShader = configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "shaders/vertShader.vert";
+        auto defaultFragShader = configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "shaders/fragShader.frag";
+        auto defaultCube = configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "models/cube/cub.obj";
+        auto defaultCubeTexture = configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "models/cube/cubeTexture.png";
         std::unique_ptr<star::core::ShaderManager> shaderManager(new star::core::ShaderManager(defaultVertShader, defaultFragShader));
         std::unique_ptr<star::core::ObjectManager> objectManager(new star::core::ObjectManager());
         std::unique_ptr<star::core::TextureManager> textureManager(new star::core::TextureManager());

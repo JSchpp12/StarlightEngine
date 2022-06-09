@@ -1,3 +1,4 @@
+from ctypes.wintypes import LARGE_INTEGER
 from multiprocessing.dummy import current_process
 import os
 import sys 
@@ -58,11 +59,12 @@ if os.path.isfile(inConfigFilePath):
     with open(inConfigFilePath, 'r') as f:
         lines = f.readlines()
 print(destinationConfigFile)
-if not os.path.isfile(destinationConfigFile):
+if os.path.isfile(destinationConfigFile) is False:
     print("Creating config file")
     with open(destinationConfigFile, 'x') as f:
         for line in lines:
             setting = line.split('=')
             if (setting[0].lower() == "mediadirectory"):
-                setting[1] = "/media"
-        f.writelines(lines)
+                setting[1] = "./media/"
+            line = setting[0] + "=" + setting[1]
+            f.write(line)
