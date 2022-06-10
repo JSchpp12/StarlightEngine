@@ -6,5 +6,6 @@
 */stb
 /.devcontainer
 /.vs
+/xcode
 /out/build/x64-Debug
 /out/build/x64-Release
