@@ -49,12 +49,13 @@ add_subdirectory("StarlightCore")
 set(${PROJECT_NAME}_SOURCE 
 	"src/StarlightEngine.cpp"
 	"src/ObjectApp.cpp"
-	
+	"src/Callback.cpp"
 )
 
 set(${PROJECT_NAME}_HEADERS 
 	"src/StarlightEngine.h"
 	"src/ObjectApp.h"
+	"src/Callback.h"
 )
 
 add_executable(${PROJECT_NAME} "${${PROJECT_NAME}_SOURCE};${${PROJECT_NAME}_HEADERS}")

@@ -12,16 +12,20 @@ glm::vec2 star::ObjectApp::prevMousePosition = glm::vec2();
 glm::vec2 star::ObjectApp::prevScroll = glm::vec2();
 glm::vec2 star::ObjectApp::mouseMovement = glm::vec2();
 
-star::ObjectApp::ObjectApp(common::ConfigFile* configFile, std::vector<common::Handle>* objectList, core::ShaderManager* shaderManager, core::ObjectManager* objectManager, core::TextureManager* textureManager) :
-star::common::Application<core::ShaderManager, core::ObjectManager, core::TextureManager>(configFile, objectList, shaderManager, objectManager, textureManager) { }
+star::ObjectApp::ObjectApp(common::ConfigFile* configFile, std::vector<common::Handle>* objectList, core::ShaderManager* shaderManager, core::ObjectManager* objectManager, core::TextureManager* textureManager, common::Camera* inCamera) :
+star::common::Application<core::ShaderManager, core::ObjectManager, core::TextureManager>(configFile, objectList, shaderManager, objectManager, textureManager, inCamera) { }
 
 void star::ObjectApp::Load(){
     auto objectPath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "models/lion-statue/source/rapid.obj"; 
     auto texturePath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "models/lion-statue/source/material0_basecolor.png";
     auto textureHandle = this->textureManager->Add(texturePath); 
+    //auto objectPath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "models/cone/cone.obj"; 
+    //auto texturePath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "models/cone/ConeTexture.png";
+    //auto textureHandle = this->textureManager->Add(texturePath); 
 
     this->objectList->push_back(this->objectManager->Add(objectPath, textureHandle));
     this->currentObject = this->objectManager->Get(this->objectList->at(0));
+    //this->currentObject->rotateRelative(90, glm::vec3{ 0.0f, 1.0f, 0.0f }); 
 
     std::cout << "Controls: " << std::endl;
     std::cout << "Use the arrow keys to move the object" << std::endl;
@@ -36,10 +40,10 @@ void star::ObjectApp::Update(){
 
     //this->currentObject->rotateRelative(0.1, glm::vec3{ 0.f, 1.f, 0.f });
 
-    auto test = this->currentObject->getModelMatrix(); 
+    auto test = this->currentObject->getDisplayMatrix(); 
 
     double timePassed = common::Time::timeElapsedLastFrameSeconds();
-    auto movementAmt = 50 * timePassed;
+    auto movementAmt = 500 * timePassed;
 
     if (moveUp) {
         currentObject->moveRelative(glm::vec3{ 0.f, 0.f, movementAmt });
@@ -76,7 +80,8 @@ void star::ObjectApp::Update(){
     }
 }
 
-void star::ObjectApp::GLFWKeyHandle(GLFWwindow* window, int key, int scancode, int action, int mods) {
+void star::ObjectApp::keyCallback(int key, int scancode, int action, int mods) {
+    std::cout << "Making keyboard callback" << std::endl; 
 
     if (key == GLFW_KEY_UP) {
         moveUp = true;
@@ -94,7 +99,7 @@ void star::ObjectApp::GLFWKeyHandle(GLFWwindow* window, int key, int scancode, i
     }
 }
 
-void star::ObjectApp::GLFWMouseMovement(GLFWwindow* window, double xpos, double ypos)
+void star::ObjectApp::mouseMovementCallback(double xpos, double ypos)
 {
     //if clicking and moving the mouse, rotate the object
     if (click) {
@@ -106,7 +111,7 @@ void star::ObjectApp::GLFWMouseMovement(GLFWwindow* window, double xpos, double 
             currMousePosition.y - prevMousePosition.y
         };
 
-        ammount = glm::distance(currMousePosition, prevMousePosition) * 0.05;
+        ammount = glm::distance(currMousePosition, prevMousePosition) * 0.1;
         //std::cout << currMousePosition.x << "," << currMousePosition.y << std::endl;
         //std::cout << prevMousePosition.x << "," << prevMousePosition.y << std::endl;
         //std::cout << ammount << std::endl;
@@ -116,7 +121,7 @@ void star::ObjectApp::GLFWMouseMovement(GLFWwindow* window, double xpos, double 
     }
 }
 
-void star::ObjectApp::GLFWMouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
+void star::ObjectApp::mouseButtonCallback(int button, int action, int mods)
 {
     if (button == GLFW_MOUSE_BUTTON_LEFT) {
         if (action == GLFW_PRESS) {
@@ -128,7 +133,7 @@ void star::ObjectApp::GLFWMouseButtonCallback(GLFWwindow* window, int button, in
     }
 }
 
-void star::ObjectApp::GLFWScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
+void star::ObjectApp::scrollCallback(double xoffset, double yoffset)
 {
     //std::cout << yoffset << std::endl; 
     zoomDir = yoffset; 
