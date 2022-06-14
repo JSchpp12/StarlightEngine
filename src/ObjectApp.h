@@ -3,6 +3,8 @@
 #include "SC/Application.hpp"
 #include "SC/ConfigFile.hpp"
 #include "SC/Time.hpp"
+#include "SC/Camera.hpp"
+#include "SC/Interactivity.hpp"
 #include "ShaderManager.h"
 #include "ObjectManager.h"
 #include "TextureManager.h"
@@ -16,21 +18,24 @@
 #include <memory> 
 
 namespace star{
-    class ObjectApp : public common::Application<core::ShaderManager, core::ObjectManager, core::TextureManager>{
+    class ObjectApp : 
+        public common::Application<core::ShaderManager, core::ObjectManager, core::TextureManager>, 
+        public common::Interactivity
+    {
     public: 
-        ObjectApp(common::ConfigFile* configFile, std::vector<common::Handle>* objectList, core::ShaderManager* shaderManager, core::ObjectManager* objectManager, core::TextureManager* textureManager); 
+        ObjectApp(common::ConfigFile* configFile, std::vector<common::Handle>* objectList, core::ShaderManager* shaderManager, core::ObjectManager* objectManager, core::TextureManager* textureManager, common::Camera* inCamera); 
 
         void Load(); 
 
         void Update(); 
 
-        static void GLFWKeyHandle(GLFWwindow* window, int key, int scancode, int action, int mods);
+        void keyCallback(int key, int scancode, int action, int mods) override;
 
-        static void GLFWMouseMovement(GLFWwindow* window, double xpos, double ypos); 
+        void mouseMovementCallback(double xpos, double ypos) override;
 
-        static void GLFWMouseButtonCallback(GLFWwindow* window, int button, int action, int mods); 
+        void mouseButtonCallback(int button, int action, int mods) override;
 
-        static void GLFWScrollCallback(GLFWwindow* window, double xoffset, double yoffset); 
+        void scrollCallback(double xoffset, double yoffset) override; 
 
     protected: 
 
