@@ -50,12 +50,18 @@ set(${PROJECT_NAME}_SOURCE
 	"src/StarlightEngine.cpp"
 	"src/ObjectApp.cpp"
 	"src/Callback.cpp"
+	"src/CameraController.cpp"
+	"src/Controller.cpp"
+	"src/InteractionSystem.cpp"
 )
 
 set(${PROJECT_NAME}_HEADERS 
 	"src/StarlightEngine.h"
 	"src/ObjectApp.h"
 	"src/Callback.h"
+	"src/CameraController.h" 
+	"src/Controller.h"
+	"src/InteractionSystem.h"
 )
 
 add_executable(${PROJECT_NAME} "${${PROJECT_NAME}_SOURCE};${${PROJECT_NAME}_HEADERS}")

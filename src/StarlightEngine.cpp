@@ -8,6 +8,7 @@
 #include "TextureManager.h"
 #include "VulkanRenderer.h"
 #include "InteractionSystem.h"
+#include "CameraController.h"
 
 #include "ObjectApp.h"
 #define GLFW_INCLUDE_VULKAN
@@ -35,7 +36,7 @@ int main() {
     std::unique_ptr<star::core::ObjectManager> objectManager(new star::core::ObjectManager());
     std::unique_ptr<star::core::TextureManager> textureManager(new star::core::TextureManager());
     std::unique_ptr<std::vector<star::common::Handle>> objectList(new std::vector<star::common::Handle>());
-    std::unique_ptr<common::Camera> camera(new common::Camera());
+    std::unique_ptr<star::CameraController> camera(new star::CameraController());
 
     auto application = star::ObjectApp(configFile.get(), objectList.get(), shaderManager.get(), objectManager.get(), textureManager.get(), camera.get());
     application.Load();
@@ -43,28 +44,38 @@ int main() {
     //prepare renderer 
     //TODO: give main() ownership of object list, not application 
     auto renderer = star::core::VulkanRenderer(configFile.get(), shaderManager.get(), objectManager.get(), textureManager.get(), camera.get(), objectList.get());
-    renderer.prepareGLFW(WIDTH, HEIGHT, star::core::InteractionSystem::glfwKeyHandle, star::core::InteractionSystem::glfwMouseButtonCallback, star::core::InteractionSystem::glfwMouseMovement, star::core::InteractionSystem::glfwScrollCallback);
+    renderer.prepareGLFW(WIDTH, HEIGHT, star::InteractionSystem::glfwKeyHandle, star::InteractionSystem::glfwMouseButtonCallback, star::InteractionSystem::glfwMouseMovement, star::InteractionSystem::glfwScrollCallback);
     renderer.prepare();
 
     //register user application callbacks
     std::unique_ptr<std::function<void(int, int, int, int)>> keyCallback = std::make_unique<std::function<void(int, int, int, int)>>(std::bind(&star::ObjectApp::Interactivity::keyCallback, application, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
-    star::core::InteractionSystem::registerKeyCallback(std::move(keyCallback));
+    star::InteractionSystem::registerKeyCallback(std::move(keyCallback));
 
     std::unique_ptr<std::function<void(double, double)>> mouseMovementCallback = std::make_unique<std::function<void(double, double)>>(std::bind(&star::ObjectApp::Interactivity::mouseMovementCallback, application, std::placeholders::_1, std::placeholders::_2));
-    star::core::InteractionSystem::registerMouseMovementCallback(std::move(mouseMovementCallback));
+    star::InteractionSystem::registerMouseMovementCallback(std::move(mouseMovementCallback));
 
     std::unique_ptr<std::function<void(int, int, int)>> mouseButtonCallback = std::make_unique<std::function<void(int, int, int)>>(std::bind(&star::ObjectApp::Interactivity::mouseButtonCallback, application, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)); 
-    star::core::InteractionSystem::registerMouseButtonCallback(std::move(mouseButtonCallback)); 
+    star::InteractionSystem::registerMouseButtonCallback(std::move(mouseButtonCallback)); 
 
     std::unique_ptr<std::function<void(double, double)>> mouseScrollCallback = std::make_unique<std::function<void(double, double)>>(std::bind(&star::ObjectApp::Interactivity::scrollCallback, application, std::placeholders::_1, std::placeholders::_2)); 
-    star::core::InteractionSystem::registerMouseScrollCallback(std::move(mouseScrollCallback)); 
+    star::InteractionSystem::registerMouseScrollCallback(std::move(mouseScrollCallback)); 
 
-    std::unique_ptr<std::function<void(int, int, int, int)>> camKeyCallback = std::make_unique<std::function<void(int, int, int, int)>>(std::bind(&star::common::Camera::Interactivity::keyCallback, camera.get(), std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
-    star::core::InteractionSystem::registerKeyCallback(std::move(camKeyCallback));
+    std::unique_ptr<std::function<void(int, int, int, int)>> camKeyCallback = std::make_unique<std::function<void(int, int, int, int)>>(std::bind(&star::CameraController::Interactivity::keyCallback, camera.get(), std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
+    star::InteractionSystem::registerKeyCallback(std::move(camKeyCallback));
+
+    std::unique_ptr<std::function<void()>> camWorldCallback = std::make_unique<std::function<void()>>(std::bind(&star::CameraController::Interactivity::worldUpdate, camera.get())); 
+    star::InteractionSystem::registerWorldUpdateCallback(std::move(camWorldCallback)); 
+
+    std::unique_ptr<std::function<void(double, double)>> camMouseMvmtCallback = std::make_unique<std::function<void(double, double)>>(std::bind(&star::CameraController::Interactivity::mouseMovementCallback, camera.get(), std::placeholders::_1, std::placeholders::_2)); 
+    star::InteractionSystem::registerMouseMovementCallback(std::move(camMouseMvmtCallback)); 
+
+    std::unique_ptr<std::function<void(int, int, int)>> camMouseButtonCallback = std::make_unique<std::function<void(int, int, int)>>(std::bind(&star::CameraController::Interactivity::mouseButtonCallback, camera.get(), std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)); 
+    star::InteractionSystem::registerMouseButtonCallback(std::move(camMouseButtonCallback)); 
 
     try {
         while (!renderer.shouldCloseWindow()) {
             renderer.pollEvents();
+            star::InteractionSystem::callWorldUpdates(); 
             application.Update();
             renderer.draw();
 

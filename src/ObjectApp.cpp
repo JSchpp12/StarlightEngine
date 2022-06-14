@@ -25,7 +25,7 @@ void star::ObjectApp::Load(){
 
     this->objectList->push_back(this->objectManager->Add(objectPath, textureHandle));
     this->currentObject = this->objectManager->Get(this->objectList->at(0));
-    //this->currentObject->rotateRelative(90, glm::vec3{ 0.0f, 1.0f, 0.0f }); 
+    this->currentObject->rotateRelative(-90, glm::vec3{ 1.0f, 0.0f, 0.0f }); 
 
     std::cout << "Controls: " << std::endl;
     std::cout << "Use the arrow keys to move the object" << std::endl;
@@ -54,11 +54,13 @@ void star::ObjectApp::Update(){
         moveDown = false; 
     }
     if (moveLeft) {
-        currentObject->moveRelative(glm::vec3{ -movementAmt, 0.f, 0.f });
+        //currentObject->moveRelative(glm::vec3{ -movementAmt, 0.f, 0.f });
+        currentObject->rotateRelative(10.0f, glm::vec3{ 1.0f, 0.0, 0.0 });
         moveLeft = false; 
     }
     if (moveRight) {
-        currentObject->moveRelative(glm::vec3{ movementAmt, 0.f, 0.f });
+        //currentObject->moveRelative(glm::vec3{ movementAmt, 0.f, 0.f });
+        currentObject->rotateRelative(-10.0f, glm::vec3{ 1.0f, 0.0, 0.0 }); 
         moveRight = false; 
     }
     if (click) {
@@ -81,18 +83,14 @@ void star::ObjectApp::Update(){
 }
 
 void star::ObjectApp::keyCallback(int key, int scancode, int action, int mods) {
-    std::cout << "Making keyboard callback" << std::endl; 
-
     if (key == GLFW_KEY_UP) {
         moveUp = true;
     }
     if (key == GLFW_KEY_DOWN) {
         moveDown = true;
-
     }
     if (key == GLFW_KEY_LEFT) {
         moveLeft = true;
-
     }
     if (key == GLFW_KEY_RIGHT) {
         moveRight = true;
@@ -101,24 +99,24 @@ void star::ObjectApp::keyCallback(int key, int scancode, int action, int mods) {
 
 void star::ObjectApp::mouseMovementCallback(double xpos, double ypos)
 {
-    //if clicking and moving the mouse, rotate the object
-    if (click) {
-        auto time = star::common::Time::timeElapsedLastFrameSeconds(); 
+    ////if clicking and moving the mouse, rotate the object
+    //if (click) {
+    //    auto time = star::common::Time::timeElapsedLastFrameSeconds(); 
 
-        glm::vec2 currMousePosition = glm::vec2{ xpos, ypos }; 
-        glm::vec2 mouseMovementDirection = glm::vec2{
-            currMousePosition.x - prevMousePosition.x,
-            currMousePosition.y - prevMousePosition.y
-        };
+    //    glm::vec2 currMousePosition = glm::vec2{ xpos, ypos }; 
+    //    glm::vec2 mouseMovementDirection = glm::vec2{
+    //        currMousePosition.x - prevMousePosition.x,
+    //        currMousePosition.y - prevMousePosition.y
+    //    };
 
-        ammount = glm::distance(currMousePosition, prevMousePosition) * 0.1;
-        //std::cout << currMousePosition.x << "," << currMousePosition.y << std::endl;
-        //std::cout << prevMousePosition.x << "," << prevMousePosition.y << std::endl;
-        //std::cout << ammount << std::endl;
+    //    ammount = glm::distance(currMousePosition, prevMousePosition) * 0.1;
+    //    //std::cout << currMousePosition.x << "," << currMousePosition.y << std::endl;
+    //    //std::cout << prevMousePosition.x << "," << prevMousePosition.y << std::endl;
+    //    //std::cout << ammount << std::endl;
 
-        mouseMovement = mouseMovementDirection * ammount; 
-        prevMousePosition = currMousePosition; 
-    }
+    //    mouseMovement = mouseMovementDirection * ammount; 
+    //    prevMousePosition = currMousePosition; 
+    //}
 }
 
 void star::ObjectApp::mouseButtonCallback(int button, int action, int mods)
