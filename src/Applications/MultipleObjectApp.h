@@ -33,7 +33,18 @@ namespace star {
 	protected:
 
 	private: 
+		const float moveOscillationAmt = 1.0f; 
+		const float moveSpeed = 10.0f; 
+
 		common::Object* cone = nullptr; 
 		common::Object* cube = nullptr; 
+
+		bool cubeMovingUp = true; 
+		float cubeCeil = 0.f; 
+		float cubeFloor = 0.f;
+		float cubeMoveAmt = 0.f; 
+		bool coneMovingUp = false; 
+		float coneCeil = 0.f; 
+		float coneFloor = 0.f; 
 	};
 }

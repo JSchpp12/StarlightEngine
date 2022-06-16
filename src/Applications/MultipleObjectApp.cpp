@@ -21,6 +21,8 @@ void star::MultipleObjectApp::Load()
     }
     this->cone = this->objectManager->Get(this->objectList->at(0));
     this->cone->moveRelative(glm::vec3{ 1.0f, 1.0f, 1.0f });
+    this->coneCeil = this->cone->getPosition().y + this->moveOscillationAmt; 
+    this->coneFloor = this->cone->getPosition().y - this->moveOscillationAmt; 
 
     {
         auto objectPath = mediaDirectoryPath + "models/cube/cube.obj";
@@ -35,11 +37,33 @@ void star::MultipleObjectApp::Load()
     }
     this->cube = this->objectManager->Get(this->objectList->at(1)); 
     this->cube->moveRelative(glm::vec3{ -3.0f, -3.0f, -3.0f }); 
+    auto position = this->cube->getPosition();
+    this->cubeCeil = this->cube->getPosition().y + this->moveOscillationAmt; 
+    this->cubeFloor = this->cube->getPosition().y - this->moveOscillationAmt;
 }
 
 void star::MultipleObjectApp::Update()
 {
+    auto timePassed = star::common::Time::timeElapsedLastFrameSeconds(); 
 
+    //move cube 
+    auto position = this->cube->getPosition(); 
+
+    if (position.y > this->cubeCeil || position.y < this->cubeFloor) {
+        this->cubeMovingUp = this->cubeMovingUp ? false : true;
+    }
+
+    this->cube->moveRelative(glm::vec3(0.0f, 
+        (this->cubeMovingUp ? moveSpeed : -moveSpeed) * timePassed,
+        0.f));
+
+    if (this->cone->getPosition().y > this->coneCeil || this->cone->getPosition().y < this->coneFloor) {
+        this->coneMovingUp = this->coneMovingUp ? false : true; 
+    }
+
+    this->cone->moveRelative(glm::vec3(0.0f,
+        (this->coneMovingUp ? moveSpeed : -moveSpeed) * timePassed, 
+        0.0f));
 }
 
 void star::MultipleObjectApp::keyCallback(int key, int scancode, int action, int mods)

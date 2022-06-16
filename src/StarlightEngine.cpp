@@ -73,6 +73,9 @@ int main() {
     star::InteractionSystem::registerMouseButtonCallback(std::move(camMouseButtonCallback)); 
 
     try {
+        //init time 
+        common::Time::updateLastFrameTime();
+
         while (!renderer.shouldCloseWindow()) {
             renderer.pollEvents();
             star::InteractionSystem::callWorldUpdates(); 
