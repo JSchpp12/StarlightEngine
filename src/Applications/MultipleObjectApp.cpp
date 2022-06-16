@@ -34,8 +34,7 @@ void star::MultipleObjectApp::Load()
         this->objectList->push_back(this->objectManager->Add(objectPath, textureHandle, vertShader, fragShader));
     }
     this->cube = this->objectManager->Get(this->objectList->at(1)); 
-    
-
+    this->cube->moveRelative(glm::vec3{ -3.0f, -3.0f, -3.0f }); 
 }
 
 void star::MultipleObjectApp::Update()
