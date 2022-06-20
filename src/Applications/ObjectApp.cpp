@@ -1,6 +1,6 @@
 #include "ObjectApp.h"
 
-star::common::Object* star::ObjectApp::currentObject = nullptr; 
+star::common::GameObject* star::ObjectApp::currentObject = nullptr; 
 bool star::ObjectApp::moveDown = false; 
 bool star::ObjectApp::moveUp = false; 
 bool star::ObjectApp::moveRight = false; 
@@ -67,19 +67,19 @@ void star::ObjectApp::Update(){
         if (ammount != 0)
             currentObject->rotateRelative(ammount, glm::vec3{ mouseMovement.x, mouseMovement.y, 0.f });
     }
-    if (zoomDir != 0) {
-        //TODO: scaling is not being applied correctly
-        auto currScale = currentObject->getScale(); 
-        //std::cout << "cuyrr scale: " << currScale.x << "," << currScale.y << "," << currScale.z << std::endl;
-        currentObject->setScale(glm::vec3{
-                currScale.x + (zoomDir * scaleAmt),
-                currScale.y + (zoomDir * scaleAmt),
-                currScale.z + (zoomDir * scaleAmt)
-        });
+    //if (zoomDir != 0) {
+    //    //TODO: scaling is not being applied correctly
+    //    auto currScale = currentObject->getScale(); 
+    //    //std::cout << "cuyrr scale: " << currScale.x << "," << currScale.y << "," << currScale.z << std::endl;
+    //    currentObject->setScale(glm::vec3{
+    //            currScale.x + (zoomDir * scaleAmt),
+    //            currScale.y + (zoomDir * scaleAmt),
+    //            currScale.z + (zoomDir * scaleAmt)
+    //    });
 
         //reset
         zoomDir = 0;
-    }
+    //}
 }
 
 void star::ObjectApp::keyCallback(int key, int scancode, int action, int mods) {

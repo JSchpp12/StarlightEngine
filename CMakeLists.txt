@@ -48,20 +48,24 @@ add_subdirectory("StarlightCore")
 
 set(${PROJECT_NAME}_SOURCE 
 	"src/StarlightEngine.cpp"
-	"src/ObjectApp.cpp"
 	"src/Callback.cpp"
 	"src/CameraController.cpp"
 	"src/Controller.cpp"
 	"src/InteractionSystem.cpp"
+	#applications
+	"src/Applications/ObjectApp.cpp"
+	"src/Applications/MultipleObjectApp.cpp"
 )
 
 set(${PROJECT_NAME}_HEADERS 
 	"src/StarlightEngine.h"
-	"src/ObjectApp.h"
 	"src/Callback.h"
 	"src/CameraController.h" 
 	"src/Controller.h"
 	"src/InteractionSystem.h"
+	#applications
+	"src/Applications/ObjectApp.h"
+	"src/Applications/MultipleObjectApp.h"
 )
 
 add_executable(${PROJECT_NAME} "${${PROJECT_NAME}_SOURCE};${${PROJECT_NAME}_HEADERS}")
@@ -78,6 +82,7 @@ set(STAR_COMMON_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR})
 
 target_include_directories(${PROJECT_NAME}
 	PRIVATE 
+		${CMAKE_CURRENT_SOURCE_DIR}/src/Applications
 		${STB_DIRECTORY}
 		${CMAKE_CURRENT_BINARY_DIR}
 		${StarlightCommon_INCLUDE_DIR}
