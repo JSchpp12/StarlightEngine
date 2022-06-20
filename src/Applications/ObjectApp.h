@@ -41,7 +41,7 @@ namespace star{
 
     private: 
         double scaleAmt = 0.1; 
-        static common::Object* currentObject; 
+        static common::GameObject* currentObject; 
         static bool moveUp, moveDown, moveRight, moveLeft, click; 
         static glm::vec2 prevMousePosition, prevScroll, mouseMovement; 
         static double zoomDir;

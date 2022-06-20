@@ -4,6 +4,7 @@
 #include "SC/ConfigFile.hpp"
 #include "SC/Time.hpp"
 #include "SC/Camera.hpp"
+#include "SC/GameObject.hpp"
 #include "SC/Interactivity.hpp"
 #include "ShaderManager.h"
 #include "ObjectManager.h"
@@ -36,8 +37,9 @@ namespace star {
 		const float moveOscillationAmt = 1.0f; 
 		const float moveSpeed = 10.0f; 
 
-		common::Object* cone = nullptr; 
-		common::Object* cube = nullptr; 
+		common::GameObject* cone = nullptr; 
+		common::GameObject* cube = nullptr;
+		common::GameObject* lion = nullptr; 
 
 		bool cubeMovingUp = true; 
 		float cubeCeil = 0.f; 

@@ -17,7 +17,7 @@ void star::MultipleObjectApp::Load()
         auto vertShader = this->shaderManager->Add(vertShaderPath);
         auto fragShader = this->shaderManager->Add(fragShaderPath);
         auto textureHandle = this->textureManager->Add(texturePath);
-        this->objectList->push_back(this->objectManager->Add(objectPath, textureHandle, vertShader, fragShader));
+        this->objectList->push_back(this->objectManager->Add(objectPath, textureHandle, vertShader, fragShader, glm::vec3{0.5f, 0.5f, 0.5f}));
     }
     this->cone = this->objectManager->Get(this->objectList->at(0));
     this->cone->moveRelative(glm::vec3{ 1.0f, 1.0f, 1.0f });
@@ -33,19 +33,42 @@ void star::MultipleObjectApp::Load()
         auto vertShader = this->shaderManager->Add(vertShaderPath);
         auto fragShader = this->shaderManager->Add(fragShaderPath);
         auto textureHandle = this->textureManager->Add(texturePath);
-        this->objectList->push_back(this->objectManager->Add(objectPath, textureHandle, vertShader, fragShader));
+        this->objectList->push_back(this->objectManager->Add(objectPath, textureHandle, vertShader, fragShader, glm::vec3{0.5f, 0.5f, 0.5f}));
     }
     this->cube = this->objectManager->Get(this->objectList->at(1)); 
     this->cube->moveRelative(glm::vec3{ -3.0f, -3.0f, -3.0f }); 
     auto position = this->cube->getPosition();
     this->cubeCeil = this->cube->getPosition().y + this->moveOscillationAmt; 
     this->cubeFloor = this->cube->getPosition().y - this->moveOscillationAmt;
+
+    {
+        auto objectPath = mediaDirectoryPath + "models/lion-statue/source/rapid.obj";
+        auto texturePath = mediaDirectoryPath + "models/lion-statue/source/material0_basecolor.png";
+        auto vertShaderPath = mediaDirectoryPath + "shaders/defaultVert.vert";
+        auto fragShaderPath = mediaDirectoryPath + "shaders/defaultFrag.frag";
+
+        auto vertShader = this->shaderManager->Add(vertShaderPath);
+        auto fragShader = this->shaderManager->Add(fragShaderPath);
+        auto textureHandle = this->textureManager->Add(texturePath);
+        this->objectList->push_back(this->objectManager->Add(objectPath, textureHandle, vertShader, fragShader));
+    }
+    this->lion = this->objectManager->Get(this->objectList->at(2)); 
+    auto lionPosition = this->lion->getPosition(); 
+    this->lion->rotateRelative(-90, glm::vec3{ 1.0f, 0.0f, 0.0f });
 }
 
 void star::MultipleObjectApp::Update()
 {
     auto timePassed = star::common::Time::timeElapsedLastFrameSeconds(); 
 
+    if (this->cone->getPosition().y > this->coneCeil || this->cone->getPosition().y < this->coneFloor) {
+        this->coneMovingUp = this->coneMovingUp ? false : true; 
+    }
+
+    this->cone->moveRelative(glm::vec3(0.0f,
+        (this->coneMovingUp ? moveSpeed : -moveSpeed) * timePassed, 
+        0.0f));
+ 
     //move cube 
     auto position = this->cube->getPosition(); 
 
@@ -56,14 +79,6 @@ void star::MultipleObjectApp::Update()
     this->cube->moveRelative(glm::vec3(0.0f, 
         (this->cubeMovingUp ? moveSpeed : -moveSpeed) * timePassed,
         0.f));
-
-    if (this->cone->getPosition().y > this->coneCeil || this->cone->getPosition().y < this->coneFloor) {
-        this->coneMovingUp = this->coneMovingUp ? false : true; 
-    }
-
-    this->cone->moveRelative(glm::vec3(0.0f,
-        (this->coneMovingUp ? moveSpeed : -moveSpeed) * timePassed, 
-        0.0f));
 }
 
 void star::MultipleObjectApp::keyCallback(int key, int scancode, int action, int mods)
