@@ -50,10 +50,11 @@ void star::MultipleObjectApp::Load()
         auto vertShader = this->shaderManager->Add(vertShaderPath);
         auto fragShader = this->shaderManager->Add(fragShaderPath);
         auto textureHandle = this->textureManager->Add(texturePath);
-        this->objectList->push_back(this->objectManager->Add(objectPath, textureHandle, vertShader, fragShader));
+        this->objectList->push_back(this->objectManager->Add(objectPath, textureHandle, vertShader, fragShader, glm::vec3{2.0f, 2.0f, 2.0f}));
     }
     this->lion = this->objectManager->Get(this->objectList->at(2)); 
     auto lionPosition = this->lion->getPosition(); 
+    this->lion->moveRelative(glm::vec3{ 0.0f, -0.7f, 0.0f });
     this->lion->rotateRelative(-90, glm::vec3{ 1.0f, 0.0f, 0.0f });
 }
 
@@ -69,7 +70,7 @@ void star::MultipleObjectApp::Update()
         (this->coneMovingUp ? moveSpeed : -moveSpeed) * timePassed, 
         0.0f));
  
-    //move cube 
+    ////move cube 
     auto position = this->cube->getPosition(); 
 
     if (position.y > this->cubeCeil || position.y < this->cubeFloor) {

@@ -55,6 +55,7 @@ set(${PROJECT_NAME}_SOURCE
 	#applications
 	"src/Applications/ObjectApp.cpp"
 	"src/Applications/MultipleObjectApp.cpp"
+	"src/Applications/LightApp.cpp"
 )
 
 set(${PROJECT_NAME}_HEADERS 
@@ -66,6 +67,7 @@ set(${PROJECT_NAME}_HEADERS
 	#applications
 	"src/Applications/ObjectApp.h"
 	"src/Applications/MultipleObjectApp.h"
+	"src/Applications/LightApp.h"
 )
 
 add_executable(${PROJECT_NAME} "${${PROJECT_NAME}_SOURCE};${${PROJECT_NAME}_HEADERS}")
