@@ -6,7 +6,7 @@
 #include "ShaderManager.h"
 #include "ObjectManager.hpp"
 #include "TextureManager.h"
-#include "VulkanRenderer.h"
+#include "BasicVulkanRenderer.h"
 #include "InteractionSystem.h"
 #include "CameraController.h"
 
