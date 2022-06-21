@@ -6,14 +6,6 @@ star::LightApp::LightApp(common::ConfigFile* configFile, std::vector<common::Han
 void star::LightApp::Load() {
     //load lion 
     auto mediaDirectoryPath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory); 
-
-    {
-        //this->objectList->push_back(core::ObjectManager::Builder(this->objectManager)
-        //    .setPath(mediaDirectoryPath + "models/cube/cube.obj")
-        //    .setPosition(glm::vec3{ 2.0f, 0.0f, 0.0f })
-        //    .build()
-        //); 
-    }
     {
         auto objectPath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "models/lion-statue/source/rapid.obj";
         auto texturePath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "models/lion-statue/source/material0_basecolor.png";
@@ -21,7 +13,7 @@ void star::LightApp::Load() {
         this->objectList->push_back(core::ObjectManager::Builder(this->objectManager)
             .setPath(objectPath)
             .setTexture(textureHandle)
-            .setPosition(glm::vec3{ -0.3f, -0.44f, 0.0f })
+            .setPosition(glm::vec3{ 0.0f, -0.44f, 0.0f })
             .build()
         );
     }
@@ -42,7 +34,13 @@ void star::LightApp::Load() {
             .setPath(objectPath)
             .setTexture(textureHandle)
             .setScale(glm::vec3{ 0.2f, 0.2f, 0.2f })
-            .setPosition(glm::vec3{ 0.9f, 0.21f, 0.5f })
+            .setPosition(glm::vec3{ 1.2f, 0.21f, 0.5f })
+            .build());
+        this->objectList->push_back(core::ObjectManager::Builder(this->objectManager)
+            .setPath(objectPath)
+            .setTexture(textureHandle)
+            .setScale(glm::vec3{ 0.2f, 0.2f, 0.2f })
+            .setPosition(glm::vec3{ -1.3f, 0.21f, -0.5f })
             .build());
     }
     this->cone = this->objectManager->Get(this->objectList->at(1));
@@ -52,7 +50,7 @@ void star::LightApp::Load() {
         auto objectPath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "models/quad/quad.obj";
         this->objectList->push_back(core::ObjectManager::Builder(this->objectManager)
             .setPath(objectPath)
-            .setScale(glm::vec3{ 1.5f, 1.0f, 1.0f })
+            .setScale(glm::vec3{ 2.0f, 1.0f, 1.0f })
             .setPosition(glm::vec3{ 0.0f, 0.0f, 0.0f })
             .build());
     }

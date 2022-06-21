@@ -6,7 +6,8 @@ layout(location = 2) in vec3 inColor;		//vertex color
 layout(location = 3) in vec2 inTexCoord;	//texture coordinate for vertex 
 
 layout(location = 0) out vec3 fragColor; 
-layout(location = 1) out vec2 fragTexCoord; 
+layout(location = 1) out vec3 fragPositionWorld;	//fragment's position in world space
+layout(location = 2) out vec3 fragNormalWorld;		//fragment's normal in world space 
 
 layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
 	mat4 proj;
@@ -22,22 +23,10 @@ layout(binding = 0, set = 1) uniform UniformBufferObject{
 } objectUbo;
 
 void main() {
-	vec4 positionWorldSpace = objectUbo.modelMatrix * vec4(inPosition, 1.0); 
-
-	//calculate direction to the light source from the vertex
-	vec3 directionToLight = globalUbo.lightPosition - positionWorldSpace.xyz; 
-
-	//have to convert light location from model space to world space --TMP--
-	vec3 normalWorldSpace = normalize(mat3(objectUbo.normalModelMatrix)  * inNormal); 
-	float attenuation = 1.0 / dot(directionToLight, directionToLight);	//distance of direction vector squared
-
-	//apply scaling to light intensities
-	vec3 lightColor = globalUbo.lightColor.xyz * globalUbo.lightColor.w * attenuation; 
-	vec3 ambientLight = globalUbo.ambientLightColor.xyz * globalUbo.ambientLightColor.w; 
-	vec3 diffuseLight = lightColor * max(dot(normalWorldSpace, normalize(directionToLight)), 0); 
-
-	gl_Position = globalUbo.proj * globalUbo.view * positionWorldSpace;
-	fragColor = (diffuseLight + ambientLight) * inColor; 
-
-	fragTexCoord = inTexCoord; 
+	vec4 positionWorld = objectUbo.modelMatrix * vec4(inPosition, 1.0); 
+	gl_Position = globalUbo.proj * globalUbo.view * positionWorld;
+	fragNormalWorld = normalize(mat3(objectUbo.normalModelMatrix) * inNormal); 
+	fragPositionWorld = positionWorld.xyz; 
+	fragColor = inColor; 
+//	fragTexCoord = inTexCoord; 
 }
