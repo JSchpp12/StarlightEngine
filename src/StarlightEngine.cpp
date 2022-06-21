@@ -4,7 +4,7 @@
 
 #include "StarlightEngine.h"
 #include "ShaderManager.h"
-#include "ObjectManager.h"
+#include "ObjectManager.hpp"
 #include "TextureManager.h"
 #include "VulkanRenderer.h"
 #include "InteractionSystem.h"

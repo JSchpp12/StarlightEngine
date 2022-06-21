@@ -7,7 +7,7 @@
 #include "SC/GameObject.hpp"
 #include "SC/Interactivity.hpp"
 #include "ShaderManager.h"
-#include "ObjectManager.h"
+#include "ObjectManager.hpp"
 #include "TextureManager.h"
 
 namespace star {

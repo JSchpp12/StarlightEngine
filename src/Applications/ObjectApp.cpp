@@ -23,9 +23,9 @@ void star::ObjectApp::Load(){
     //auto texturePath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "models/cone/ConeTexture.png";
     //auto textureHandle = this->textureManager->Add(texturePath); 
 
-    this->objectList->push_back(this->objectManager->Add(objectPath, textureHandle));
-    this->currentObject = this->objectManager->Get(this->objectList->at(0));
-    this->currentObject->rotateRelative(-90, glm::vec3{ 1.0f, 0.0f, 0.0f }); 
+    //this->objectList->push_back(this->objectManager->Add(objectPath, textureHandle));
+    //this->currentObject = this->objectManager->Get(this->objectList->at(0));
+    //this->currentObject->rotateRelative(-90, glm::vec3{ 1.0f, 0.0f, 0.0f }); 
 
     std::cout << "Controls: " << std::endl;
     std::cout << "Use the arrow keys to move the object" << std::endl;

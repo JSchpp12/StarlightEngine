@@ -6,7 +6,7 @@
 #include "SC/Camera.hpp"
 #include "SC/Interactivity.hpp"
 #include "ShaderManager.h"
-#include "ObjectManager.h"
+#include "ObjectManager.hpp"
 #include "TextureManager.h"
 
 #include <GLFW/glfw3.h>
@@ -41,12 +41,9 @@ namespace star {
 
     private:
         double scaleAmt = 0.1;
-        static common::GameObject* currentObject;
-        static bool moveUp, moveDown, moveRight, moveLeft, click;
-        static glm::vec2 prevMousePosition, prevScroll, mouseMovement;
-        static double zoomDir;
-        static float ammount;
-        bool moved = false;
+        common::GameObject* lion = nullptr; 
+        common::GameObject* floor = nullptr; 
+        common::GameObject* cone = nullptr; 
 
     };
 }

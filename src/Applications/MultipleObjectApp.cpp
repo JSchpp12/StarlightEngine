@@ -8,50 +8,50 @@ void star::MultipleObjectApp::Load()
     std::string objectPath, texturePath, vertShaderPath, fragShaderPath; 
     std::string mediaDirectoryPath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory); 
 
-    {
-        auto objectPath = mediaDirectoryPath + "models/cone/cone.obj";
-        auto texturePath = mediaDirectoryPath + "models/cone/ConeTexture.png";
-        auto vertShaderPath = mediaDirectoryPath + "shaders/defaultVert.vert";
-        auto fragShaderPath = mediaDirectoryPath + "shaders/defaultFrag.frag";
+    //{
+    //    auto objectPath = mediaDirectoryPath + "models/cone/cone.obj";
+    //    auto texturePath = mediaDirectoryPath + "models/cone/ConeTexture.png";
+    //    auto vertShaderPath = mediaDirectoryPath + "shaders/defaultVert.vert";
+    //    auto fragShaderPath = mediaDirectoryPath + "shaders/defaultFrag.frag";
 
-        auto vertShader = this->shaderManager->Add(vertShaderPath);
-        auto fragShader = this->shaderManager->Add(fragShaderPath);
-        auto textureHandle = this->textureManager->Add(texturePath);
-        this->objectList->push_back(this->objectManager->Add(objectPath, textureHandle, vertShader, fragShader, glm::vec3{0.5f, 0.5f, 0.5f}));
-    }
-    this->cone = this->objectManager->Get(this->objectList->at(0));
-    this->cone->moveRelative(glm::vec3{ 1.0f, 1.0f, 1.0f });
-    this->coneCeil = this->cone->getPosition().y + this->moveOscillationAmt; 
-    this->coneFloor = this->cone->getPosition().y - this->moveOscillationAmt; 
+    //    auto vertShader = this->shaderManager->Add(vertShaderPath);
+    //    auto fragShader = this->shaderManager->Add(fragShaderPath);
+    //    auto textureHandle = this->textureManager->Add(texturePath);
+    //    this->objectList->push_back(this->objectManager->Add(objectPath, textureHandle, vertShader, fragShader, glm::vec3{0.5f, 0.5f, 0.5f}));
+    //}
+    //this->cone = this->objectManager->Get(this->objectList->at(0));
+    //this->cone->moveRelative(glm::vec3{ 1.0f, 1.0f, 1.0f });
+    //this->coneCeil = this->cone->getPosition().y + this->moveOscillationAmt; 
+    //this->coneFloor = this->cone->getPosition().y - this->moveOscillationAmt; 
 
-    {
-        auto objectPath = mediaDirectoryPath + "models/cube/cube.obj";
-        auto texturePath = mediaDirectoryPath + "models/cube/CubeTexture.png";
-        auto vertShaderPath = mediaDirectoryPath + "shaders/defaultVert.vert";
-        auto fragShaderPath = mediaDirectoryPath + "shaders/defaultFrag.frag";
+    //{
+    //    auto objectPath = mediaDirectoryPath + "models/cube/cube.obj";
+    //    auto texturePath = mediaDirectoryPath + "models/cube/CubeTexture.png";
+    //    auto vertShaderPath = mediaDirectoryPath + "shaders/defaultVert.vert";
+    //    auto fragShaderPath = mediaDirectoryPath + "shaders/defaultFrag.frag";
 
-        auto vertShader = this->shaderManager->Add(vertShaderPath);
-        auto fragShader = this->shaderManager->Add(fragShaderPath);
-        auto textureHandle = this->textureManager->Add(texturePath);
-        this->objectList->push_back(this->objectManager->Add(objectPath, textureHandle, vertShader, fragShader, glm::vec3{0.5f, 0.5f, 0.5f}));
-    }
-    this->cube = this->objectManager->Get(this->objectList->at(1)); 
-    this->cube->moveRelative(glm::vec3{ -3.0f, -3.0f, -3.0f }); 
-    auto position = this->cube->getPosition();
-    this->cubeCeil = this->cube->getPosition().y + this->moveOscillationAmt; 
-    this->cubeFloor = this->cube->getPosition().y - this->moveOscillationAmt;
+    //    auto vertShader = this->shaderManager->Add(vertShaderPath);
+    //    auto fragShader = this->shaderManager->Add(fragShaderPath);
+    //    auto textureHandle = this->textureManager->Add(texturePath);
+    //    this->objectList->push_back(this->objectManager->Add(objectPath, textureHandle, vertShader, fragShader, glm::vec3{0.5f, 0.5f, 0.5f}));
+    //}
+    //this->cube = this->objectManager->Get(this->objectList->at(1)); 
+    //this->cube->moveRelative(glm::vec3{ -3.0f, -3.0f, -3.0f }); 
+    //auto position = this->cube->getPosition();
+    //this->cubeCeil = this->cube->getPosition().y + this->moveOscillationAmt; 
+    //this->cubeFloor = this->cube->getPosition().y - this->moveOscillationAmt;
 
-    {
-        auto objectPath = mediaDirectoryPath + "models/lion-statue/source/rapid.obj";
-        auto texturePath = mediaDirectoryPath + "models/lion-statue/source/material0_basecolor.png";
-        auto vertShaderPath = mediaDirectoryPath + "shaders/defaultVert.vert";
-        auto fragShaderPath = mediaDirectoryPath + "shaders/defaultFrag.frag";
+    //{
+    //    auto objectPath = mediaDirectoryPath + "models/lion-statue/source/rapid.obj";
+    //    auto texturePath = mediaDirectoryPath + "models/lion-statue/source/material0_basecolor.png";
+    //    auto vertShaderPath = mediaDirectoryPath + "shaders/defaultVert.vert";
+    //    auto fragShaderPath = mediaDirectoryPath + "shaders/defaultFrag.frag";
 
-        auto vertShader = this->shaderManager->Add(vertShaderPath);
-        auto fragShader = this->shaderManager->Add(fragShaderPath);
-        auto textureHandle = this->textureManager->Add(texturePath);
-        this->objectList->push_back(this->objectManager->Add(objectPath, textureHandle, vertShader, fragShader, glm::vec3{2.0f, 2.0f, 2.0f}));
-    }
+    //    auto vertShader = this->shaderManager->Add(vertShaderPath);
+    //    auto fragShader = this->shaderManager->Add(fragShaderPath);
+    //    auto textureHandle = this->textureManager->Add(texturePath);
+    //    this->objectList->push_back(this->objectManager->Add(objectPath, textureHandle, vertShader, fragShader, glm::vec3{2.0f, 2.0f, 2.0f}));
+    //}
     this->lion = this->objectManager->Get(this->objectList->at(2)); 
     auto lionPosition = this->lion->getPosition(); 
     this->lion->moveRelative(glm::vec3{ 0.0f, -0.7f, 0.0f });

@@ -6,7 +6,7 @@
 #include "SC/Camera.hpp"
 #include "SC/Interactivity.hpp"
 #include "ShaderManager.h"
-#include "ObjectManager.h"
+#include "ObjectManager.hpp"
 #include "TextureManager.h"
 
 #include <GLFW/glfw3.h>

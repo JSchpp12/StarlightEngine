@@ -29,9 +29,10 @@ void main() {
 
 	//have to convert light location from model space to world space --TMP--
 	vec3 normalWorldSpace = normalize(mat3(objectUbo.normalModelMatrix)  * inNormal); 
+	float attenuation = 1.0 / dot(directionToLight, directionToLight);	//distance of direction vector squared
 
 	//apply scaling to light intensities
-	vec3 lightColor = globalUbo.lightColor.xyz * globalUbo.lightColor.w; 
+	vec3 lightColor = globalUbo.lightColor.xyz * globalUbo.lightColor.w * attenuation; 
 	vec3 ambientLight = globalUbo.ambientLightColor.xyz * globalUbo.ambientLightColor.w; 
 	vec3 diffuseLight = lightColor * max(dot(normalWorldSpace, normalize(directionToLight)), 0); 
 
