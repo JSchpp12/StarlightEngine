@@ -9,6 +9,7 @@
 #include "BasicVulkanRenderer.h"
 #include "InteractionSystem.h"
 #include "CameraController.h"
+#include "Star_Window.hpp"
 
 #include "LightApp.h"
 #define GLFW_INCLUDE_VULKAN
@@ -43,8 +44,8 @@ int main() {
 
     //prepare renderer 
     //TODO: give main() ownership of object list, not application 
-    auto renderer = star::core::VulkanRenderer(configFile.get(), shaderManager.get(), objectManager.get(), textureManager.get(), camera.get(), objectList.get());
-    renderer.prepareGLFW(WIDTH, HEIGHT, star::InteractionSystem::glfwKeyHandle, star::InteractionSystem::glfwMouseButtonCallback, star::InteractionSystem::glfwMouseMovement, star::InteractionSystem::glfwScrollCallback);
+    auto window = star::core::StarWindow(WIDTH, HEIGHT, "Starlight", star::InteractionSystem::glfwKeyHandle, star::InteractionSystem::glfwMouseButtonCallback, star::InteractionSystem::glfwMouseMovement, star::InteractionSystem::glfwScrollCallback);
+    auto renderer = star::core::VulkanRenderer(configFile.get(), shaderManager.get(), objectManager.get(), textureManager.get(), camera.get(), objectList.get(), window);
     renderer.prepare();
 
     //register user application callbacks
@@ -76,7 +77,7 @@ int main() {
         //init time 
         common::Time::updateLastFrameTime();
 
-        while (!renderer.shouldCloseWindow()) {
+        while (!window.shouldClose()) {
             renderer.pollEvents();
             star::InteractionSystem::callWorldUpdates(); 
             application.Update();
