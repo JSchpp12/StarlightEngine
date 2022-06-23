@@ -8,6 +8,7 @@
 #include "ShaderManager.h"
 #include "ObjectManager.hpp"
 #include "TextureManager.h"
+#include "LightManager.hpp"
 
 #include <GLFW/glfw3.h>
 
@@ -19,11 +20,11 @@
 
 namespace star {
     class LightApp :
-        public common::Application<core::ShaderManager, core::ObjectManager, core::TextureManager>,
+        public common::Application<core::ShaderManager, core::ObjectManager, core::TextureManager, core::LightManager>,
         public common::Interactivity
     {
     public:
-        LightApp(common::ConfigFile* configFile, std::vector<common::Handle>* objectList, core::ShaderManager* shaderManager, core::ObjectManager* objectManager, core::TextureManager* textureManager, common::Camera* inCamera);
+        LightApp(common::ConfigFile* configFile, std::vector<common::Handle>* objectList, std::vector<common::Handle>* lightList, core::ShaderManager* shaderManager, core::ObjectManager* objectManager, core::TextureManager* textureManager, core::LightManager* lightManager, common::Camera* inCamera);
 
         void Load();
 
@@ -44,6 +45,13 @@ namespace star {
         common::GameObject* lion = nullptr; 
         common::GameObject* floor = nullptr; 
         common::GameObject* cone = nullptr; 
+        common::Light* pointLight = nullptr; 
+        std::vector<common::Handle>* lightList = nullptr; 
+
+        const float speed = 3.0f; 
+        float max = 2.0f; 
+        float min = -2.0f; 
+        bool movingRight = true; 
 
     };
 }

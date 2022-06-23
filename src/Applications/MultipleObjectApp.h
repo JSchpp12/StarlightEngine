@@ -9,15 +9,16 @@
 #include "ShaderManager.h"
 #include "ObjectManager.hpp"
 #include "TextureManager.h"
+#include "LightManager.hpp"
 
 namespace star {
 	class MultipleObjectApp :
-		public common::Application<core::ShaderManager, core::ObjectManager, core::TextureManager>,
+		public common::Application<core::ShaderManager, core::ObjectManager, core::TextureManager, core::LightManager>,
 		public common::Interactivity
 	{
 	public:
 
-		MultipleObjectApp(common::ConfigFile* configFile, std::vector<common::Handle>* objectList, core::ShaderManager* shaderManager, core::ObjectManager* objectManager, core::TextureManager* textureManager, common::Camera* inCamera);
+		MultipleObjectApp(common::ConfigFile* configFile, std::vector<common::Handle>* objectList, core::ShaderManager* shaderManager, core::ObjectManager* objectManager, core::TextureManager* textureManager, core::LightManager* lightManager, common::Camera* inCamera);
 
 		void Load();
 

@@ -6,6 +6,7 @@
 #include "ShaderManager.h"
 #include "ObjectManager.hpp"
 #include "TextureManager.h"
+#include "LightManager.hpp"
 #include "BasicVulkanRenderer.h"
 #include "InteractionSystem.h"
 #include "CameraController.h"
@@ -36,16 +37,25 @@ int main() {
     std::unique_ptr<star::core::ShaderManager> shaderManager(new star::core::ShaderManager(defaultVertShader, defaultFragShader));
     std::unique_ptr<star::core::ObjectManager> objectManager(new star::core::ObjectManager());
     std::unique_ptr<star::core::TextureManager> textureManager(new star::core::TextureManager());
+    std::unique_ptr<star::core::LightManager> lightManager(new star::core::LightManager()); 
     std::unique_ptr<std::vector<star::common::Handle>> objectList(new std::vector<star::common::Handle>());
+    std::unique_ptr<std::vector<common::Handle>> lightList(new std::vector<star::common::Handle>()); 
     std::unique_ptr<star::CameraController> camera(new star::CameraController());
 
-    auto application = star::LightApp(configFile.get(), objectList.get(), shaderManager.get(), objectManager.get(), textureManager.get(), camera.get());
+    auto application = star::LightApp(configFile.get(), objectList.get(), lightList.get(), 
+        shaderManager.get(), objectManager.get(), textureManager.get(), lightManager.get(), 
+        camera.get());
     application.Load();
 
+    //TODO: implement better management system 
+    std::vector<star::common::Light*> mainLightList(lightList->size());
+    for (size_t i = 0; i < lightList->size(); i++) {
+        mainLightList.at(i) = lightManager->Get(lightList->at(i)); 
+    }
+     
     //prepare renderer 
-    //TODO: give main() ownership of object list, not application 
     auto window = star::core::StarWindow(WIDTH, HEIGHT, "Starlight", star::InteractionSystem::glfwKeyHandle, star::InteractionSystem::glfwMouseButtonCallback, star::InteractionSystem::glfwMouseMovement, star::InteractionSystem::glfwScrollCallback);
-    auto renderer = star::core::VulkanRenderer(configFile.get(), shaderManager.get(), objectManager.get(), textureManager.get(), camera.get(), objectList.get(), window);
+    auto renderer = star::core::VulkanRenderer(configFile.get(), shaderManager.get(), objectManager.get(), textureManager.get(), camera.get(), objectList.get(), mainLightList, window);
     renderer.prepare();
 
     //register user application callbacks

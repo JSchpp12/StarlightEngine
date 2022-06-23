@@ -1,10 +1,16 @@
 #include "LightApp.h"
 
-star::LightApp::LightApp(common::ConfigFile* configFile, std::vector<common::Handle>* objectList, core::ShaderManager* shaderManager, core::ObjectManager* objectManager, core::TextureManager* textureManager, common::Camera* inCamera) :
-    star::common::Application<core::ShaderManager, core::ObjectManager, core::TextureManager>(configFile, objectList, shaderManager, objectManager, textureManager, inCamera) { }
+star::LightApp::LightApp(common::ConfigFile* configFile, std::vector<common::Handle>* objectList, std::vector<common::Handle>* lightList, core::ShaderManager* shaderManager, core::ObjectManager* objectManager, core::TextureManager* textureManager, core::LightManager* lightManager, common::Camera* inCamera) :
+    lightList(lightList),
+    star::common::Application<core::ShaderManager, core::ObjectManager, core::TextureManager, core::LightManager>(configFile, objectList, shaderManager, objectManager, textureManager, lightManager, inCamera) { }
 
 void star::LightApp::Load() {
     //load lion 
+
+    //load light
+    this->lightList->push_back(this->lightManager->Add(common::Type::Light::point, glm::vec3{ -2.0f, 0.4f, 0.0f }, glm::vec4{1.0f, 1.0f, 1.0f, 0.2f}));
+    this->pointLight = this->lightManager->Get(this->lightList->at(0)); 
+    this->lightList->push_back(this->lightManager->Add(common::Type::Light::directional, glm::vec3{}, glm::vec4{ 1.0f, 1.0f, 1.0f, 0.00075f }));
     auto mediaDirectoryPath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory); 
     {
         auto objectPath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "models/lion-statue/source/rapid.obj";
@@ -58,7 +64,23 @@ void star::LightApp::Load() {
 }
 
 void star::LightApp::Update() {
-    //this->currentObject->moveRelative(glm::vec3{ 0.0f, 0.0f, 0.001f }); 
+    //this->currentObject->moveRelative(glm::vec3{ 0.0f, 0.0f, 0.001f });\\
+    
+    auto timePassed = common::Time::timeElapsedLastFrameSeconds(); 
+    
+    auto position = this->pointLight->getPosition(); 
+
+    if (!this->movingRight && position.x < this->min) {
+        this->movingRight = true; 
+    }
+    else if (this->movingRight && position.x > this->max) {
+        this->movingRight = false; 
+    }
+
+    this->pointLight->moveRelative(glm::vec3{
+        this->movingRight ? speed * timePassed : -(speed * timePassed) ,
+        0.0f,
+        0.0f });
 }
 
 void star::LightApp::keyCallback(int key, int scancode, int action, int mods) {

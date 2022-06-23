@@ -1,7 +1,7 @@
 #include "MultipleObjectApp.h"
 
-star::MultipleObjectApp::MultipleObjectApp(common::ConfigFile* configFile, std::vector<common::Handle>* objectList, core::ShaderManager* shaderManager, core::ObjectManager* objectManager, core::TextureManager* textureManager, common::Camera* inCamera) :
-	star::common::Application<core::ShaderManager, core::ObjectManager, core::TextureManager>(configFile, objectList, shaderManager, objectManager, textureManager, inCamera) { }
+star::MultipleObjectApp::MultipleObjectApp(common::ConfigFile* configFile, std::vector<common::Handle>* objectList, core::ShaderManager* shaderManager, core::ObjectManager* objectManager, core::TextureManager* textureManager, core::LightManager* lightManager, common::Camera* inCamera) :
+	star::common::Application<core::ShaderManager, core::ObjectManager, core::TextureManager, core::LightManager>(configFile, objectList, shaderManager, objectManager, textureManager, lightManager, inCamera) { }
 
 void star::MultipleObjectApp::Load()
 {

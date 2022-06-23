@@ -12,8 +12,8 @@ glm::vec2 star::ObjectApp::prevMousePosition = glm::vec2();
 glm::vec2 star::ObjectApp::prevScroll = glm::vec2();
 glm::vec2 star::ObjectApp::mouseMovement = glm::vec2();
 
-star::ObjectApp::ObjectApp(common::ConfigFile* configFile, std::vector<common::Handle>* objectList, core::ShaderManager* shaderManager, core::ObjectManager* objectManager, core::TextureManager* textureManager, common::Camera* inCamera) :
-star::common::Application<core::ShaderManager, core::ObjectManager, core::TextureManager>(configFile, objectList, shaderManager, objectManager, textureManager, inCamera) { }
+star::ObjectApp::ObjectApp(common::ConfigFile* configFile, std::vector<common::Handle>* objectList, core::ShaderManager* shaderManager, core::ObjectManager* objectManager, core::TextureManager* textureManager, core::LightManager* lightManager, common::Camera* inCamera) :
+star::common::Application<core::ShaderManager, core::ObjectManager, core::TextureManager, core::LightManager>(configFile, objectList, shaderManager, objectManager, textureManager, lightManager, inCamera) { }
 
 void star::ObjectApp::Load(){
     auto objectPath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "models/lion-statue/source/rapid.obj"; 
