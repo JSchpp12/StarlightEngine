@@ -6,11 +6,6 @@ star::LightApp::LightApp(common::ConfigFile* configFile, std::vector<common::Han
 
 void star::LightApp::Load() {
     //load lion 
-
-    //load light
-    this->lightList->push_back(this->lightManager->Add(common::Type::Light::point, glm::vec3{ -2.0f, 0.4f, 0.0f }, glm::vec4{1.0f, 1.0f, 1.0f, 0.2f}));
-    this->pointLight = this->lightManager->Get(this->lightList->at(0)); 
-    this->lightList->push_back(this->lightManager->Add(common::Type::Light::directional, glm::vec3{}, glm::vec4{ 1.0f, 1.0f, 1.0f, 0.00075f }));
     auto mediaDirectoryPath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory); 
     {
         auto objectPath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "models/lion-statue/source/rapid.obj";
@@ -61,6 +56,25 @@ void star::LightApp::Load() {
             .build());
     }
     this->floor = this->objectManager->Get(this->objectList->at(2));
+
+    {
+        //load light
+        this->lightList->push_back(this->lightManager->Add(common::Type::Light::point, glm::vec3{ -2.0f, 0.4f, 0.0f }, glm::vec4{ 1.0f, 1.0f, 1.0f, 0.2f }));
+        this->pointLight = this->lightManager->Get(this->lightList->at(0));
+        this->lightList->push_back(this->lightManager->Add(common::Type::Light::directional, glm::vec3{}, glm::vec4{ 1.0f, 1.0f, 1.0f, 0.0075f }));
+
+        auto objectPath = mediaDirectoryPath + "models/icoSphere/low_poly_icoSphere.obj";
+        auto vertShaderPath = mediaDirectoryPath + "models/icoSphere/icoSphere.vert";
+        auto fragShaderPath = mediaDirectoryPath + "models/icoSphere/icoSphere.frag";
+
+        this->pointLight->setLinkedObjectHandle(core::ObjectManager::Builder(this->objectManager)
+            .setPath(objectPath)
+            .setScale(glm::vec3{0.07f, 0.07f, 0.07f})
+            .setPosition(this->pointLight->getPosition())
+            .setVertShader(this->shaderManager->Add(vertShaderPath))
+            .setFragShader(this->shaderManager->Add(fragShaderPath))
+            .build());        
+    }
 }
 
 void star::LightApp::Update() {

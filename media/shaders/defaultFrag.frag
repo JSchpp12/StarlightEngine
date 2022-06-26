@@ -35,4 +35,5 @@ void main() {
 	vec3 diffuseLight = lightColor * max(dot(normalize(inFragNormalWorld), normalize(directionToLight)), 0); 
 
 	outColor = vec4((diffuseLight + ambientLight) * inFragColor, 1.0); 
+//	outColor = vec4(1.0, 0.0, 0.0, 1.0); 
 }
