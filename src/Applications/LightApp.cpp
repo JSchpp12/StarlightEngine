@@ -73,7 +73,9 @@ void star::LightApp::Load() {
             .setPosition(this->pointLight->getPosition())
             .setVertShader(this->shaderManager->Add(vertShaderPath))
             .setFragShader(this->shaderManager->Add(fragShaderPath))
-            .build());        
+            .build());  
+        this->pointLight->setScale(glm::vec3{ 0.07f, 0.07f, 0.07f }); 
+        this->pointLight->setLinkedObject(this->objectManager->Get(this->pointLight->getLinkedObjectHandle()));
     }
 }
 
