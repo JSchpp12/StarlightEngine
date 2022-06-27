@@ -15,19 +15,25 @@ layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
 	mat4 proj;
 	mat4 view;  
 	vec4 ambientLightColor; 
-	vec3 lightPosition; 
-	vec4 lightColor;			//w is intensity
 } globalUbo; 
+
+layout(binding = 1, set = 0) uniform uniformLightPositions{
+	vec4 value; 
+} lightPositions;
+
+layout(binding = 2, set = 0) uniform uniformLightColors{
+	vec4 value; 
+} lightColors; 
 
 void main() {
 //	outColor = texture(texSampler, fragTexCoord);
 
 	//light calculations
-	vec3 directionToLight = globalUbo.lightPosition - inFragPositionWorld.xyz; 
+	vec3 directionToLight = lightPositions.value.xyz - inFragPositionWorld.xyz; 
 	float attenuation = 1.0 / dot(directionToLight, directionToLight);	//distance of direction vector squared
 
 	//apply scaling to light intensities
-	vec3 lightColor = globalUbo.lightColor.xyz * globalUbo.lightColor.w * attenuation; 
+	vec3 lightColor = lightColors.value.xyz * lightColors.value.w * attenuation; 
 	vec3 ambientLight = globalUbo.ambientLightColor.xyz * globalUbo.ambientLightColor.w; 
 
 	//this calculation only works if both vectors are normalized
@@ -35,5 +41,4 @@ void main() {
 	vec3 diffuseLight = lightColor * max(dot(normalize(inFragNormalWorld), normalize(directionToLight)), 0); 
 
 	outColor = vec4((diffuseLight + ambientLight) * inFragColor, 1.0); 
-//	outColor = vec4(1.0, 0.0, 0.0, 1.0); 
 }

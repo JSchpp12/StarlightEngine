@@ -13,11 +13,16 @@ layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
 	mat4 proj;
 	mat4 view;  
 	vec4 ambientLightColor; 
-	vec3 lightPosition; 
-	vec4 lightColor;			//w is intensity
+	int numLights; 
 } globalUbo; 
 
-//object materials -- can be combined and use the same buffers 
+layout(binding = 1, set = 0) uniform uniformLightPositions{
+	vec3 value; 
+} lightPositions;
+
+layout(binding = 2, set = 0) uniform uniformLightColors{
+	vec4 value; 
+} lightColors; 
 
 //can varry material by vertex 
 
