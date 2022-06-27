@@ -13,8 +13,7 @@ layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
 	mat4 proj;
 	mat4 view;  
 	vec4 ambientLightColor; 
-	vec3 lightPosition; 
-	vec4 lightColor;			//w is intensity
+	int numLights; 
 } globalUbo; 
 
 void main() {

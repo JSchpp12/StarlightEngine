@@ -15,30 +15,32 @@ layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
 	mat4 proj;
 	mat4 view;  
 	vec4 ambientLightColor; 
+	int numLights; 
 } globalUbo; 
 
-layout(binding = 1, set = 0) uniform uniformLightPositions{
-	vec4 value; 
+layout(binding = 1, set = 0) buffer uniformLightPositions{
+	vec4 values[];
 } lightPositions;
 
-layout(binding = 2, set = 0) uniform uniformLightColors{
-	vec4 value; 
+layout(binding = 2, set = 0) buffer uniformLightColors{
+	vec4 values[];
 } lightColors; 
 
 void main() {
+	vec3 diffuseLight = globalUbo.ambientLightColor.xyz * globalUbo.ambientLightColor.w; 
+	vec3 surfaceNormal = normalize(inFragNormalWorld);				//using same normal for all frags on surface -- rather than calculating for each one
+
 //	outColor = texture(texSampler, fragTexCoord);
+	for (int i = 0; i < globalUbo.numLights; i++){
+		//light calculations
+		vec3 directionToLight = lightPositions.values[i].xyz - inFragPositionWorld.xyz; 
+		float attenuation = 1.0 / dot(directionToLight, directionToLight);	//distance of direction vector squared
+		float cosAngleIncidence = max(dot(surfaceNormal, normalize(directionToLight)), 0);
+		vec3 intensity = lightColors.values[i].xyz * lightColors.values[i].w * attenuation;
 
-	//light calculations
-	vec3 directionToLight = lightPositions.value.xyz - inFragPositionWorld.xyz; 
-	float attenuation = 1.0 / dot(directionToLight, directionToLight);	//distance of direction vector squared
-
-	//apply scaling to light intensities
-	vec3 lightColor = lightColors.value.xyz * lightColors.value.w * attenuation; 
+		diffuseLight += intensity * cosAngleIncidence; 
+	}
 	vec3 ambientLight = globalUbo.ambientLightColor.xyz * globalUbo.ambientLightColor.w; 
-
-	//this calculation only works if both vectors are normalized
-	//linear interpolation of two normal vectors, is not always normal
-	vec3 diffuseLight = lightColor * max(dot(normalize(inFragNormalWorld), normalize(directionToLight)), 0); 
 
 	outColor = vec4((diffuseLight + ambientLight) * inFragColor, 1.0); 
 }

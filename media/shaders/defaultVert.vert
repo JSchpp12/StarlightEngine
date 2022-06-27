@@ -17,11 +17,11 @@ layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
 } globalUbo; 
 
 layout(binding = 1, set = 0) uniform uniformLightPositions{
-	vec3 value; 
-} lightPositions;
+	vec3 values[]; 
+} lightInfo;
 
 layout(binding = 2, set = 0) uniform uniformLightColors{
-	vec4 value; 
+	vec4 values[]; 
 } lightColors; 
 
 //can varry material by vertex 
@@ -34,7 +34,7 @@ layout(binding = 0, set = 1) uniform UniformBufferObject{
 void main() {
 	vec4 positionWorld = objectUbo.modelMatrix * vec4(inPosition, 1.0); 
 	gl_Position = globalUbo.proj * globalUbo.view * positionWorld;
-	fragNormalWorld = normalize(mat3(objectUbo.normalModelMatrix) * inNormal); 
+	fragNormalWorld = normalize(mat3(objectUbo.normalModelMatrix) * inNormal);
 	fragPositionWorld = positionWorld.xyz; 
 	fragColor = inColor; 
 //	fragTexCoord = inTexCoord; 
