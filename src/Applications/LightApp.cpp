@@ -59,9 +59,9 @@ void star::LightApp::Load() {
 
     {
         //load light
-        this->lightList->push_back(this->lightManager->Add(common::Type::Light::point, glm::vec3{ -2.0f, 0.4f, 0.0f }, glm::vec4{ 1.0f, 1.0f, 1.0f, 0.2f }));
+        this->lightList->push_back(this->lightManager->Add(common::Type::Light::point, glm::vec3{ -1.0f, 0.4f, 0.0f }, glm::vec4{ 0.0f, 0.25f, 0.5f, 0.12f }));
         this->pointLight = this->lightManager->Get(this->lightList->at(0));
-        this->lightList->push_back(this->lightManager->Add(common::Type::Light::directional, glm::vec3{}, glm::vec4{ 1.0f, 1.0f, 1.0f, 0.0075f }));
+        this->lightList->push_back(this->lightManager->Add(common::Type::Light::directional, glm::vec3{}, glm::vec4{ 1.0f, 1.0f, 1.0f, 0.005f }));
 
         auto objectPath = mediaDirectoryPath + "models/icoSphere/low_poly_icoSphere.obj";
         auto vertShaderPath = mediaDirectoryPath + "models/icoSphere/icoSphere.vert";
@@ -69,15 +69,15 @@ void star::LightApp::Load() {
 
         this->pointLight->setLinkedObjectHandle(core::ObjectManager::Builder(this->objectManager)
             .setPath(objectPath)
-            .setScale(glm::vec3{0.07f, 0.07f, 0.07f})
+            .setScale(glm::vec3{ 0.07f, 0.07f, 0.07f })
             .setPosition(this->pointLight->getPosition())
             .setVertShader(this->shaderManager->Add(vertShaderPath))
             .setFragShader(this->shaderManager->Add(fragShaderPath))
-            .build());  
-        this->pointLight->setScale(glm::vec3{ 0.07f, 0.07f, 0.07f }); 
+            .build());
+        this->pointLight->setScale(glm::vec3{ 0.07f, 0.07f, 0.07f });
         this->pointLight->setLinkedObject(this->objectManager->Get(this->pointLight->getLinkedObjectHandle()));
 
-        this->lightList->push_back(this->lightManager->Add(common::Type::Light::point, glm::vec3{ 2.0f, 0.4f, 0.0f }, glm::vec4{ 0.0f, 0.0f, 1.0f, 0.2f }));
+        this->lightList->push_back(this->lightManager->Add(common::Type::Light::point, glm::vec3{ 1.0f, 0.4f, 0.0f }, glm::vec4{ 0.0f, 0.0f, 1.0f, 0.12f }));
         this->pointLightTwo = this->lightManager->Get(this->lightList->at(2));
         this->pointLightTwo->setLinkedObjectHandle(core::ObjectManager::Builder(this->objectManager)
             .setPath(objectPath)
@@ -88,6 +88,31 @@ void star::LightApp::Load() {
             .build());
         this->pointLightTwo->setScale(glm::vec3{ 0.07f, 0.07f, 0.07f });
         this->pointLightTwo->setLinkedObject(this->objectManager->Get(this->pointLightTwo->getLinkedObjectHandle()));
+
+
+        this->lightList->push_back(this->lightManager->Add(common::Type::Light::point, glm::vec3{ 0.0f, 0.4f, 1.0f }, glm::vec4{ 0.0f, 1.0f, 0.0f, 0.12f }));
+        this->pointLightThree = this->lightManager->Get(this->lightList->at(3));
+        this->pointLightThree->setLinkedObjectHandle(core::ObjectManager::Builder(this->objectManager)
+            .setPath(objectPath)
+            .setScale(glm::vec3{ 0.07f, 0.07f, 0.07f })
+            .setPosition(this->pointLightThree->getPosition())
+            .setVertShader(this->shaderManager->Add(vertShaderPath))
+            .setFragShader(this->shaderManager->Add(fragShaderPath))
+            .build());
+        this->pointLightThree->setScale(glm::vec3{ 0.07f, 0.07f, 0.07f });
+        this->pointLightThree->setLinkedObject(this->objectManager->Get(this->pointLightThree->getLinkedObjectHandle()));
+
+        this->lightList->push_back(this->lightManager->Add(common::Type::Light::point, glm::vec3{ 0.0f, 0.4f, -1.0f }, glm::vec4{ 0.1f, 0.0f, 0.0f, 0.12f }));
+        this->pointLightFour = this->lightManager->Get(this->lightList->at(4));
+        this->pointLightFour->setLinkedObjectHandle(core::ObjectManager::Builder(this->objectManager)
+            .setPath(objectPath)
+            .setScale(glm::vec3{ 0.07f, 0.07f, 0.07f })
+            .setPosition(this->pointLightFour->getPosition())
+            .setVertShader(this->shaderManager->Add(vertShaderPath))
+            .setFragShader(this->shaderManager->Add(fragShaderPath))
+            .build());
+        this->pointLightFour->setScale(glm::vec3{ 0.07f, 0.07f, 0.07f });
+        this->pointLightFour->setLinkedObject(this->objectManager->Get(this->pointLightFour->getLinkedObjectHandle()));
     }
 }
 

@@ -32,7 +32,7 @@ void main() {
 
 //	outColor = texture(texSampler, fragTexCoord);
 	for (int i = 0; i < globalUbo.numLights; i++){
-		//light calculations
+		//light calculations -- difuse lighting
 		vec3 directionToLight = lightPositions.values[i].xyz - inFragPositionWorld.xyz; 
 		float attenuation = 1.0 / dot(directionToLight, directionToLight);	//distance of direction vector squared
 		float cosAngleIncidence = max(dot(surfaceNormal, normalize(directionToLight)), 0);
