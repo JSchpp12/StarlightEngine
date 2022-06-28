@@ -76,6 +76,18 @@ void star::LightApp::Load() {
             .build());  
         this->pointLight->setScale(glm::vec3{ 0.07f, 0.07f, 0.07f }); 
         this->pointLight->setLinkedObject(this->objectManager->Get(this->pointLight->getLinkedObjectHandle()));
+
+        this->lightList->push_back(this->lightManager->Add(common::Type::Light::point, glm::vec3{ 2.0f, 0.4f, 0.0f }, glm::vec4{ 0.0f, 0.0f, 1.0f, 0.2f }));
+        this->pointLightTwo = this->lightManager->Get(this->lightList->at(2));
+        this->pointLightTwo->setLinkedObjectHandle(core::ObjectManager::Builder(this->objectManager)
+            .setPath(objectPath)
+            .setScale(glm::vec3{ 0.07f, 0.07f, 0.07f })
+            .setPosition(this->pointLightTwo->getPosition())
+            .setVertShader(this->shaderManager->Add(vertShaderPath))
+            .setFragShader(this->shaderManager->Add(fragShaderPath))
+            .build());
+        this->pointLightTwo->setScale(glm::vec3{ 0.07f, 0.07f, 0.07f });
+        this->pointLightTwo->setLinkedObject(this->objectManager->Get(this->pointLightTwo->getLinkedObjectHandle()));
     }
 }
 
@@ -84,19 +96,19 @@ void star::LightApp::Update() {
     
     auto timePassed = common::Time::timeElapsedLastFrameSeconds(); 
     
-    auto position = this->pointLight->getPosition(); 
+    //auto position = this->pointLight->getPosition(); 
 
-    if (!this->movingRight && position.x < this->min) {
-        this->movingRight = true; 
-    }
-    else if (this->movingRight && position.x > this->max) {
-        this->movingRight = false; 
-    }
+    //if (!this->movingRight && position.x < this->min) {
+    //    this->movingRight = true; 
+    //}
+    //else if (this->movingRight && position.x > this->max) {
+    //    this->movingRight = false; 
+    //}
 
-    this->pointLight->moveRelative(glm::vec3{
-        this->movingRight ? speed * timePassed : -(speed * timePassed) ,
-        0.0f,
-        0.0f });
+    //this->pointLight->moveRelative(glm::vec3{
+    //    this->movingRight ? speed * timePassed : -(speed * timePassed) ,
+    //    0.0f,
+    //    0.0f });
 }
 
 void star::LightApp::keyCallback(int key, int scancode, int action, int mods) {
