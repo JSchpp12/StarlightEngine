@@ -4,6 +4,7 @@
 
 #include "StarlightEngine.h"
 #include "ShaderManager.h"
+#include "SceneBuilder.hpp"
 #include "ObjectManager.hpp"
 #include "TextureManager.h"
 #include "LightManager.hpp"
@@ -42,8 +43,10 @@ int main() {
     std::unique_ptr<std::vector<common::Handle>> lightList(new std::vector<star::common::Handle>()); 
     std::unique_ptr<star::CameraController> camera(new star::CameraController());
 
+    SceneBuilder sceneBuilder(*objectManager); 
+
     auto application = star::LightApp(configFile.get(), objectList.get(), lightList.get(), 
-        shaderManager.get(), objectManager.get(), textureManager.get(), lightManager.get(), 
+        shaderManager.get(), textureManager.get(), lightManager.get(), sceneBuilder,
         camera.get());
     application.Load();
 

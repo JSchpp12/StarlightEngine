@@ -6,9 +6,9 @@
 #include "SC/Camera.hpp"
 #include "SC/Interactivity.hpp"
 #include "ShaderManager.h"
-#include "ObjectManager.hpp"
 #include "TextureManager.h"
 #include "LightManager.hpp"
+#include "SceneBuilder.hpp"
 
 #include <GLFW/glfw3.h>
 
@@ -20,11 +20,14 @@
 
 namespace star {
     class LightApp :
-        public common::Application<core::ShaderManager, core::ObjectManager, core::TextureManager, core::LightManager>,
+        public common::Application<core::ShaderManager, core::TextureManager, core::LightManager, SceneBuilder>,
         public common::Interactivity
     {
     public:
-        LightApp(common::ConfigFile* configFile, std::vector<common::Handle>* objectList, std::vector<common::Handle>* lightList, core::ShaderManager* shaderManager, core::ObjectManager* objectManager, core::TextureManager* textureManager, core::LightManager* lightManager, common::Camera* inCamera);
+        LightApp(common::ConfigFile* configFile, std::vector<common::Handle>* objectList,
+            std::vector<common::Handle>* lightList, core::ShaderManager* shaderManager,
+            core::TextureManager* textureManager, core::LightManager* lightManager, 
+            SceneBuilder& sceneBuilder, common::Camera* inCamera);
 
         void Load();
 
