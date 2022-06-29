@@ -27,6 +27,11 @@ layout(binding = 2, set = 0) buffer uniformLightColors{
 	vec4 values[];
 } lightColors; 
 
+layout(binding = 0, set = 2) buffer  bufferObjectMaterial{
+	vec4 surfaceColor; 
+	vec4 highlightColor; 
+} objectMaterial; 
+
 void main() {
 	vec3 diffuseLight = globalUbo.ambientLightColor.xyz * globalUbo.ambientLightColor.w; 
 	vec3 specularLight = vec3(0.0);															//container for summation of light contributions to specular lighting result

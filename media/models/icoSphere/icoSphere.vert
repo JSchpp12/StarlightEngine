@@ -21,6 +21,7 @@ layout(binding = 0, set = 1) uniform UniformBufferObject{
 	vec4 color; 
 } objectUbo;
 
+
 void main() {
 	vec4 positionWorld = objectUbo.modelMatrix * vec4(inPosition, 1.0); 
 	gl_Position = globalUbo.proj * globalUbo.view * positionWorld;

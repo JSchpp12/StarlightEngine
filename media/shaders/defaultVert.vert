@@ -26,12 +26,15 @@ layout(binding = 2, set = 0) buffer uniformLightColors{
 } lightColors; 
 
 //can varry material by vertex 
-layout(binding = 0, set = 1) uniform UniformBufferObject{
+layout(binding = 0, set = 1) uniform uniformBufferObject{
 	mat4 modelMatrix; 
 	mat4 normalModelMatrix; 
 } objectUbo;
 
-//layout(binding = 0, set = 2) buffer 
+layout(binding = 0, set = 2) buffer  bufferObjectMaterial{
+	vec4 surfaceColor; 
+	vec4 highlightColor; 
+} objectMaterial; 
 
 void main() {
 	vec4 positionWorld = objectUbo.modelMatrix * vec4(inPosition, 1.0); 
