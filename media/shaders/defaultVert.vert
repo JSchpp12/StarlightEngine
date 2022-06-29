@@ -12,6 +12,7 @@ layout(location = 2) out vec3 fragNormalWorld;		//fragment's normal in world spa
 layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
 	mat4 proj;
 	mat4 view;  
+	mat4 inverseView; 
 	vec4 ambientLightColor; 
 	int numLights; 
 } globalUbo; 

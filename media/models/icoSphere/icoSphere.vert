@@ -10,6 +10,7 @@ layout(location = 0) out vec3 fragColor;
 layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
 	mat4 proj;
 	mat4 view;  
+	mat4 inverseView; 
 	vec4 ambientLightColor; 
 	int numLights; 
 } globalUbo; 
