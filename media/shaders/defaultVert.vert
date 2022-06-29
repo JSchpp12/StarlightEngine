@@ -17,20 +17,21 @@ layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
 	int numLights; 
 } globalUbo; 
 
-layout(binding = 1, set = 0) uniform uniformLightPositions{
+layout(binding = 1, set = 0) buffer uniformLightPositions{
 	vec3 values[]; 
 } lightInfo;
 
-layout(binding = 2, set = 0) uniform uniformLightColors{
+layout(binding = 2, set = 0) buffer uniformLightColors{
 	vec4 values[]; 
 } lightColors; 
 
 //can varry material by vertex 
-
 layout(binding = 0, set = 1) uniform UniformBufferObject{
 	mat4 modelMatrix; 
 	mat4 normalModelMatrix; 
 } objectUbo;
+
+//layout(binding = 0, set = 2) buffer 
 
 void main() {
 	vec4 positionWorld = objectUbo.modelMatrix * vec4(inPosition, 1.0); 
