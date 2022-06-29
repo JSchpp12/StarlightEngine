@@ -66,7 +66,9 @@ void main() {
 
 	}
 	vec3 ambientLight = globalUbo.ambientLightColor.xyz * globalUbo.ambientLightColor.w; 
+	vec3 surfaceColor = objectMaterial.surfaceColor.xyz * objectMaterial.surfaceColor.w; 
+	vec3 highlightColor = objectMaterial.highlightColor.xyz * objectMaterial.highlightColor.w; 
 
 	//second multiplication of frag color is a placeholder for control term of highlight and specular color 
-	outColor = vec4(diffuseLight * inFragColor + specularLight * inFragColor, 1.0); 
+	outColor = vec4(surfaceColor * diffuseLight + specularLight * highlightColor, 1.0); 
 }
