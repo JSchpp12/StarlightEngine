@@ -13,7 +13,7 @@ void star::LightApp::Load() {
     {
         auto objectPath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "models/lion-statue/source/rapid.obj";
         auto texturePath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "models/lion-statue/source/material0_basecolor.png";
-        auto textureHandle = this->textureManager->Add(texturePath);
+        auto textureHandle = this->textureManager->add(texturePath);
         this->objectList->push_back(SceneBuilder::GameObjects::Builder(this->sceneBuilder)
             .setPath(objectPath)
             .setTexture(textureHandle)
@@ -31,9 +31,9 @@ void star::LightApp::Load() {
         auto vertShaderPath = mediaDirectoryPath + "shaders/defaultVert.vert";
         auto fragShaderPath = mediaDirectoryPath + "shaders/defaultFrag.frag";
 
-        auto vertShader = this->shaderManager->Add(vertShaderPath);
-        auto fragShader = this->shaderManager->Add(fragShaderPath);
-        auto textureHandle = this->textureManager->Add(texturePath);
+        auto vertShader = this->shaderManager->add(vertShaderPath);
+        auto fragShader = this->shaderManager->add(fragShaderPath);
+        auto textureHandle = this->textureManager->add(texturePath);
         this->objectList->push_back(SceneBuilder::GameObjects::Builder(this->sceneBuilder)
             .setPath(objectPath)
             .setTexture(textureHandle)
@@ -74,8 +74,8 @@ void star::LightApp::Load() {
             .setPath(objectPath)
             .setScale(glm::vec3{ 0.07f, 0.07f, 0.07f })
             .setPosition(this->pointLight->getPosition())
-            .setVertShader(this->shaderManager->Add(vertShaderPath))
-            .setFragShader(this->shaderManager->Add(fragShaderPath))
+            .setVertShader(this->shaderManager->add(vertShaderPath))
+            .setFragShader(this->shaderManager->add(fragShaderPath))
             .build());
         this->pointLight->setScale(glm::vec3{ 0.07f, 0.07f, 0.07f });
         this->pointLight->setLinkedObject(this->sceneBuilder.get(this->pointLight->getLinkedObjectHandle()));
@@ -86,8 +86,8 @@ void star::LightApp::Load() {
             .setPath(objectPath)
             .setScale(glm::vec3{ 0.07f, 0.07f, 0.07f })
             .setPosition(this->pointLightTwo->getPosition())
-            .setVertShader(this->shaderManager->Add(vertShaderPath))
-            .setFragShader(this->shaderManager->Add(fragShaderPath))
+            .setVertShader(this->shaderManager->add(vertShaderPath))
+            .setFragShader(this->shaderManager->add(fragShaderPath))
             .build());
         this->pointLightTwo->setScale(glm::vec3{ 0.07f, 0.07f, 0.07f });
         this->pointLightTwo->setLinkedObject(this->sceneBuilder.get(this->pointLightTwo->getLinkedObjectHandle()));
@@ -99,8 +99,8 @@ void star::LightApp::Load() {
             .setPath(objectPath)
             .setScale(glm::vec3{ 0.07f, 0.07f, 0.07f })
             .setPosition(this->pointLightThree->getPosition())
-            .setVertShader(this->shaderManager->Add(vertShaderPath))
-            .setFragShader(this->shaderManager->Add(fragShaderPath))
+            .setVertShader(this->shaderManager->add(vertShaderPath))
+            .setFragShader(this->shaderManager->add(fragShaderPath))
             .build());
         this->pointLightThree->setScale(glm::vec3{ 0.07f, 0.07f, 0.07f });
         this->pointLightThree->setLinkedObject(this->sceneBuilder.get(this->pointLightThree->getLinkedObjectHandle()));
@@ -111,8 +111,8 @@ void star::LightApp::Load() {
             .setPath(objectPath)
             .setScale(glm::vec3{ 0.07f, 0.07f, 0.07f })
             .setPosition(this->pointLightFour->getPosition())
-            .setVertShader(this->shaderManager->Add(vertShaderPath))
-            .setFragShader(this->shaderManager->Add(fragShaderPath))
+            .setVertShader(this->shaderManager->add(vertShaderPath))
+            .setFragShader(this->shaderManager->add(fragShaderPath))
             .build());
         this->pointLightFour->setScale(glm::vec3{ 0.07f, 0.07f, 0.07f });
         this->pointLightFour->setLinkedObject(this->sceneBuilder.get(this->pointLightFour->getLinkedObjectHandle()));

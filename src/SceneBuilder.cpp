@@ -87,7 +87,7 @@ namespace star {
 
 	common::GameObject* SceneBuilder::get(const common::Handle& handle) {
 		if (handle.type & common::Handle_Type::object) {
-			return this->objectManager.Get(handle); 
+			return this->objectManager.get(handle); 
 		}
 
 		throw std::runtime_error("Requested handle is not a game object handle");
