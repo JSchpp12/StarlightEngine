@@ -5,6 +5,7 @@
 #include "SC/GameObject.hpp"
 
 #include "ObjectManager.hpp"
+#include "MaterialManager.hpp"
 
 #include <glm/glm.hpp>
 
@@ -28,8 +29,9 @@ namespace star {
 				Builder& setTexture(const common::Handle& texture);
 				Builder& setVerticies(const std::vector<glm::vec3>& verticies);
 				Builder& setIndicies(const std::vector<uint32_t>& indicies);
-				Builder& setMaterial(const common::Material& material);
+				Builder& setMaterial(common::Material* material);
 				common::Handle build();
+				common::GameObject* buildGet(); 
 
 			protected:
 
@@ -40,8 +42,8 @@ namespace star {
 				common::Handle vertShader = common::Handle{ 0 };
 				common::Handle fragShader = common::Handle{ 1 };
 				common::Handle texture = common::Handle{ 0 };
-				common::Material material;
-				std::unique_ptr<std::string> path; 
+				common::Material* material = nullptr;
+				std::unique_ptr<std::string> path;
 				std::unique_ptr<std::vector<uint32_t>> indicies;
 				std::unique_ptr<std::vector<common::Vertex>> verticies;
 			};
@@ -56,9 +58,9 @@ namespace star {
 			class Builder {
 			public:
 				Builder(SceneBuilder& sceneBuilder) : sceneBuilder(sceneBuilder) { }
-				Builder& setType(); 
-				Builder& setColor(); 
-				Builder& setPosition(); 
+				Builder& setType(const common::Light& type); 
+				Builder& setColor(const glm::vec4& color); 
+				Builder& setPosition(const glm::vec4& position); 
 				//common::Handle build(); 
 
 			private:
@@ -76,28 +78,42 @@ namespace star {
 				Builder(SceneBuilder& sceneBuilder) : sceneBuilder(sceneBuilder) {}
 				Builder& setSurfaceColor(const glm::vec4& surfaceColor);
 				Builder& setHighlightColor(const glm::vec4& highlightColor);
+				Builder& setShinyCoefficient(const int& shinyCoefficient);
 				common::Handle build();
+				common::Material* buildGet(); 
 
 			private:
 				SceneBuilder& sceneBuilder;
-				glm::vec4 surfaceColor;
-				glm::vec4 highlightColor;
+				glm::vec4 surfaceColor = sceneBuilder.defaultMaterial->surfaceColor;
+				glm::vec4 highlightColor = sceneBuilder.defaultMaterial->highlightColor; 
+				int shinyCoefficient = sceneBuilder.defaultMaterial->shinyCoefficient;
 			};
 		};
 
-		SceneBuilder(core::ObjectManager& objectManager) : objectManager(objectManager) { }
+		SceneBuilder(core::ObjectManager& objectManager, core::MaterialManager& materialManager)
+			: objectManager(objectManager), materialManager(materialManager), defaultMaterial(materialManager.getDefault()) { }
 		~SceneBuilder() = default;
 
 		//common::Handle add(std::unique_ptr<common::Light> newLight);
 
-		common::Handle add(const std::string& pathToFile, glm::vec3& position, glm::vec3& scaleAmt,
+		common::Handle addObject(const std::string& pathToFile, glm::vec3& position, glm::vec3& scaleAmt, common::Material* material,
 			common::Handle& texture, common::Handle& vertShader,
 			common::Handle& fragShader);
 
-		common::GameObject* get(const common::Handle& handle); 
+		common::Handle addMaterial(const glm::vec4& surfaceColor, const glm::vec4& hightlightColor, const int& shinyCoefficient);
+
+		common::GameObject* getObject(const common::Handle& handle); 
+
+		common::Material* getMaterial(const common::Handle& handle); 
 
 	private:
 		core::ObjectManager& objectManager; 
+		core::MaterialManager& materialManager; 
 
+		//defaults 
+		common::Material* defaultMaterial = nullptr; 
+
+		friend class Material::Builder; 
+		friend class GameObjects::Builder;
 	};
 }
