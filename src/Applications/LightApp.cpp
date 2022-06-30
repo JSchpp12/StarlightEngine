@@ -44,21 +44,37 @@ void star::LightApp::Load() {
             .setTexture(textureHandle)
             .setScale(glm::vec3{ 0.2f, 0.2f, 0.2f })
             .setPosition(glm::vec3{ 1.2f, 0.21f, 0.5f })
+            .setMaterial(SceneBuilder::Material::Builder(this->sceneBuilder)
+                .setHighlightColor(glm::vec4{ 0.0f, 0.0f, 0.0f, 1.0f })
+                .setSurfaceColor(glm::vec4{ 0.5f, 0.5f, 0.5f, 1.0f })
+                .setShinyCoefficient(1)
+                .buildGet())
             .build());
         this->objectList->push_back(SceneBuilder::GameObjects::Builder(this->sceneBuilder)
             .setPath(objectPath)
             .setTexture(textureHandle)
             .setScale(glm::vec3{ 0.2f, 0.2f, 0.2f })
             .setPosition(glm::vec3{ -1.3f, 0.21f, -0.5f })
+            .setMaterial(SceneBuilder::Material::Builder(this->sceneBuilder)
+                .setHighlightColor(glm::vec4{ 0.0f, 0.0f, 0.0f, 1.0f })
+                .setSurfaceColor(glm::vec4{ 0.5f, 0.5f, 0.5f, 1.0f })
+                .setShinyCoefficient(1)
+                .buildGet())
             .build());
     }
     this->cone = this->sceneBuilder.getObject(this->objectList->at(1));
+    this->conetwo = this->sceneBuilder.getObject(this->objectList->at(2));
 
     //load quad 
     {
         auto objectPath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "models/quad/quad.obj";
         this->objectList->push_back(SceneBuilder::GameObjects::Builder(this->sceneBuilder)
             .setPath(objectPath)
+            .setMaterial(SceneBuilder::Material::Builder(this->sceneBuilder)
+                .setHighlightColor(glm::vec4{1.0f, 1.0f, 1.0f, 1.0f})
+                .setSurfaceColor(glm::vec4{ 0.0f, 0.0f, 0.0f, 1.0f })
+                .setShinyCoefficient(256)
+                .buildGet())
             .setScale(glm::vec3{ 2.0f, 1.0f, 1.0f })
             .setPosition(glm::vec3{ 0.0f, 0.0f, 0.0f })
             .build());
@@ -121,6 +137,25 @@ void star::LightApp::Load() {
             .build());
         this->pointLightFour->setScale(glm::vec3{ 0.07f, 0.07f, 0.07f });
         this->pointLightFour->setLinkedObject(this->sceneBuilder.getObject(this->pointLightFour->getLinkedObjectHandle()));
+
+        this->lightList->push_back(this->lightManager->Add(common::Type::Light::point, glm::vec3{ this->cone->getPosition().x, this->cone->getPosition().y + 0.27, this->cone->getPosition().z }, glm::vec4{ 1.0f, 1.0f, 1.0f, 0.02f }));
+        this->pointLightFive = this->lightManager->Get(this->lightList->at(5));
+        this->pointLightFive->setLinkedObjectHandle(SceneBuilder::GameObjects::Builder(this->sceneBuilder)
+            .setPath(objectPath)
+            .setScale(glm::vec3{ 0.07f, 0.07f, 0.07f })
+            .setPosition(this->pointLightFive->getPosition())
+            .setVertShader(this->shaderManager->add(vertShaderPath))
+            .setFragShader(this->shaderManager->add(fragShaderPath))
+            .build());        
+        this->lightList->push_back(this->lightManager->Add(common::Type::Light::point, glm::vec3{ this->conetwo->getPosition().x, this->conetwo->getPosition().y + 0.27, this->conetwo->getPosition().z }, glm::vec4{ 1.0f, 1.0f, 1.0f, 0.02f }));
+        this->pointLightSix = this->lightManager->Get(this->lightList->at(6));
+        this->pointLightSix->setLinkedObjectHandle(SceneBuilder::GameObjects::Builder(this->sceneBuilder)
+            .setPath(objectPath)
+            .setScale(glm::vec3{ 0.07f, 0.07f, 0.07f })
+            .setPosition(this->pointLightSix->getPosition())
+            .setVertShader(this->shaderManager->add(vertShaderPath))
+            .setFragShader(this->shaderManager->add(fragShaderPath))
+            .build());
     }
 }
 

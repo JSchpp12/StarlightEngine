@@ -48,10 +48,13 @@ namespace star {
         common::GameObject* lion = nullptr; 
         common::GameObject* floor = nullptr; 
         common::GameObject* cone = nullptr; 
+        common::GameObject* conetwo = nullptr; 
         common::Light* pointLight = nullptr; 
         common::Light* pointLightTwo = nullptr; 
         common::Light* pointLightThree = nullptr; 
         common::Light* pointLightFour = nullptr;
+        common::Light* pointLightFive = nullptr;
+        common::Light* pointLightSix = nullptr;
         std::vector<common::Handle>* lightList = nullptr; 
 
         const float speed = 10.0f; 
