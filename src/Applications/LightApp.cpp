@@ -75,7 +75,7 @@ void star::LightApp::Load() {
                 .setSurfaceColor(glm::vec4{ 0.0f, 0.0f, 0.0f, 1.0f })
                 .setShinyCoefficient(256)
                 .buildGet())
-            .setScale(glm::vec3{ 2.0f, 1.0f, 1.0f })
+            .setScale(glm::vec3{ 2.0f, 2.0f, 2.0f })
             .setPosition(glm::vec3{ 0.0f, 0.0f, 0.0f })
             .build());
     }
