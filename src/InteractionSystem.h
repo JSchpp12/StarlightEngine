@@ -2,7 +2,7 @@
 
 #include "SC/Interactivity.hpp"
 
-#include <glfw/glfw3.h>
+#include <GLFW/glfw3.h>
 
 #include <optional>
 #include <functional>
