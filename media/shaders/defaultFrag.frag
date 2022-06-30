@@ -30,6 +30,7 @@ layout(binding = 2, set = 0) buffer uniformLightColors{
 layout(binding = 0, set = 2) buffer  bufferObjectMaterial{
 	vec4 surfaceColor; 
 	vec4 highlightColor; 
+	int shinyCoefficient; 
 } objectMaterial; 
 
 void main() {
@@ -59,8 +60,8 @@ void main() {
 		vec3 halfAngle = normalize(directionToLight + viewDirection); 
 		float blinnTerm = dot(surfaceNormal, halfAngle); 
 		blinnTerm = clamp(blinnTerm, 0, 1);	
-		//apply arbitrary power "s" -- high values results in sharper 
-		blinnTerm = pow(blinnTerm, 32.0); 
+		//apply arbitrary power "s" -- high values results in sharper highlight
+		blinnTerm = pow(blinnTerm, objectMaterial.shinyCoefficient); 
 
 		specularLight += intensity * blinnTerm; 
 

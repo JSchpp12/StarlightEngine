@@ -18,10 +18,15 @@ void star::LightApp::Load() {
             .setPath(objectPath)
             .setTexture(textureHandle)
             .setPosition(glm::vec3{ 0.0f, -0.44f, 0.0f })
+            .setMaterial(SceneBuilder::Material::Builder(this->sceneBuilder)
+                .setHighlightColor(glm::vec4{1.0f, 1.0f, 1.0f, 1.0f})
+                .setShinyCoefficient(256.0f)
+                .setSurfaceColor(glm::vec4{0.7f, 0.1f, 0.1f, 1.0f})
+                .buildGet())
             .build()
         );
     }
-    this->lion = this->sceneBuilder.get(this->objectList->at(0));
+    this->lion = this->sceneBuilder.getObject(this->objectList->at(0));
     //this->lion->moveRelative(glm::vec3{ 0.0f, -0.7f, 0.0f });
     this->lion->rotateRelative(-90, glm::vec3{ 1.0f, 0.0f, 0.0f });
 
@@ -47,7 +52,7 @@ void star::LightApp::Load() {
             .setPosition(glm::vec3{ -1.3f, 0.21f, -0.5f })
             .build());
     }
-    this->cone = this->sceneBuilder.get(this->objectList->at(1));
+    this->cone = this->sceneBuilder.getObject(this->objectList->at(1));
 
     //load quad 
     {
@@ -58,7 +63,7 @@ void star::LightApp::Load() {
             .setPosition(glm::vec3{ 0.0f, 0.0f, 0.0f })
             .build());
     }
-    this->floor = this->sceneBuilder.get(this->objectList->at(2));
+    this->floor = this->sceneBuilder.getObject(this->objectList->at(2));
 
     {
         //load light
@@ -78,7 +83,7 @@ void star::LightApp::Load() {
             .setFragShader(this->shaderManager->add(fragShaderPath))
             .build());
         this->pointLight->setScale(glm::vec3{ 0.07f, 0.07f, 0.07f });
-        this->pointLight->setLinkedObject(this->sceneBuilder.get(this->pointLight->getLinkedObjectHandle()));
+        this->pointLight->setLinkedObject(this->sceneBuilder.getObject(this->pointLight->getLinkedObjectHandle()));
 
         this->lightList->push_back(this->lightManager->Add(common::Type::Light::point, glm::vec3{ 1.0f, 0.4f, 0.0f }, glm::vec4{ 0.0f, 0.0f, 1.0f, 0.12f }));
         this->pointLightTwo = this->lightManager->Get(this->lightList->at(2));
@@ -90,7 +95,7 @@ void star::LightApp::Load() {
             .setFragShader(this->shaderManager->add(fragShaderPath))
             .build());
         this->pointLightTwo->setScale(glm::vec3{ 0.07f, 0.07f, 0.07f });
-        this->pointLightTwo->setLinkedObject(this->sceneBuilder.get(this->pointLightTwo->getLinkedObjectHandle()));
+        this->pointLightTwo->setLinkedObject(this->sceneBuilder.getObject(this->pointLightTwo->getLinkedObjectHandle()));
 
 
         this->lightList->push_back(this->lightManager->Add(common::Type::Light::point, glm::vec3{ 0.0f, 0.4f, 1.0f }, glm::vec4{ 0.0f, 1.0f, 0.0f, 0.12f }));
@@ -103,7 +108,7 @@ void star::LightApp::Load() {
             .setFragShader(this->shaderManager->add(fragShaderPath))
             .build());
         this->pointLightThree->setScale(glm::vec3{ 0.07f, 0.07f, 0.07f });
-        this->pointLightThree->setLinkedObject(this->sceneBuilder.get(this->pointLightThree->getLinkedObjectHandle()));
+        this->pointLightThree->setLinkedObject(this->sceneBuilder.getObject(this->pointLightThree->getLinkedObjectHandle()));
 
         this->lightList->push_back(this->lightManager->Add(common::Type::Light::point, glm::vec3{ 0.0f, 0.4f, -1.0f }, glm::vec4{ 0.1f, 0.0f, 0.0f, 0.12f }));
         this->pointLightFour = this->lightManager->Get(this->lightList->at(4));
@@ -115,7 +120,7 @@ void star::LightApp::Load() {
             .setFragShader(this->shaderManager->add(fragShaderPath))
             .build());
         this->pointLightFour->setScale(glm::vec3{ 0.07f, 0.07f, 0.07f });
-        this->pointLightFour->setLinkedObject(this->sceneBuilder.get(this->pointLightFour->getLinkedObjectHandle()));
+        this->pointLightFour->setLinkedObject(this->sceneBuilder.getObject(this->pointLightFour->getLinkedObjectHandle()));
     }
 }
 

@@ -34,6 +34,7 @@ layout(binding = 0, set = 1) uniform uniformBufferObject{
 layout(binding = 0, set = 2) buffer  bufferObjectMaterial{
 	vec4 surfaceColor; 
 	vec4 highlightColor; 
+	int shinyCoefficient; 
 } objectMaterial; 
 
 void main() {
