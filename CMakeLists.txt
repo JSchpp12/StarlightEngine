@@ -52,9 +52,11 @@ set(${PROJECT_NAME}_SOURCE
 	"src/CameraController.cpp"
 	"src/Controller.cpp"
 	"src/InteractionSystem.cpp"
+	"src/SceneBuilder.cpp"
 	#applications
 	"src/Applications/ObjectApp.cpp"
 	"src/Applications/MultipleObjectApp.cpp"
+	"src/Applications/LightApp.cpp"
 )
 
 set(${PROJECT_NAME}_HEADERS 
@@ -63,9 +65,11 @@ set(${PROJECT_NAME}_HEADERS
 	"src/CameraController.h" 
 	"src/Controller.h"
 	"src/InteractionSystem.h"
+	"src/SceneBuilder.hpp"
 	#applications
 	"src/Applications/ObjectApp.h"
 	"src/Applications/MultipleObjectApp.h"
+	"src/Applications/LightApp.h"
 )
 
 add_executable(${PROJECT_NAME} "${${PROJECT_NAME}_SOURCE};${${PROJECT_NAME}_HEADERS}")
@@ -83,6 +87,7 @@ set(STAR_COMMON_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR})
 target_include_directories(${PROJECT_NAME}
 	PRIVATE 
 		${CMAKE_CURRENT_SOURCE_DIR}/src/Applications
+		${CMAKE_CURRENT_SOURCE_DIR}/src
 		${STB_DIRECTORY}
 		${CMAKE_CURRENT_BINARY_DIR}
 		${StarlightCommon_INCLUDE_DIR}
