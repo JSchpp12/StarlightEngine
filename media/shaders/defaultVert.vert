@@ -3,11 +3,12 @@
 layout(location = 0) in vec3 inPosition;
 layout(location = 1) in vec3 inNormal; 
 layout(location = 2) in vec3 inColor;		//vertex color
-layout(location = 3) in vec2 inTexCoord;	//texture coordinate for vertex 
+layout(location = 3) in vec2 inTexCoordinate;	//texture coordinate for vertex 
 
 layout(location = 0) out vec3 fragColor; 
-layout(location = 1) out vec3 fragPositionWorld;	//fragment's position in world space
-layout(location = 2) out vec3 fragNormalWorld;		//fragment's normal in world space 
+layout(location = 1) out vec2 fragTexCoordinate; 
+layout(location = 2) out vec3 fragPositionWorld;	//fragment's position in world space
+layout(location = 3) out vec3 fragNormalWorld;		//fragment's normal in world space 
 
 layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
 	mat4 proj;
@@ -37,11 +38,13 @@ layout(binding = 0, set = 2) buffer  bufferObjectMaterial{
 	int shinyCoefficient; 
 } objectMaterial; 
 
+layout(binding = 1, set = 2) uniform sampler2D textureSampler; 
+
 void main() {
 	vec4 positionWorld = objectUbo.modelMatrix * vec4(inPosition, 1.0); 
 	gl_Position = globalUbo.proj * globalUbo.view * positionWorld;
 	fragNormalWorld = normalize(mat3(objectUbo.normalModelMatrix) * inNormal);
 	fragPositionWorld = positionWorld.xyz; 
 	fragColor = inColor; 
-//	fragTexCoord = inTexCoord; 
+	fragTexCoordinate = inTexCoordinate; 
 }

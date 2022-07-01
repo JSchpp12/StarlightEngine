@@ -1,13 +1,9 @@
 #version 450 
 
-//expecting texture sampler
-//layout(binding = 1) uniform sampler2D texSampler; 
-
 layout(location = 0) in vec3 inFragColor;
-layout(location = 1) in vec3 inFragPositionWorld;
-layout(location = 2) in vec3 inFragNormalWorld;
-
-//layout(location = 1) in vec2 fragTexCoord; 
+layout(location = 1) in vec2 inFragTexCoordinate;
+layout(location = 2) in vec3 inFragPositionWorld;
+layout(location = 3) in vec3 inFragNormalWorld;
 
 layout(location = 0) out vec4 outColor;
 
@@ -33,16 +29,16 @@ layout(binding = 0, set = 2) buffer  bufferObjectMaterial{
 	int shinyCoefficient; 
 } objectMaterial; 
 
+layout(binding = 1, set = 2) uniform sampler2D textureSampler; 
+
 void main() {
 	vec3 diffuseLight = globalUbo.ambientLightColor.xyz * globalUbo.ambientLightColor.w; 
 	vec3 specularLight = vec3(0.0);															//container for summation of light contributions to specular lighting result
 	vec3 surfaceNormal = normalize(inFragNormalWorld);										//using same normal for all frags on surface -- rather than calculating for each one
 
-
 	vec3 cameraPosWorld = globalUbo.inverseView[3].xyz; 
 	vec3 viewDirection = normalize(cameraPosWorld - inFragPositionWorld); 
 
-//	outColor = texture(texSampler, fragTexCoord);
 	for (int i = 0; i < globalUbo.numLights; i++){
 		//diffuse lighting calculation
 		vec3 directionToLight = lightPositions.values[i].xyz - inFragPositionWorld.xyz; 
@@ -66,10 +62,11 @@ void main() {
 		specularLight += intensity * blinnTerm; 
 
 	}
-	vec3 ambientLight = globalUbo.ambientLightColor.xyz * globalUbo.ambientLightColor.w; 
 	vec3 surfaceColor = objectMaterial.surfaceColor.xyz * objectMaterial.surfaceColor.w; 
 	vec3 highlightColor = objectMaterial.highlightColor.xyz * objectMaterial.highlightColor.w; 
 
 	//second multiplication of frag color is a placeholder for control term of highlight and specular color 
-	outColor = vec4(surfaceColor * diffuseLight + specularLight * highlightColor, 1.0); 
+	vec4 textureColor = texture(textureSampler, inFragTexCoordinate); 
+	
+	outColor = vec4(((textureColor.xyz + surfaceColor) * diffuseLight) + (specularLight * highlightColor), 1.0); 
 }
