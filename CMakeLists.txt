@@ -95,7 +95,7 @@ add_custom_command(
 	DEPENDS
 		${${PROJECT_NAME}_SOURCE}
 	COMMAND 
-		python ${PREP_MEDIA_CMD} buildDir=${CMAKE_CURRENT_BINARY_DIR} mediaDir=${CMAKE_CURRENT_SOURCE_DIR}/media configFile=${CMAKE_CURRENT_SOURCE_DIR}/Engine.cfg
+		python3 ${PREP_MEDIA_CMD} buildDir=${CMAKE_CURRENT_BINARY_DIR} mediaDir=${CMAKE_CURRENT_SOURCE_DIR}/media configFile=${CMAKE_CURRENT_SOURCE_DIR}/Engine.cfg
 )
 
 
