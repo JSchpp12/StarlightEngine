@@ -19,6 +19,14 @@ layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
 	int numLights; 
 } globalUbo; 
 
+//lights 
+
+/*
+Ambient 
+Diffuse 
+Specular 
+- for each light -
+*/ 
 layout(binding = 1, set = 0) buffer uniformLightPositions{
 	vec4 values[];
 } lightPositions;
@@ -72,4 +80,5 @@ void main() {
 
 	//second multiplication of frag color is a placeholder for control term of highlight and specular color 
 	outColor = vec4(surfaceColor * diffuseLight + specularLight * highlightColor, 1.0); 
+//	outColor = vec4((ambientLight + diffuseLight + specularLight) * surfaceColor, 1.0);
 }
