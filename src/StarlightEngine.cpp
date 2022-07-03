@@ -44,7 +44,7 @@ int main() {
     std::unique_ptr<std::vector<common::Handle>> lightList(new std::vector<star::common::Handle>()); 
     std::unique_ptr<star::CameraController> camera(new star::CameraController());
 
-    SceneBuilder sceneBuilder(*objectManager, *materialManager); 
+    SceneBuilder sceneBuilder(*objectManager, *materialManager, *textureManager); 
 
     auto application = star::TextureApp(configFile.get(), objectList.get(), lightList.get(), 
         shaderManager.get(), textureManager.get(), lightManager.get(), sceneBuilder,

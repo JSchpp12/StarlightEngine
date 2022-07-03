@@ -10,25 +10,43 @@ star::TextureApp::TextureApp(common::ConfigFile* configFile, std::vector<common:
 void star::TextureApp::Load() {
     //load lion 
     auto mediaDirectoryPath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory);
+    //{
+    //    auto objectPath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "models/lion-statue/source/rapid.obj";
+    //    auto texturePath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "models/lion-statue/source/material0_basecolor.png";
+    //    auto textureHandle = this->textureManager->add(texturePath);
+
+    //    this->objectList->push_back(SceneBuilder::GameObjects::Builder(this->sceneBuilder)
+    //        .setPath(objectPath)
+    //        .setTexture(textureHandle)
+    //        .setPosition(glm::vec3{ 0.0f, -0.44f, 0.0f })
+    //        //.setMaterial(common::Material::Builder()
+    //        //    .setHighlightColor(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f })
+    //        //    .setShinyCoefficient(256.0f)
+    //        //    .setSurfaceColor(glm::vec4{ 0.7f, 0.1f, 0.1f, 1.0f })
+    //        //    .build())
+    //        .build()
+    //    );
+    //}
+    //this->lion = this->sceneBuilder.getObject(this->objectList->at(0));
+    //this->lion->rotateRelative(-90, glm::vec3{ 1.0f, 0.0f, 0.0f });
+
+    //load plant 
     {
-        auto objectPath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "models/lion-statue/source/rapid.obj";
-        auto texturePath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "models/lion-statue/source/material0_basecolor.png";
-        auto textureHandle = this->textureManager->add(texturePath);
+        auto objectPath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "models/aloevera/aloevera.obj";
+        //auto texturePath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "models/cactus/cactus_ceramic_blue_DIF_1k.jpg";
+        //auto textureHandle = this->textureManager->add(texturePath);
         this->objectList->push_back(SceneBuilder::GameObjects::Builder(this->sceneBuilder)
             .setPath(objectPath)
-            .setTexture(textureHandle)
+            //.setTexture(textureHandle)
             .setPosition(glm::vec3{ 0.0f, -0.44f, 0.0f })
-            .setMaterial(SceneBuilder::Material::Builder(this->sceneBuilder)
-                .setHighlightColor(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f })
-                .setShinyCoefficient(256.0f)
-                .setSurfaceColor(glm::vec4{ 0.7f, 0.1f, 0.1f, 1.0f })
-                .buildGet())
-            .build()
-        );
+            .loadMaterials()
+            //.setMaterial(SceneBuilder::Material::Builder(this->sceneBuilder)
+            //    .setHighlightColor(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f })
+            //    .setShinyCoefficient(256.0f)
+            //    .setSurfaceColor(glm::vec4{ 0.7f, 0.1f, 0.1f, 1.0f })
+            //    .buildGet())
+            .build());
     }
-    this->lion = this->sceneBuilder.getObject(this->objectList->at(0));
-    //this->lion->moveRelative(glm::vec3{ 0.0f, -0.7f, 0.0f });
-    this->lion->rotateRelative(-90, glm::vec3{ 1.0f, 0.0f, 0.0f });
 
     {
         //load light
