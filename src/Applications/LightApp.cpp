@@ -26,7 +26,7 @@ void star::LightApp::Load() {
             .build()
         );
     }
-    this->lion = this->sceneBuilder.getObject(this->objectList->at(0));
+    this->lion = &this->sceneBuilder.getObject(this->objectList->at(0));
     //this->lion->moveRelative(glm::vec3{ 0.0f, -0.7f, 0.0f });
     this->lion->rotateRelative(-90, glm::vec3{ 1.0f, 0.0f, 0.0f });
 
@@ -62,8 +62,8 @@ void star::LightApp::Load() {
                 .buildGet())
             .build());
     }
-    this->cone = this->sceneBuilder.getObject(this->objectList->at(1));
-    this->conetwo = this->sceneBuilder.getObject(this->objectList->at(2));
+    this->cone = &this->sceneBuilder.getObject(this->objectList->at(1));
+    this->conetwo = &this->sceneBuilder.getObject(this->objectList->at(2));
 
     //load quad 
     {
@@ -79,7 +79,7 @@ void star::LightApp::Load() {
             .setPosition(glm::vec3{ 0.0f, 0.0f, 0.0f })
             .build());
     }
-    this->floor = this->sceneBuilder.getObject(this->objectList->at(2));
+    this->floor = &this->sceneBuilder.getObject(this->objectList->at(2));
 
     {
         //load light

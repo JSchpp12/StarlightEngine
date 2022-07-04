@@ -57,6 +57,7 @@ set(${PROJECT_NAME}_SOURCE
 	"src/Applications/ObjectApp.cpp"
 	"src/Applications/MultipleObjectApp.cpp"
 	"src/Applications/LightApp.cpp"
+	"src/Applications/TextureApp.cpp"
 )
 
 set(${PROJECT_NAME}_HEADERS 
@@ -70,6 +71,7 @@ set(${PROJECT_NAME}_HEADERS
 	"src/Applications/ObjectApp.h"
 	"src/Applications/MultipleObjectApp.h"
 	"src/Applications/LightApp.h"
+	"src/Applications/TextureApp.cpp"
 )
 
 add_executable(${PROJECT_NAME} "${${PROJECT_NAME}_SOURCE};${${PROJECT_NAME}_HEADERS}")

@@ -1,11 +1,9 @@
 #version 450 
 
-//expecting texture sampler
-//layout(binding = 1) uniform sampler2D texSampler; 
-
 layout(location = 0) in vec3 inFragColor;
-layout(location = 1) in vec3 inFragPositionWorld;
-layout(location = 2) in vec3 inFragNormalWorld;
+layout(location = 1) in vec2 inFragTextureCoordinate; 
+layout(location = 2) in vec3 inFragPositionWorld;
+layout(location = 3) in vec3 inFragNormalWorld;
 
 //layout(location = 1) in vec2 fragTexCoord; 
 
@@ -32,6 +30,8 @@ layout(binding = 0, set = 2) buffer  bufferObjectMaterial{
 	vec4 highlightColor; 
 	int shinyCoefficient; 
 } objectMaterial; 
+
+layout(binding = 1, set = 2) uniform sampler2D textureSampler; 
 
 void main() {
 	vec3 diffuseLight = globalUbo.ambientLightColor.xyz * globalUbo.ambientLightColor.w; 
@@ -72,4 +72,6 @@ void main() {
 
 	//second multiplication of frag color is a placeholder for control term of highlight and specular color 
 	outColor = vec4(surfaceColor * diffuseLight + specularLight * highlightColor, 1.0); 
+
+	outColor = texture(textureSampler, inFragTextureCoordinate);
 }
