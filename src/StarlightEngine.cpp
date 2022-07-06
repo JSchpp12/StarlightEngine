@@ -59,7 +59,7 @@ int main() {
      
     //prepare renderer 
     auto window = star::core::StarWindow(WIDTH, HEIGHT, "Starlight", star::InteractionSystem::glfwKeyHandle, star::InteractionSystem::glfwMouseButtonCallback, star::InteractionSystem::glfwMouseMovement, star::InteractionSystem::glfwScrollCallback);
-    auto renderer = star::core::VulkanRenderer(configFile.get(), shaderManager.get(), objectManager.get(), textureManager.get(), camera.get(), objectList.get(), mainLightList, window);
+    auto renderer = star::core::VulkanRenderer(*configFile, *shaderManager, *objectManager, *textureManager, *materialManager, *camera, *objectList, mainLightList, window);
     renderer.prepare();
 
     //register user application callbacks

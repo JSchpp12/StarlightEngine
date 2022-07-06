@@ -50,7 +50,7 @@ void star::TextureApp::Load() {
 
     {
         //load light
-        this->lightList->push_back(this->lightManager->Add(common::Type::Light::point, glm::vec3{ 0.0f, 0.7f, 0.0f }, glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f }));
+        this->lightList->push_back(this->lightManager->Add(common::Type::Light::point, glm::vec3{ 1.0f, 2.0f, 0.0f }, glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f }));
         this->pointLight = this->lightManager->Get(this->lightList->at(0));
         this->lightList->push_back(this->lightManager->Add(common::Type::Light::directional, glm::vec3{}, glm::vec4{ 1.0f, 1.0f, 1.0f, 0.005f }));
 
