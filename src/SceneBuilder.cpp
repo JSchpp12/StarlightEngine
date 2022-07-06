@@ -204,16 +204,13 @@ namespace star {
 					.setVerticies(std::move(verticies))
 					.setMaterial(this->materialManager.add(material->surfaceColor, material->highlightColor, material->shinyCoefficient, modelTextures.at(shape.mesh.material_ids.at(shapeCounter))))
 					.build());
-					//.setMaterial(common::Handle{
-					//	this->materialManager.size() + materialIndex,
-					//	common::Handle_Type::material })
-					//	.build());
 				}
 			else {
 				assert(material != nullptr && "If no material is being loaded from files, one must be provided");
 				meshes.at(shapeCounter) = std::move(common::Mesh::Builder()
 					.setIndicies(std::move(indicies))
 					.setVerticies(std::move(verticies))
+					.setMaterial(this->materialManager.add(material->surfaceColor, material->highlightColor, material->shinyCoefficient))
 					.build());
 			}
 
@@ -224,10 +221,6 @@ namespace star {
 
 		//TODO: give texture handle to material 
 		return this->objectManager.add(std::make_unique<common::GameObject>(position, scaleAmt, vertShader, fragShader, std::move(meshes)));
-
-		//common::Handle newHandle = this->objectManager.Add(pathToFile, material, position, scaleAmt, vertShader, fragShader); 
-		//newHandle.type = common::Handle_Type::object; 
-		//return newHandle; 
 	}
 
 	common::Handle SceneBuilder::addMaterial(const glm::vec4& surfaceColor, const glm::vec4& hightlightColor, const int& shinyCoefficient) {
