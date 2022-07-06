@@ -16,7 +16,7 @@ layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
 	vec4 ambientLightColor; 
 	int numLights; 
 } globalUbo; 
-
+ 
 layout(binding = 1, set = 0) buffer uniformLightPositions{
 	vec4 values[];
 } lightPositions;
@@ -38,7 +38,6 @@ void main() {
 	vec3 specularLight = vec3(0.0);															//container for summation of light contributions to specular lighting result
 	vec3 surfaceNormal = normalize(inFragNormalWorld);										//using same normal for all frags on surface -- rather than calculating for each one
 
-
 	vec3 cameraPosWorld = globalUbo.inverseView[3].xyz; 
 	vec3 viewDirection = normalize(cameraPosWorld - inFragPositionWorld); 
 
@@ -52,26 +51,25 @@ void main() {
 		directionToLight = normalize(directionToLight); 
 
 		float cosAngleIncidence = max(dot(surfaceNormal, directionToLight), 0);
-		vec3 intensity = lightColors.values[i].xyz * lightColors.values[i].w * attenuation;
+		vec3 lightColor = lightColors.values[i].xyz * lightColors.values[i].w * attenuation;
 
-		diffuseLight += intensity * cosAngleIncidence; 
+		diffuseLight += lightColor * cosAngleIncidence; 
 
 		//specular lighting calculation 
 		vec3 halfAngle = normalize(directionToLight + viewDirection); 
 		float blinnTerm = dot(surfaceNormal, halfAngle); 
 		blinnTerm = clamp(blinnTerm, 0, 1);	
+		blinnTerm = cosAngleIncidence != 0.0 ? blinnTerm : 0; 
 		//apply arbitrary power "s" -- high values results in sharper highlight
 		blinnTerm = pow(blinnTerm, objectMaterial.shinyCoefficient); 
 
-		specularLight += intensity * blinnTerm; 
+		specularLight += lightColor * blinnTerm; 
 
 	}
 	vec3 ambientLight = globalUbo.ambientLightColor.xyz * globalUbo.ambientLightColor.w; 
 	vec3 surfaceColor = objectMaterial.surfaceColor.xyz * objectMaterial.surfaceColor.w; 
 	vec3 highlightColor = objectMaterial.highlightColor.xyz * objectMaterial.highlightColor.w; 
 
-	//second multiplication of frag color is a placeholder for control term of highlight and specular color 
-	outColor = vec4(surfaceColor * diffuseLight + specularLight * highlightColor, 1.0); 
-
-	outColor = texture(textureSampler, inFragTextureCoordinate);
+	vec4 totalLightColor = vec4(((ambientLight + diffuseLight + specularLight) * surfaceColor), 1.0); 
+	outColor = totalLightColor + texture(textureSampler, inFragTextureCoordinate); 
 }
