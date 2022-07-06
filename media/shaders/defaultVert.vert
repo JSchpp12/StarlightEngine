@@ -10,6 +10,12 @@ layout(location = 1) out vec2 fragTextureCoordinate;
 layout(location = 2) out vec3 fragPositionWorld;	//fragment's position in world space
 layout(location = 3) out vec3 fragNormalWorld;		//fragment's normal in world space 
 
+struct light{
+	vec4 position;
+	vec4 diffuseColor;
+	vec4 ambientColor; 
+};
+
 layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
 	mat4 proj;
 	mat4 view;  
@@ -17,14 +23,6 @@ layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
 	vec4 ambientLightColor; 
 	int numLights; 
 } globalUbo; 
-
-layout(binding = 1, set = 0) buffer uniformLightPositions{
-	vec3 values[]; 
-} lightInfo;
-
-layout(binding = 2, set = 0) buffer uniformLightColors{
-	vec4 values[]; 
-} lightColors; 
 
 //can varry material by vertex 
 layout(binding = 0, set = 1) uniform uniformBufferObject{
