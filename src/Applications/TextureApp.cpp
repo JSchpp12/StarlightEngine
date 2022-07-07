@@ -10,47 +10,43 @@ star::TextureApp::TextureApp(common::ConfigFile* configFile, std::vector<common:
 void star::TextureApp::Load() {
     //load lion 
     auto mediaDirectoryPath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory);
-    //{
-    //    auto objectPath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "models/lion-statue/source/rapid.obj";
-    //    auto texturePath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "models/lion-statue/source/material0_basecolor.png";
-    //    auto textureHandle = this->textureManager->add(texturePath);
-
-    //    this->objectList->push_back(SceneBuilder::GameObjects::Builder(this->sceneBuilder)
-    //        .setPath(objectPath)
-    //        .setTexture(textureHandle)
-    //        .setPosition(glm::vec3{ 0.0f, -0.44f, 0.0f })
-    //        //.setMaterial(common::Material::Builder()
-    //        //    .setHighlightColor(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f })
-    //        //    .setShinyCoefficient(256.0f)
-    //        //    .setSurfaceColor(glm::vec4{ 0.7f, 0.1f, 0.1f, 1.0f })
-    //        //    .build())
-    //        .build()
-    //    );
-    //}
-    //this->lion = this->sceneBuilder.getObject(this->objectList->at(0));
-    //this->lion->rotateRelative(-90, glm::vec3{ 1.0f, 0.0f, 0.0f });
+    {
+        auto objectPath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "models/lion-statue/source/rapid.obj";
+        //auto materialsPath = mediaDirectoryPath + "models/lion-statue/source";
+        this->objectList->push_back(SceneBuilder::GameObjects::Builder(this->sceneBuilder)
+            .setPath(objectPath)
+            .setPosition(glm::vec3{1.0f, -0.95f, 0.5f})
+            .setScale(glm::vec3{ 0.04f, 0.04f, 0.04f })
+            .build(true)
+        );
+    }
+    this->lion = &this->sceneBuilder.getObject(this->objectList->at(0));
+    this->lion->rotateRelative(-90, glm::vec3{ 1.0f, 0.0f, 0.0f });
 
     //load plant 
     {
         auto objectPath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "models/aloevera/aloevera.obj";
-        //auto texturePath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "models/cactus/cactus_ceramic_blue_DIF_1k.jpg";
-        //auto textureHandle = this->textureManager->add(texturePath);
         this->objectList->push_back(SceneBuilder::GameObjects::Builder(this->sceneBuilder)
             .setPath(objectPath)
-            //.setTexture(textureHandle)
-            .setPosition(glm::vec3{ 0.0f, -0.44f, 0.0f })
-            .loadMaterials()
-            //.setMaterial(SceneBuilder::Material::Builder(this->sceneBuilder)
-            //    .setHighlightColor(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f })
-            //    .setShinyCoefficient(256.0f)
-            //    .setSurfaceColor(glm::vec4{ 0.7f, 0.1f, 0.1f, 1.0f })
-            //    .buildGet())
+            .setPosition(glm::vec3{ -1.0f, 0.0f, -0.0f })
+            .setScale(glm::vec3{1.5f, 1.5f, 1.5f})
+            .build());
+    }
+    //table
+    {
+        auto objectPath = mediaDirectoryPath + "models/table/Desk OBJ.obj";
+        this->objectList->push_back(SceneBuilder::GameObjects::Builder(this->sceneBuilder)
+            .setPath(objectPath)
+            .setPosition(glm::vec3{ 0.0f, -0.4f, 0.0f })
+            .setScale(glm::vec3{0.01f, 0.01f, 0.01f})
+            .setMaterialFilePath(mediaDirectoryPath + "models/table/")
+            .setTextureDirectory(mediaDirectoryPath + "models/table/textures/")
             .build());
     }
 
     {
         //load light
-        this->lightList->push_back(this->lightManager->Add(common::Type::Light::point, glm::vec3{ 1.0f, 2.0f, 0.0f }, glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f }));
+        this->lightList->push_back(this->lightManager->Add(common::Type::Light::point, glm::vec3{ 0.0f, 1.5f, 0.0f }, glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f }));
         this->pointLight = this->lightManager->Get(this->lightList->at(0));
         this->lightList->push_back(this->lightManager->Add(common::Type::Light::directional, glm::vec3{}, glm::vec4{ 1.0f, 1.0f, 1.0f, 0.005f }));
 
@@ -64,7 +60,7 @@ void star::TextureApp::Load() {
             .setPosition(this->pointLight->getPosition())
             .setVertShader(this->shaderManager->add(vertShaderPath))
             .setFragShader(this->shaderManager->add(fragShaderPath))
-            .build());
+            .build(false));
         this->pointLight->setScale(glm::vec3{ 0.07f, 0.07f, 0.07f });
         this->pointLight->setLinkedObject(this->sceneBuilder.getObject(this->pointLight->getLinkedObjectHandle()));
     }
