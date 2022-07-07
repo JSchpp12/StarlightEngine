@@ -67,9 +67,9 @@ void main() {
 
 	}
 	vec3 ambientLight = globalUbo.ambientLightColor.xyz * globalUbo.ambientLightColor.w; 
-	vec3 surfaceColor = objectMaterial.surfaceColor.xyz * objectMaterial.surfaceColor.w; 
-	vec3 highlightColor = objectMaterial.highlightColor.xyz * objectMaterial.highlightColor.w; 
+//	vec3 surfaceColor = objectMaterial.surfaceColor.xyz * objectMaterial.surfaceColor.w; 
+//	vec3 highlightColor = objectMaterial.highlightColor.xyz * objectMaterial.highlightColor.w; 
 
-	vec4 totalLightColor = vec4(((ambientLight + diffuseLight + specularLight) * surfaceColor), 1.0); 
-	outColor = totalLightColor + texture(textureSampler, inFragTextureCoordinate); 
+	vec3 totalSurfaceColor = (ambientLight + diffuseLight + specularLight) * vec3(texture(textureSampler, inFragTextureCoordinate)); 
+	outColor = vec4(totalSurfaceColor, 1.0); 
 }
