@@ -1,5 +1,5 @@
 #pragma once 
-
+#include "SC/FileHelpers.h"
 #include "SC/Light.hpp"
 #include "SC/Handle.hpp"
 #include "SC/GameObject.hpp"
@@ -32,15 +32,16 @@ namespace star {
 				Builder& setVerticies(const std::vector<glm::vec3>& verticies);
 				Builder& setIndicies(const std::vector<uint32_t>& indicies);
 				Builder& setMaterial(common::Material& material);
-				Builder& loadMaterials(const std::string& baseMaterialPath = std::string()); 
-				common::Handle build();
-				common::GameObject& buildGet(); 
+				Builder& setMaterialFilePath(const std::string& path); 
+				Builder& setTextureDirectory(const std::string& path); 
+				common::Handle build(bool loadMaterials = true);
+				common::GameObject& buildGet(bool loadMaterials = true); 
 
 			protected:
 
 			private:
 				SceneBuilder& sceneBuilder;
-				bool loadFromDisk = false; 
+				bool loadFromDisk = true; 
 				glm::vec3 scale = glm::vec3{ 1.0f, 1.0f, 1.0f };
 				glm::vec3 position = glm::vec3{ 0.0f, 0.0f, 0.0f };
 				common::Handle vertShader = common::Handle{ 0 };
@@ -48,7 +49,8 @@ namespace star {
 				common::Handle texture = common::Handle{ 0 };
 				common::Material* material = nullptr;
 				std::unique_ptr<std::string> path;
-				std::unique_ptr<std::string> baseMaterialPath;
+				std::unique_ptr<std::string> materialFilePath;
+				std::unique_ptr<std::string> textureDirectory;
 				std::unique_ptr<std::vector<uint32_t>> indicies;
 				std::unique_ptr<std::vector<common::Vertex>> verticies;
 			};
@@ -84,6 +86,7 @@ namespace star {
 				Builder& setSurfaceColor(const glm::vec4& surfaceColor);
 				Builder& setHighlightColor(const glm::vec4& highlightColor);
 				Builder& setShinyCoefficient(const int& shinyCoefficient);
+				Builder& setTexture(common::Handle texture); 
 				common::Handle build();
 				common::Material& buildGet(); 
 
@@ -92,6 +95,7 @@ namespace star {
 				glm::vec4 surfaceColor = sceneBuilder.defaultMaterial->surfaceColor;
 				glm::vec4 highlightColor = sceneBuilder.defaultMaterial->highlightColor; 
 				int shinyCoefficient = sceneBuilder.defaultMaterial->shinyCoefficient;
+				common::Handle texture; 
 			};
 		};
 
@@ -114,9 +118,9 @@ namespace star {
 		common::Handle addObject(const std::string& pathToFile, glm::vec3& position, glm::vec3& scaleAmt, 
 			common::Material* material, common::Handle& vertShader,
 			common::Handle& fragShader, bool loadMaterials, 
-			const std::unique_ptr<std::string>& materialBasePath);
+			std::string* materialFilePath, std::string* textureDir);
 
-		common::Handle addMaterial(const glm::vec4& surfaceColor, const glm::vec4& hightlightColor, const int& shinyCoefficient);
+		common::Handle addMaterial(const glm::vec4& surfaceColor, const glm::vec4& hightlightColor, const int& shinyCoefficient, common::Handle* texture);
  
 		friend class common::Mesh::Builder; 
 		friend class GameObjects::Builder;
