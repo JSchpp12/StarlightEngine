@@ -37,9 +37,9 @@ int main() {
     auto defaultCubeTexture = configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "models/cube/cubeTexture.png";
     std::unique_ptr<star::core::ShaderManager> shaderManager(new star::core::ShaderManager(defaultVertShader, defaultFragShader));
     std::unique_ptr<star::core::ObjectManager> objectManager(new star::core::ObjectManager());
-    std::unique_ptr<star::core::TextureManager> textureManager(new star::core::TextureManager());
+    std::unique_ptr<star::core::TextureManager> textureManager(new star::core::TextureManager(configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "images/texture.png"));
     std::unique_ptr<star::core::LightManager> lightManager(new star::core::LightManager()); 
-    std::unique_ptr<star::core::MaterialManager> materialManager(new star::core::MaterialManager(glm::vec4{0.5f, 0.5f, 0.5f, 1.0f}, glm::vec4{0.5f, 0.5f, 0.5f, 1.0f}, 1.0f));
+    std::unique_ptr<star::core::MaterialManager> materialManager(new star::core::MaterialManager(glm::vec4{0.5f, 0.5f, 0.5f, 1.0f}, glm::vec4{0.5f, 0.5f, 0.5f, 1.0f}, 32.0f));
     std::unique_ptr<std::vector<star::common::Handle>> objectList(new std::vector<star::common::Handle>());
     std::unique_ptr<std::vector<common::Handle>> lightList(new std::vector<star::common::Handle>()); 
     std::unique_ptr<star::CameraController> camera(new star::CameraController());
