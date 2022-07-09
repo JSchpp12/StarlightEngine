@@ -34,7 +34,7 @@ namespace star {
 		this->indicies = std::make_unique<std::vector<uint32_t>>(indicies);
 		return *this;
 	}
-	SceneBuilder::GameObjects::Builder& SceneBuilder::GameObjects::Builder::setTexture(const common::Handle& texture) {
+		SceneBuilder::GameObjects::Builder& SceneBuilder::GameObjects::Builder::setTexture(const common::Handle& texture) {
 		this->texture = texture;
 		return *this;
 	}
@@ -42,16 +42,17 @@ namespace star {
 		this->material = &material;
 		return *this;
 	}
-	SceneBuilder::GameObjects::Builder& SceneBuilder::GameObjects::Builder::loadMaterials(const std::string& baseMaterialPath) {
-		assert(baseMaterialPath == std::string() && this->path && "Called to load materials without proper base path available (.obj path OR provided materialPath Arguemnt)"); 
-
-		this->loadFromDisk = true;
-		this->baseMaterialPath = baseMaterialPath == std::string() ? std::make_unique<std::string>(common::FileHelpers::GetBaseFileDirectory(*this->path)) : std::make_unique<std::string>(baseMaterialPath);
+	SceneBuilder::GameObjects::Builder& SceneBuilder::GameObjects::Builder::setMaterialFilePath(const std::string& path) {
+		this->materialFilePath = std::make_unique<std::string>(path); 
 		return *this; 
 	}
-	common::Handle SceneBuilder::GameObjects::Builder::build() {
+	SceneBuilder::GameObjects::Builder& SceneBuilder::GameObjects::Builder::setTextureDirectory(const std::string& path) {
+		this->textureDirectory = std::make_unique<std::string>(path);
+		return *this; 
+	}
+	common::Handle SceneBuilder::GameObjects::Builder::build(bool loadMaterials) {
 		if (!this->verticies && !this->indicies && this->path) {
-			return this->sceneBuilder.addObject(*this->path, this->position, this->scale, this->material, this->vertShader, this->fragShader, this->loadFromDisk, this->baseMaterialPath);  
+			return this->sceneBuilder.addObject(*this->path, this->position, this->scale, this->material, this->vertShader, this->fragShader, loadMaterials, this->materialFilePath.get(), this->textureDirectory.get());
 		}
 		else if (this->verticies && this->verticies->size() != 0 && this->indicies && this->indicies->size() != 0) {
 
@@ -59,9 +60,9 @@ namespace star {
 		}
 		throw std::runtime_error("Invalid parameters provided to complete build of object");
 	}
-	common::GameObject& SceneBuilder::GameObjects::Builder::buildGet() {
+	common::GameObject& SceneBuilder::GameObjects::Builder::buildGet(bool loadMaterials) {
 		if (!this->verticies && !this->indicies && this->path) {
-			common::Handle newHandle = this->sceneBuilder.addObject(*this->path, this->position, this->scale, this->material, this->vertShader, this->fragShader, this->loadFromDisk, this->baseMaterialPath);
+			common::Handle newHandle = this->sceneBuilder.addObject(*this->path, this->position, this->scale, this->material, this->vertShader, this->fragShader, loadMaterials, this->materialFilePath.get(), this->textureDirectory.get());
 			return this->sceneBuilder.getObject(newHandle); 
 		}
 		else if (this->verticies && this->verticies->size() != 0 && this->indicies && this->indicies->size() != 0) {
@@ -89,11 +90,15 @@ namespace star {
 		this->shinyCoefficient = shinyCoefficient; 
 		return *this; 
 	}
+	SceneBuilder::Material::Builder& SceneBuilder::Material::Builder::setTexture(common::Handle texture) {
+		this->texture = texture; 
+		return *this;
+	}
 	common::Handle SceneBuilder::Material::Builder::build() {
-		return this->sceneBuilder.addMaterial(this->surfaceColor, this->highlightColor, this->shinyCoefficient);
+		return this->sceneBuilder.addMaterial(this->surfaceColor, this->highlightColor, this->shinyCoefficient, &this->texture);
 	}
 	common::Material& SceneBuilder::Material::Builder::buildGet() {
-		common::Handle newHandle = this->sceneBuilder.addMaterial(this->surfaceColor, this->highlightColor, this->shinyCoefficient); 
+		common::Handle newHandle = this->sceneBuilder.addMaterial(this->surfaceColor, this->highlightColor, this->shinyCoefficient, &this->texture); 
 		return this->sceneBuilder.getMaterial(newHandle); 
 	}
 	
@@ -104,10 +109,11 @@ namespace star {
 	common::Handle SceneBuilder::addObject(const std::string& pathToFile, glm::vec3& position, glm::vec3& scaleAmt,
 		common::Material* material, common::Handle& vertShader,
 		common::Handle& fragShader, bool loadMaterials, 
-		const std::unique_ptr<std::string>& materialBasePath) {
+		std::string* materialFilePath, std::string* textureDir) {
 		std::unique_ptr<common::GameObject> object;
-		std::string baseDir = !materialBasePath ? common::FileHelpers::GetBaseFileDirectory(pathToFile) : *materialBasePath;
-
+		std::string materialFile = !materialFilePath ? common::FileHelpers::GetBaseFileDirectory(pathToFile) : *materialFilePath;
+		std::string texturePath = textureDir != nullptr ? *textureDir : common::FileHelpers::GetBaseFileDirectory(pathToFile);
+		
 		//apply default material if needed
 		if (material == nullptr) {
 			material = this->defaultMaterial; 
@@ -119,7 +125,7 @@ namespace star {
 		std::vector<tinyobj::material_t> materials;
 		std::string warn, err;
 
-		if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, pathToFile.c_str(), baseDir.c_str())) {
+		if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, pathToFile.c_str(), materialFile.c_str())) {
 			throw std::runtime_error(warn + err);
 		}
 
@@ -139,7 +145,7 @@ namespace star {
 			for (size_t i = 0; i < materials.size(); i++) {
 				currMaterial = &materials.at(i);
 
-				modelTextures.at(i) = this->textureManager.add(baseDir + currMaterial->diffuse_texname);
+				modelTextures.at(i) = this->textureManager.add(texturePath + common::FileHelpers::GetFileNameWithExtension(currMaterial->diffuse_texname));
 			}
 		}
 		//need to scale object so that it fits on screen
@@ -197,25 +203,21 @@ namespace star {
 				counter++; 
 			}
 
-			if (loadMaterials) {
-				materialIndex = shape.mesh.material_ids.at(shapeCounter);
-				if (materialIndex != -1) {
-					meshes.at(shapeCounter) = std::move(common::Mesh::Builder()
-						.setIndicies(std::move(indicies))
-						.setVerticies(std::move(verticies))
-						.setTexture(modelTextures.at(materialIndex))
-						.build());
-						//.setMaterial(common::Handle{
-						//	this->materialManager.size() + materialIndex,
-						//	common::Handle_Type::material })
-						//	.build());
+			if (loadMaterials && shape.mesh.material_ids.at(shapeCounter) != -1) {
+				//apply material from files 
+				meshes.at(shapeCounter) = std::move(common::Mesh::Builder()
+					.setIndicies(std::move(indicies))
+					.setVerticies(std::move(verticies))
+					.setMaterial(this->materialManager.add(material->surfaceColor, material->highlightColor, material->shinyCoefficient, modelTextures.at(shape.mesh.material_ids.at(shapeCounter))))
+					.build());
 				}
-				else {
-					meshes.at(shapeCounter) = std::move(common::Mesh::Builder()
-						.setIndicies(std::move(indicies))
-						.setVerticies(std::move(verticies))
-						.build());
-				}
+			else {
+				assert(material != nullptr && "If no material is being loaded from files, one must be provided");
+				meshes.at(shapeCounter) = std::move(common::Mesh::Builder()
+					.setIndicies(std::move(indicies))
+					.setVerticies(std::move(verticies))
+					.setMaterial(this->materialManager.add(material->surfaceColor, material->highlightColor, material->shinyCoefficient, material->texture))
+					.build());
 			}
 
 			shapeCounter++; 
@@ -224,14 +226,13 @@ namespace star {
 		std::cout << "Loaded: " << pathToFile << std::endl;
 
 		//TODO: give texture handle to material 
-		return this->objectManager.add(std::make_unique<common::GameObject>(position, scaleAmt, material, vertShader, fragShader, std::move(meshes)));
-
-		//common::Handle newHandle = this->objectManager.Add(pathToFile, material, position, scaleAmt, vertShader, fragShader); 
-		//newHandle.type = common::Handle_Type::object; 
-		//return newHandle; 
+		return this->objectManager.add(std::make_unique<common::GameObject>(position, scaleAmt, vertShader, fragShader, std::move(meshes)));
 	}
 
-	common::Handle SceneBuilder::addMaterial(const glm::vec4& surfaceColor, const glm::vec4& hightlightColor, const int& shinyCoefficient) {
+	common::Handle SceneBuilder::addMaterial(const glm::vec4& surfaceColor, const glm::vec4& hightlightColor, const int& shinyCoefficient, common::Handle* texture) {
+		if (texture != nullptr) {
+			return this->materialManager.add(surfaceColor, hightlightColor, shinyCoefficient, *texture);
+		}
 		return this->materialManager.add(surfaceColor, hightlightColor, shinyCoefficient); 
 	}
 
