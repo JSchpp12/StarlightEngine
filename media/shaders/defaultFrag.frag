@@ -4,8 +4,9 @@ layout(location = 0) in vec3 inFragColor;
 layout(location = 1) in vec2 inFragTextureCoordinate; 
 layout(location = 2) in vec3 inFragPositionWorld;
 layout(location = 3) in vec3 inFragNormalWorld;
-
-//layout(location = 1) in vec2 fragTexCoord; 
+layout(location = 4) in vec3 inMatAmbient; 
+layout(location = 5) in vec3 inMatDiffuse; 
+layout(location = 6) in float inMatShininess; 
 
 layout(location = 0) out vec4 outColor;
 
