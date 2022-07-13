@@ -23,26 +23,26 @@ void star::TextureApp::Load() {
     this->lion = &this->sceneBuilder.getObject(this->objectList->at(0));
     this->lion->rotateRelative(-90, glm::vec3{ 1.0f, 0.0f, 0.0f });
 
-    //load plant 
-    {
-        auto objectPath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "models/aloevera/aloevera.obj";
-        this->objectList->push_back(SceneBuilder::GameObjects::Builder(this->sceneBuilder)
-            .setPath(objectPath)
-            .setPosition(glm::vec3{ -1.0f, 0.0f, -0.0f })
-            .setScale(glm::vec3{1.5f, 1.5f, 1.5f})
-            .build());
-    }
-    //table
-    {
-        auto objectPath = mediaDirectoryPath + "models/table/Desk OBJ.obj";
-        this->objectList->push_back(SceneBuilder::GameObjects::Builder(this->sceneBuilder)
-            .setPath(objectPath)
-            .setPosition(glm::vec3{ 0.0f, -0.4f, 0.0f })
-            .setScale(glm::vec3{0.01f, 0.01f, 0.01f})
-            .setMaterialFilePath(mediaDirectoryPath + "models/table/")
-            .setTextureDirectory(mediaDirectoryPath + "models/table/textures/")
-            .build());
-    }
+    ////load plant 
+    //{
+    //    auto objectPath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "models/aloevera/aloevera.obj";
+    //    this->objectList->push_back(SceneBuilder::GameObjects::Builder(this->sceneBuilder)
+    //        .setPath(objectPath)
+    //        .setPosition(glm::vec3{ -1.0f, 0.0f, -0.0f })
+    //        .setScale(glm::vec3{1.5f, 1.5f, 1.5f})
+    //        .build());
+    //}
+    ////table
+    //{
+    //    auto objectPath = mediaDirectoryPath + "models/table/Desk OBJ.obj";
+    //    this->objectList->push_back(SceneBuilder::GameObjects::Builder(this->sceneBuilder)
+    //        .setPath(objectPath)
+    //        .setPosition(glm::vec3{ 0.0f, -0.4f, 0.0f })
+    //        .setScale(glm::vec3{0.01f, 0.01f, 0.01f})
+    //        .setMaterialFilePath(mediaDirectoryPath + "models/table/")
+    //        .setTextureDirectory(mediaDirectoryPath + "models/table/textures/")
+    //        .build());
+    //}
 
     {
         //load light

@@ -39,7 +39,7 @@ int main() {
     std::unique_ptr<star::core::ObjectManager> objectManager(new star::core::ObjectManager());
     std::unique_ptr<star::core::TextureManager> textureManager(new star::core::TextureManager(configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "images/texture.png"));
     std::unique_ptr<star::core::LightManager> lightManager(new star::core::LightManager()); 
-    std::unique_ptr<star::core::MaterialManager> materialManager(new star::core::MaterialManager(glm::vec4{0.5f, 0.5f, 0.5f, 1.0f}, glm::vec4{0.5f, 0.5f, 0.5f, 1.0f}, 32.0f));
+    std::unique_ptr<star::core::MaterialManager> materialManager(new star::core::MaterialManager(std::make_unique<common::Material>(common::Material())));
     std::unique_ptr<std::vector<star::common::Handle>> objectList(new std::vector<star::common::Handle>());
     std::unique_ptr<std::vector<common::Handle>> lightList(new std::vector<star::common::Handle>()); 
     std::unique_ptr<star::CameraController> camera(new star::CameraController());
