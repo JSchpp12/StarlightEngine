@@ -278,7 +278,12 @@ namespace star {
 						attrib.texcoords[2 * indicies[dIndex].texcoord_index + 0],
 						1.0f - attrib.texcoords[2 * indicies[dIndex].texcoord_index + 1 ]
 					};
-					//triangleVerticies[i].matAmbient = objectMaterials.at()
+					if (loadMaterials) {
+						triangleVerticies[i].matAmbient = objectMaterials.at(shape.mesh.material_ids.at(faceIndex)).get().ambient;
+						triangleVerticies[i].matDiffuse = objectMaterials.at(shape.mesh.material_ids.at(faceIndex)).get().diffuse;
+						triangleVerticies[i].matSpecular = objectMaterials.at(shape.mesh.material_ids.at(faceIndex)).get().specular;
+						triangleVerticies[i].matShininess = objectMaterials.at(shape.mesh.material_ids.at(faceIndex)).get().shinyCoefficient;
+					}
 				}
 
 				triangles->at(faceIndex) = common::Triangle(triangleVerticies); 
