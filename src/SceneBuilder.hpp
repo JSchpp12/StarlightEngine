@@ -3,6 +3,8 @@
 #include "SC/Light.hpp"
 #include "SC/Handle.hpp"
 #include "SC/GameObject.hpp"
+#include "SC/Triangle.hpp"
+#include "SC/Vertex.hpp"
 
 #include "ObjectManager.hpp"
 #include "MaterialManager.hpp"

@@ -143,7 +143,7 @@ namespace star {
 		std::vector<tinyobj::material_t> materials;
 		std::string warn, err;
 
-		if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, pathToFile.c_str(), materialFile.c_str())) {
+		if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, pathToFile.c_str(), materialFile.c_str(), true)) {
 			throw std::runtime_error(warn + err);
 		}
 		if (err != "") {
@@ -167,6 +167,7 @@ namespace star {
 		std::vector<std::unique_ptr<common::Mesh>> meshes(shapes.size());
 		std::vector<common::Handle> objectMaterialHandles;
 		std::vector<std::reference_wrapper<common::Material>> objectMaterials; 
+		std::unique_ptr<std::vector<common::Triangle>> triangles; 
 		tinyobj::material_t* currMaterial = nullptr;
 		std::unique_ptr<common::Material> objectMaterial; 
 
@@ -197,6 +198,8 @@ namespace star {
 
 		//need to scale object so that it fits on screen
 		//combine all attributes into a single object 
+		std::array<common::Vertex, 3> triangleVerticies; 
+		int dIndex = 0; 
 		for (const auto& shape : shapes) {
 			triangleCounter = 0; 
 			threeCounter = 0; 
@@ -204,8 +207,10 @@ namespace star {
 
 			//tinyobj ensures three verticies per triangle  -- assuming unique verticies 
 			verticies = std::make_unique<std::vector<common::Vertex>>(shape.mesh.indices.size());
-			indicies = std::make_unique<std::vector<uint32_t>>(); 
+			const std::vector<tinyobj::index_t>& indicies = shape.mesh.indices;
+			triangles = std::make_unique<std::vector<common::Triangle>>(shape.mesh.material_ids.size()); 
 
+			counter = 0;
 			for (const auto& index : shape.mesh.indices) {
 				common::Vertex vertex{};
 				if (index.vertex_index >= 0) {
@@ -248,26 +253,50 @@ namespace star {
 				};
 
 				verticies->at(counter) = vertex;
-				indicies->push_back(indicies->size()); 
-				counter++; 
+				counter++;
+			}
+
+			for (size_t faceIndex = 0; faceIndex < shape.mesh.material_ids.size(); faceIndex++) {
+				for (int i = 0; i < 3; i++) {
+					dIndex = (3 * faceIndex) + i; 
+					triangleVerticies[i].pos = {
+						attrib.vertices[3 * indicies[dIndex].vertex_index + 0],
+						attrib.vertices[3 * indicies[dIndex].vertex_index + 1],
+						attrib.vertices[3 * indicies[dIndex].vertex_index + 2],
+					};
+					triangleVerticies[i].color = {
+						attrib.colors[3 * indicies[dIndex].vertex_index + 0],
+						attrib.colors[3 * indicies[dIndex].vertex_index + 1],
+						attrib.colors[3 * indicies[dIndex].vertex_index + 2],
+					};
+					triangleVerticies[i].normal = {
+						attrib.normals[3 * indicies[dIndex].vertex_index + 0],
+						attrib.normals[3 * indicies[dIndex].vertex_index + 1],
+						attrib.normals[3 * indicies[dIndex].vertex_index + 2],
+					};
+					triangleVerticies[i].texCoord = {
+						attrib.texcoords[2 * indicies[dIndex].texcoord_index + 0],
+						1.0f - attrib.texcoords[2 * indicies[dIndex].texcoord_index + 1 ]
+					};
+					//triangleVerticies[i].matAmbient = objectMaterials.at()
+				}
+
+				triangles->at(faceIndex) = common::Triangle(triangleVerticies); 
 			}
 
 			if (loadMaterials && shape.mesh.material_ids.at(shapeCounter) != -1) {
 				//apply material from files to mesh -- will ignore passed values 
 				meshes.at(shapeCounter) = std::move(common::Mesh::Builder()
-					.setIndicies(std::move(indicies))
-					.setVerticies(std::move(verticies))
+					.setTriangles(std::move(triangles))
 					.setMaterial(objectMaterialHandles.at(shape.mesh.material_ids[0]))
 					.build());
-				}
+			}
 			else {
 				meshes.at(shapeCounter) = std::move(common::Mesh::Builder()
-					.setIndicies(std::move(indicies))
-					.setVerticies(std::move(verticies))
+					.setTriangles(std::move(triangles))
 					.setMaterial(selectedMaterial)
 					.build());
 			}
-
 			shapeCounter++; 
 		}
 
