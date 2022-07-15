@@ -11,21 +11,25 @@ layout(location = 7) in float inFragMatShininess;
 
 layout(location = 0) out vec4 outColor;
 
+struct Light{
+	vec4 position;
+
+	//properties
+	vec4 ambient; 
+	vec4 diffuse;
+	vec4 specular; 
+};
+
 layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
 	mat4 proj;
 	mat4 view;  
 	mat4 inverseView; 
-	vec4 ambientLightColor; 
 	int numLights; 
 } globalUbo; 
  
-layout(binding = 1, set = 0) buffer uniformLightPositions{
-	vec4 values[];
-} lightPositions;
-
-layout(binding = 2, set = 0) buffer uniformLightColors{
-	vec4 values[];
-} lightColors; 
+ layout(binding = 1, set = 0) buffer objectMaterialsBuffer{
+	Light lights[];
+ } objectMaterials; 
 
 layout(binding = 0, set = 2) uniform sampler2D textureSampler; 
 
@@ -40,14 +44,14 @@ void main() {
 //	outColor = texture(texSampler, fragTexCoord);
 	for (int i = 0; i < globalUbo.numLights; i++){
 		//diffuse lighting calculation
-		vec3 directionToLight = lightPositions.values[i].xyz - inFragPositionWorld.xyz; 
+		vec3 directionToLight = objectMaterials.lights[i].position.xyz - inFragPositionWorld.xyz; 
 		float attenuation = 1.0 / dot(directionToLight, directionToLight);					//distance of direction vector squared
 
 		//need to normalize this after the attenuation calculation 
 		directionToLight = normalize(directionToLight); 
 
 		float cosAngleIncidence = max(dot(surfaceNormal, directionToLight), 0);
-		vec3 lightColor = lightColors.values[i].xyz * lightColors.values[i].w * attenuation;
+		vec3 lightColor = objectMaterials.lights[i].ambient.xyz * objectMaterials.lights[i].ambient.w * attenuation;
 
 		diffuseLight += lightColor * cosAngleIncidence; 
 
@@ -59,10 +63,10 @@ void main() {
 		//apply arbitrary power "s" -- high values results in sharper highlight
 		blinnTerm = pow(blinnTerm, inFragMatShininess); 
 
-		specularLight += lightColor * blinnTerm; 
+		specularLight += (objectMaterials.lights[i].specular.xyz * objectMaterials.lights[i].specular.w) * blinnTerm; 
 
 	}
-	vec3 ambientLight = (globalUbo.ambientLightColor.xyz * globalUbo.ambientLightColor.w) * inFragMatAmbient; 
+	vec3 ambientLight = vec3(1.0, 1.0, 1.0) * inFragMatAmbient; 
 	diffuseLight *= inFragMatDiffuse; 
 	specularLight *= inFragMatSpecular; 
 

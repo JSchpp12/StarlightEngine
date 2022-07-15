@@ -11,15 +11,17 @@ layout(location = 7) in float inMatShininess;
 
 struct light{
 	vec4 position;
-	vec4 diffuseColor;
-	vec4 ambientColor; 
+
+	//properties
+	vec4 ambient; 
+	vec4 diffuse;
+	vec4 specular; 
 };
 
 layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
 	mat4 proj;
 	mat4 view;  
 	mat4 inverseView; 
-	vec4 ambientLightColor; 
 	int numLights; 
 } globalUbo; 
 
