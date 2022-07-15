@@ -264,15 +264,16 @@ namespace star {
 						attrib.vertices[3 * indicies[dIndex].vertex_index + 1],
 						attrib.vertices[3 * indicies[dIndex].vertex_index + 2],
 					};
+
 					triangleVerticies[i].color = {
 						attrib.colors[3 * indicies[dIndex].vertex_index + 0],
 						attrib.colors[3 * indicies[dIndex].vertex_index + 1],
 						attrib.colors[3 * indicies[dIndex].vertex_index + 2],
 					};
 					triangleVerticies[i].normal = {
-						attrib.normals[3 * indicies[dIndex].vertex_index + 0],
-						attrib.normals[3 * indicies[dIndex].vertex_index + 1],
-						attrib.normals[3 * indicies[dIndex].vertex_index + 2],
+						attrib.normals[3 * indicies[dIndex].normal_index + 0],
+						attrib.normals[3 * indicies[dIndex].normal_index + 1],
+						attrib.normals[3 * indicies[dIndex].normal_index + 2],
 					};
 					triangleVerticies[i].texCoord = {
 						attrib.texcoords[2 * indicies[dIndex].texcoord_index + 0],
