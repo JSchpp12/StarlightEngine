@@ -3,6 +3,8 @@
 #include "SC/Light.hpp"
 #include "SC/Handle.hpp"
 #include "SC/GameObject.hpp"
+#include "SC/Triangle.hpp"
+#include "SC/Vertex.hpp"
 
 #include "ObjectManager.hpp"
 #include "MaterialManager.hpp"
@@ -31,7 +33,7 @@ namespace star {
 				Builder& setTexture(const common::Handle& texture);
 				Builder& setVerticies(const std::vector<glm::vec3>& verticies);
 				Builder& setIndicies(const std::vector<uint32_t>& indicies);
-				Builder& setMaterial(common::Material& material);
+				Builder& setMaterial(common::Handle& materialHandle);
 				Builder& setMaterialFilePath(const std::string& path); 
 				Builder& setTextureDirectory(const std::string& path); 
 				common::Handle build(bool loadMaterials = true);
@@ -47,7 +49,7 @@ namespace star {
 				common::Handle vertShader = common::Handle{ 0 };
 				common::Handle fragShader = common::Handle{ 1 };
 				common::Handle texture = common::Handle{ 0 };
-				common::Material* material = nullptr;
+				common::Handle* materialHandle = nullptr;
 				std::unique_ptr<std::string> path;
 				std::unique_ptr<std::string> materialFilePath;
 				std::unique_ptr<std::string> textureDirectory;
@@ -78,13 +80,19 @@ namespace star {
 
 
 		};
+		//TODO: change this to 'Materials'
 		class Material {
 		public:
 			class Builder {
 			public:
-				Builder(SceneBuilder& sceneBuilder) : sceneBuilder(sceneBuilder) {}
+				Builder(SceneBuilder& sceneBuilder) : sceneBuilder(sceneBuilder), 
+					diffuse(sceneBuilder.defaultMaterial->diffuse), 
+					specular(sceneBuilder.defaultMaterial->specular) {}
 				Builder& setSurfaceColor(const glm::vec4& surfaceColor);
 				Builder& setHighlightColor(const glm::vec4& highlightColor);
+				Builder& setAmbient(const glm::vec4& ambient);
+				Builder& setDiffuse(const glm::vec4& diffuse); 
+				Builder& setSpecular(const glm::vec4& specular); 
 				Builder& setShinyCoefficient(const int& shinyCoefficient);
 				Builder& setTexture(common::Handle texture); 
 				common::Handle build();
@@ -94,6 +102,9 @@ namespace star {
 				SceneBuilder& sceneBuilder;
 				glm::vec4 surfaceColor = sceneBuilder.defaultMaterial->surfaceColor;
 				glm::vec4 highlightColor = sceneBuilder.defaultMaterial->highlightColor; 
+				glm::vec4 diffuse; 
+				glm::vec4 specular; 
+				glm::vec4 ambient; 
 				int shinyCoefficient = sceneBuilder.defaultMaterial->shinyCoefficient;
 				common::Handle texture; 
 			};
@@ -112,15 +123,17 @@ namespace star {
 		core::MaterialManager& materialManager; 
 		core::TextureManager& textureManager; 
 
-		//defaults 
+		//defaults -- TODO: remove this in favor of each manager having its own default 
 		common::Material* defaultMaterial = nullptr; 
 
 		common::Handle addObject(const std::string& pathToFile, glm::vec3& position, glm::vec3& scaleAmt, 
-			common::Material* material, common::Handle& vertShader,
+			common::Handle* materialHandle, common::Handle& vertShader,
 			common::Handle& fragShader, bool loadMaterials, 
 			std::string* materialFilePath, std::string* textureDir);
 
-		common::Handle addMaterial(const glm::vec4& surfaceColor, const glm::vec4& hightlightColor, const int& shinyCoefficient, common::Handle* texture);
+		common::Handle addMaterial(const glm::vec4& surfaceColor, const glm::vec4& hightlightColor, const glm::vec4& ambient, 
+			const glm::vec4& diffuse, const glm::vec4& specular,
+			const int& shinyCoefficient, common::Handle* texture);
  
 		friend class common::Mesh::Builder; 
 		friend class GameObjects::Builder;
