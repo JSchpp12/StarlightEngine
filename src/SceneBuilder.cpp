@@ -108,7 +108,7 @@ namespace star {
 	}
 	common::Handle SceneBuilder::Material::Builder::build() {
 		return this->sceneBuilder.addMaterial(this->surfaceColor, this->highlightColor, this->diffuse,
-			this->ambient, this->diffuse, this->shinyCoefficient,&this->texture);
+			this->diffuse, this->specular, this->shinyCoefficient,&this->texture);
 	}
 	common::Material& SceneBuilder::Material::Builder::buildGet() {
 		common::Handle newHandle = this->sceneBuilder.addMaterial(this->surfaceColor, this->highlightColor, this->ambient, this->diffuse,
