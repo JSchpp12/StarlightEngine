@@ -27,13 +27,7 @@ layout(binding = 2, set = 0) buffer uniformLightColors{
 	vec4 values[];
 } lightColors; 
 
-layout(binding = 0, set = 2) buffer  bufferObjectMaterial{
-	vec4 surfaceColor; 
-	vec4 highlightColor; 
-	int shinyCoefficient; 
-} objectMaterial; 
-
-layout(binding = 1, set = 2) uniform sampler2D textureSampler; 
+layout(binding = 0, set = 2) uniform sampler2D textureSampler; 
 
 void main() {
 	vec3 diffuseLight = vec3(0.0);  
