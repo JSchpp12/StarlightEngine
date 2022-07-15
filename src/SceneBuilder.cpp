@@ -10,6 +10,10 @@ namespace star {
 		this->position = position;
 		return *this;
 	}
+	SceneBuilder::GameObjects::Builder& SceneBuilder::GameObjects::Builder::setColor(const glm::vec4& color) {
+		this->color = &color; 
+		return *this;
+	}
 	SceneBuilder::GameObjects::Builder& SceneBuilder::GameObjects::Builder::setScale(const glm::vec3 scale) {
 		this->scale = scale;
 		return *this;
@@ -74,43 +78,77 @@ namespace star {
 #pragma endregion
 
 	/* Lights */
+	SceneBuilder::Lights::Builder& SceneBuilder::Lights::Builder::setType(const common::Type::Light& type) {
+		this->type = &type;
+		return *this; 
+	}
+	SceneBuilder::Lights::Builder& SceneBuilder::Lights::Builder::setLinkedObject(const common::Handle& linkedObject) {
+		this->linkedHandle = &linkedObject; 
+		return *this; 
+	}
+	SceneBuilder::Lights::Builder& SceneBuilder::Lights::Builder::setPosition(const glm::vec3& position) {
+		//TODO: need to handle which object (light/Linked GO) will be used for the position 
+		this->position = &position; 
+		return *this; 
+	}
+	SceneBuilder::Lights::Builder& SceneBuilder::Lights::Builder::setAmbient(const glm::vec4& ambient) {
+		this->ambient = &ambient; 
+		return *this; 
+	}
+	SceneBuilder::Lights::Builder& SceneBuilder::Lights::Builder::setDiffuse(const glm::vec4& diffuse) {
+		this->diffuse = &diffuse; 
+		return *this; 
+	}
+	SceneBuilder::Lights::Builder& SceneBuilder::Lights::Builder::setSpecular(const glm::vec4& specular)
+	{
+		this->specular = &specular; 
+		return *this; 
+	}	
+	common::Handle SceneBuilder::Lights::Builder::build() {
+		assert(this->position && this->type && "A light must have a position and type"); 
 
+		if (this->linkedHandle != nullptr) {
+			return this->sceneBuilder.addLight(*this->type, *this->position, *this->linkedHandle, this->ambient, this->diffuse, this->specular);
+		}
+		return this->sceneBuilder.addLight(*this->type, *this->position, this->ambient, this->diffuse, this->specular);
+	}
+	
 	/* Material */
 
-	SceneBuilder::Material::Builder& SceneBuilder::Material::Builder::setSurfaceColor(const glm::vec4& surfaceColor) {
+	SceneBuilder::Materials::Builder& SceneBuilder::Materials::Builder::setSurfaceColor(const glm::vec4& surfaceColor) {
 		this->surfaceColor = surfaceColor;
 		return *this; 
 	}
-	SceneBuilder::Material::Builder& SceneBuilder::Material::Builder::setHighlightColor(const glm::vec4& highlightColor)
+	SceneBuilder::Materials::Builder& SceneBuilder::Materials::Builder::setHighlightColor(const glm::vec4& highlightColor)
 	{
 		this->highlightColor = highlightColor; 
 		return *this; 
 	}
-	SceneBuilder::Material::Builder& SceneBuilder::Material::Builder::setAmbient(const glm::vec4& ambient) {
+	SceneBuilder::Materials::Builder& SceneBuilder::Materials::Builder::setAmbient(const glm::vec4& ambient) {
 		this->ambient = ambient; 
 		return *this; 
 	}
-	SceneBuilder::Material::Builder& SceneBuilder::Material::Builder::setDiffuse(const glm::vec4& diffuse) {
+	SceneBuilder::Materials::Builder& SceneBuilder::Materials::Builder::setDiffuse(const glm::vec4& diffuse) {
 		this->diffuse = diffuse; 
 		return *this; 
 	}
-	SceneBuilder::Material::Builder& SceneBuilder::Material::Builder::setSpecular(const glm::vec4& specular) {
+	SceneBuilder::Materials::Builder& SceneBuilder::Materials::Builder::setSpecular(const glm::vec4& specular) {
 		this->specular = specular; 
 		return *this; 
 	}
-	SceneBuilder::Material::Builder& SceneBuilder::Material::Builder::setShinyCoefficient(const int& shinyCoefficient) {
+	SceneBuilder::Materials::Builder& SceneBuilder::Materials::Builder::setShinyCoefficient(const int& shinyCoefficient) {
 		this->shinyCoefficient = shinyCoefficient; 
 		return *this; 
 	}
-	SceneBuilder::Material::Builder& SceneBuilder::Material::Builder::setTexture(common::Handle texture) {
+	SceneBuilder::Materials::Builder& SceneBuilder::Materials::Builder::setTexture(common::Handle texture) {
 		this->texture = texture; 
 		return *this;
 	}
-	common::Handle SceneBuilder::Material::Builder::build() {
+	common::Handle SceneBuilder::Materials::Builder::build() {
 		return this->sceneBuilder.addMaterial(this->surfaceColor, this->highlightColor, this->diffuse,
 			this->diffuse, this->specular, this->shinyCoefficient,&this->texture);
 	}
-	common::Material& SceneBuilder::Material::Builder::buildGet() {
+	common::Material& SceneBuilder::Materials::Builder::buildGet() {
 		common::Handle newHandle = this->sceneBuilder.addMaterial(this->surfaceColor, this->highlightColor, this->ambient, this->diffuse,
 			this->specular, this->shinyCoefficient, 
 			&this->texture); 
@@ -121,10 +159,26 @@ namespace star {
 
 	/* Scene Builder */
 
+	common::GameObject& SceneBuilder::getObject(const common::Handle& handle) {
+		if (handle.type & common::Handle_Type::object) {
+			return this->objectManager.get(handle);
+		}
+
+		throw std::runtime_error("Requested handle is not a game object handle");
+	}
+
+	common::Material& SceneBuilder::getMaterial(const common::Handle& handle) {
+		if (handle.type & common::Handle_Type::material) {
+			return this->materialManager.get(handle);
+		}
+
+		throw std::runtime_error("Requested handle is not a material handle");
+	}
+
 	common::Handle SceneBuilder::addObject(const std::string& pathToFile, glm::vec3& position, glm::vec3& scaleAmt,
 		common::Handle* materialHandle, common::Handle& vertShader,
 		common::Handle& fragShader, bool loadMaterials, 
-		std::string* materialFilePath, std::string* textureDir) {
+		std::string* materialFilePath, std::string* textureDir, const glm::vec4* color) {
 		std::unique_ptr<common::GameObject> object;
 		std::string materialFile = !materialFilePath ? common::FileHelpers::GetBaseFileDirectory(pathToFile) : *materialFilePath;
 		std::string texturePath = textureDir != nullptr ? *textureDir : common::FileHelpers::GetBaseFileDirectory(pathToFile);
@@ -176,7 +230,7 @@ namespace star {
 			for (size_t i = 0; i < materials.size(); i++) {
 				currMaterial = &materials.at(i);
 				loadMaterialTexture = this->textureManager.add(texturePath + common::FileHelpers::GetFileNameWithExtension(currMaterial->diffuse_texname));
-				objectMaterialHandles.push_back(Material::Builder(*this)
+				objectMaterialHandles.push_back(Materials::Builder(*this)
 					.setTexture(loadMaterialTexture)
 					.setDiffuse(glm::vec4{
 						currMaterial->diffuse[0], 
@@ -221,11 +275,21 @@ namespace star {
 						attrib.vertices[3 * index.vertex_index + 2]
 					};
 
-					vertex.color = {
-						attrib.colors[3 * index.vertex_index + 0],
-						attrib.colors[3 * index.vertex_index + 1],
-						attrib.colors[3 * index.vertex_index + 2],
-					};
+					if (color == nullptr) {
+						vertex.color = {
+							attrib.colors[3 * index.vertex_index + 0],
+							attrib.colors[3 * index.vertex_index + 1],
+							attrib.colors[3 * index.vertex_index + 2],
+						};
+					}
+					else {
+						//use color provided
+						vertex.color = {
+							color->r,
+							color->g,
+							color->b
+						};
+					}
 				}
 
 				if (index.normal_index >= 0) {
@@ -321,19 +385,16 @@ namespace star {
 		return this->materialManager.add(surfaceColor, hightlightColor, ambient, diffuse, specular, shinyCoefficient); 
 	}
 
-	common::GameObject& SceneBuilder::getObject(const common::Handle& handle) {
-		if (handle.type & common::Handle_Type::object) {
-			return this->objectManager.get(handle); 
-		}
-
-		throw std::runtime_error("Requested handle is not a game object handle");
+	common::Handle SceneBuilder::addLight(const common::Type::Light& type, const glm::vec3& position, const common::Handle& linkedHandle, 
+		const glm::vec4* ambient, const glm::vec4* diffuse, 
+		const glm::vec4* specular) {
+		auto& linkedObject = this->objectManager.get(linkedHandle); 
+		linkedObject.setPosition(position); 
+		return this->lightManager.addResource(std::make_unique<common::Light>(type, position, linkedObject.getScale(), linkedHandle, linkedObject, ambient, diffuse, specular));
 	}
 
-	common::Material& SceneBuilder::getMaterial(const common::Handle& handle) {
-		if (handle.type & common::Handle_Type::material) {
-			return this->materialManager.get(handle); 
-		}
-		
-		throw std::runtime_error("Requested handle is not a material handle");
+	common::Handle SceneBuilder::addLight(const common::Type::Light& type, const glm::vec3& position, const glm::vec4* ambient,
+		const glm::vec4* diffuse, const glm::vec4* specular) {
+		return this->lightManager.addResource(std::make_unique<common::Light>(type, position, ambient, diffuse, specular));
 	}
 }

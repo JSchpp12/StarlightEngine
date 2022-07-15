@@ -44,7 +44,7 @@ int main() {
     std::unique_ptr<std::vector<common::Handle>> lightList(new std::vector<star::common::Handle>()); 
     std::unique_ptr<star::CameraController> camera(new star::CameraController());
 
-    SceneBuilder sceneBuilder(*objectManager, *materialManager, *textureManager); 
+    SceneBuilder sceneBuilder(*objectManager, *materialManager, *textureManager, *lightManager); 
 
     auto application = star::TextureApp(configFile.get(), objectList.get(), lightList.get(), 
         shaderManager.get(), textureManager.get(), lightManager.get(), sceneBuilder,
@@ -54,7 +54,7 @@ int main() {
     //TODO: implement better management system 
     std::vector<star::common::Light*> mainLightList(lightList->size());
     for (size_t i = 0; i < lightList->size(); i++) {
-        mainLightList.at(i) = lightManager->Get(lightList->at(i)); 
+        mainLightList.at(i) = &lightManager->getResource(lightList->at(i)); 
     }
      
     //prepare renderer 
