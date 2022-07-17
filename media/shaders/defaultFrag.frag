@@ -26,12 +26,12 @@ layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
 	mat4 inverseView; 
 	int numLights; 
 } globalUbo; 
- 
- layout(binding = 1, set = 0) buffer objectMaterialsBuffer{
-	Light lights[];
- } objectMaterials; 
 
-layout(binding = 0, set = 2) uniform sampler2D textureSampler; 
+ layout(binding = 0, set = 2) buffer globalLightBuffer{
+	Light lights[];
+ };
+
+layout(binding = 1, set = 2) uniform sampler2D textureSampler; 
 
 void main() {
 	vec3 diffuseLight = vec3(0.0);  
@@ -44,14 +44,14 @@ void main() {
 //	outColor = texture(texSampler, fragTexCoord);
 	for (int i = 0; i < globalUbo.numLights; i++){
 		//diffuse lighting calculation
-		vec3 directionToLight = objectMaterials.lights[i].position.xyz - inFragPositionWorld.xyz; 
+		vec3 directionToLight = lights[i].position.xyz - inFragPositionWorld.xyz; 
 		float attenuation = 1.0 / dot(directionToLight, directionToLight);					//distance of direction vector squared
 
 		//need to normalize this after the attenuation calculation 
 		directionToLight = normalize(directionToLight); 
 
 		float cosAngleIncidence = max(dot(surfaceNormal, directionToLight), 0);
-		vec3 lightColor = objectMaterials.lights[i].ambient.xyz * objectMaterials.lights[i].ambient.w * attenuation;
+		vec3 lightColor = lights[i].ambient.xyz * lights[i].ambient.w * attenuation;
 
 		diffuseLight += lightColor * cosAngleIncidence; 
 
@@ -63,7 +63,7 @@ void main() {
 		//apply arbitrary power "s" -- high values results in sharper highlight
 		blinnTerm = pow(blinnTerm, inFragMatShininess); 
 
-		specularLight += (objectMaterials.lights[i].specular.xyz * objectMaterials.lights[i].specular.w) * blinnTerm; 
+		specularLight += (lights[i].specular.xyz * lights[i].specular.w) * blinnTerm; 
 
 	}
 	vec3 ambientLight = vec3(1.0, 1.0, 1.0) * inFragMatAmbient; 

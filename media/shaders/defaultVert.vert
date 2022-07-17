@@ -9,15 +9,6 @@ layout(location = 5) in vec3 inMatDiffuse;
 layout(location = 6) in vec3 inMatSpecular; 
 layout(location = 7) in float inMatShininess; 
 
-struct light{
-	vec4 position;
-
-	//properties
-	vec4 ambient; 
-	vec4 diffuse;
-	vec4 specular; 
-};
-
 layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
 	mat4 proj;
 	mat4 view;  
@@ -25,7 +16,7 @@ layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
 	int numLights; 
 } globalUbo; 
 
-//can varry material by vertex 
+//TODO: combine with above 
 layout(binding = 0, set = 1) uniform uniformBufferObject{
 	mat4 modelMatrix; 
 	mat4 normalModelMatrix; 
