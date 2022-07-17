@@ -27,7 +27,7 @@ layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
 	int numLights; 
 } globalUbo; 
 
- layout(binding = 0, set = 2) buffer globalLightBuffer{
+ layout(binding = 1, set = 0) buffer globalLightBuffer{
 	Light lights[];
  };
 
@@ -68,7 +68,7 @@ void main() {
 	}
 	vec3 ambientLight = vec3(1.0, 1.0, 1.0) * inFragMatAmbient; 
 	diffuseLight *= inFragMatDiffuse; 
-	specularLight *= inFragMatSpecular; 
+//	specularLight *= inFragMatSpecular; 
 
 
 	vec3 totalSurfaceColor = (ambientLight + diffuseLight + specularLight) * vec3(texture(textureSampler, inFragTextureCoordinate)); 
