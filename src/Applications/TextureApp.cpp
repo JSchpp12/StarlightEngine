@@ -17,6 +17,7 @@ void star::TextureApp::Load() {
             .setPath(objectPath)
             .setPosition(glm::vec3{1.0f, -0.95f, 0.5f})
             .setScale(glm::vec3{ 0.04f, 0.04f, 0.04f })
+            .overrideAmbient(glm::vec3{0.5f, 0.5f, 0.5f})
             .build(true)
         );
     }
@@ -38,31 +39,98 @@ void star::TextureApp::Load() {
         this->objectList->push_back(SceneBuilder::GameObjects::Builder(this->sceneBuilder)
             .setPath(objectPath)
             .setPosition(glm::vec3{ 0.0f, -0.4f, 0.0f })
-            .setScale(glm::vec3{0.01f, 0.01f, 0.01f})
+            .setScale(glm::vec3{ 0.01f, 0.01f, 0.01f })
             .setMaterialFilePath(mediaDirectoryPath + "models/table/")
             .setTextureDirectory(mediaDirectoryPath + "models/table/textures/")
             .build());
     }
+    //rock
+    {
+        auto objectPath = mediaDirectoryPath + "models/rock/898927_rock.obj";
+        this->objectList->push_back(SceneBuilder::GameObjects::Builder(this->sceneBuilder)
+            .setPath(objectPath)
+            .setPosition(glm::vec3{ 0.0f, 0.0f, 0.0f })
+            .setScale(glm::vec3{0.05f, 0.05f, 0.05f})
+            .overrideDiffuse(glm::vec3{10.0f, 10.0f, 10.0f})
+            .overrideSpecular(glm::vec3{10.0f, 10.0f, 10.0f})
+            .overrideShiny(512)
+            .setMaterial(SceneBuilder::Materials::Builder(this->sceneBuilder)
+                .setTexture(this->textureManager->add(common::FileHelpers::GetBaseFileDirectory(objectPath) + "textures/rock_low_Base_Color.png"))
+                .build())
+            .build());        
+    }
 
     {
-        //load light
-        this->lightList->push_back(this->lightManager->Add(common::Type::Light::point, glm::vec3{ 0.0f, 0.4f, 0.0f }, glm::vec4{ 1.0f, 1.0f, 1.0f, 5.0f }));
-        this->pointLight = this->lightManager->Get(this->lightList->at(0));
-        this->lightList->push_back(this->lightManager->Add(common::Type::Light::directional, glm::vec3{}, glm::vec4{ 1.0f, 1.0f, 1.0f, 0.5f }));
-
         auto objectPath = mediaDirectoryPath + "models/icoSphere/low_poly_icoSphere.obj";
         auto vertShaderPath = mediaDirectoryPath + "models/icoSphere/icoSphere.vert";
         auto fragShaderPath = mediaDirectoryPath + "models/icoSphere/icoSphere.frag";
 
-        this->pointLight->setLinkedObjectHandle(SceneBuilder::GameObjects::Builder(this->sceneBuilder)
-            .setPath(objectPath)
-            .setScale(glm::vec3{ 0.07f, 0.07f, 0.07f })
-            .setPosition(this->pointLight->getPosition())
-            .setVertShader(this->shaderManager->add(vertShaderPath))
-            .setFragShader(this->shaderManager->add(fragShaderPath))
-            .build(false));
-        this->pointLight->setScale(glm::vec3{ 0.07f, 0.07f, 0.07f });
-        this->pointLight->setLinkedObject(this->sceneBuilder.getObject(this->pointLight->getLinkedObjectHandle()));
+        //load light
+        this->lightList->push_back(SceneBuilder::Lights::Builder(this->sceneBuilder)
+            .setType(common::Type::Light::point)
+            .setPosition(glm::vec3{ -2.0f, 2.0f, 0.0f })
+            .setAmbient(glm::vec4{ 1.0f, 1.0f, 0.1f, 0.2f })
+            .setDiffuse(glm::vec4{ 1.0f, 1.0f, 0.1f, 0.0f })
+            .setSpecular(glm::vec4{ 1.0f, 1.0f, 0.1f, 5.0f })
+            .setLinkedObject(SceneBuilder::GameObjects::Builder(this->sceneBuilder)
+                .setPath(objectPath)
+                .setScale(glm::vec3{ 0.07f, 0.07f, 0.07f })
+                .setColor(glm::vec4{ 1.0f, 1.0f, 0.0f, 1.0f })
+                .setVertShader(this->shaderManager->add(vertShaderPath))
+                .setFragShader(this->shaderManager->add(fragShaderPath))
+                .build(false))
+            .build());
+
+        this->lightList->push_back(SceneBuilder::Lights::Builder(this->sceneBuilder)
+            .setType(common::Type::Light::point)
+            .setPosition(glm::vec3{0.4f, 0.4f, 0.0f})
+            .setAmbient(glm::vec4{ 1.0f, 0.0f, 0.0f, 0.01f })
+            .setDiffuse(glm::vec4{ 1.0f, 0.0f, 0.0f, 20.0f })
+            .setSpecular(glm::vec4{ 1.0f, 0.0f, 0.0f, 2.0f })
+            .setLinkedObject(SceneBuilder::GameObjects::Builder(this->sceneBuilder)
+                .setPath(objectPath)
+                .setScale(glm::vec3{ 0.07f, 0.07f, 0.07f })
+                .setColor(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f })
+                .setVertShader(this->shaderManager->add(vertShaderPath))
+                .setFragShader(this->shaderManager->add(fragShaderPath))
+                .build(false))
+            .build());
+        this->lightList->push_back(SceneBuilder::Lights::Builder(this->sceneBuilder)
+            .setType(common::Type::Light::point)
+            .setPosition(glm::vec3{ -1.0f, 0.4f, 0.5f })
+            .setAmbient(glm::vec4{ 0.0f, 0.0f, 1.0f, 0.15f })
+            .setDiffuse(glm::vec4{ 0.0f, 0.0f, 1.0f, 0.5f })
+            .setSpecular(glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f })
+            .setLinkedObject(SceneBuilder::GameObjects::Builder(this->sceneBuilder)
+                .setPath(objectPath)
+                .setScale(glm::vec3{ 0.07f, 0.07f, 0.07f })
+                .setColor(glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f })
+                .setVertShader(this->shaderManager->add(vertShaderPath))
+                .setFragShader(this->shaderManager->add(fragShaderPath))
+                .build(false))
+            .build());
+        //this->lightList->push_back(SceneBuilder::Lights::Builder(this->sceneBuilder)
+        //    .setType(common::Type::Light::point)
+        //    .setPosition(glm::vec3{ 1.0f, 0.4f, -0.2f })
+        //    .setAmbient(glm::vec4{ 0.5f, 1.0f, 1.0f, 0.5f })
+        //    .setDiffuse(glm::vec4{ 0.5f, 1.0f, 1.0f, 5.0f })
+        //    .setSpecular(glm::vec4{ 1.0f, 1.0f, 1.0f, 0.5f })
+        //    .setPosition(glm::vec3{ 1.0f, 1.0f, 0.0f })
+        //    .setLinkedObject(SceneBuilder::GameObjects::Builder(this->sceneBuilder)
+        //        .setPath(objectPath)
+        //        .setScale(glm::vec3{ 0.07f, 0.07f, 0.07f })
+        //        .setColor(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f })
+        //        .setVertShader(this->shaderManager->add(vertShaderPath))
+        //        .setFragShader(this->shaderManager->add(fragShaderPath))
+        //        .build(false))
+        //    .build());
+        //this->lightList->push_back(SceneBuilder::Lights::Builder(this->sceneBuilder)
+        //    .setType(common::Type::Light::directional)
+        //    .setPosition(glm::vec3{ 0.0f, 0.4f, 0.0f })
+        //    .setAmbient(glm::vec4{ 1.0f, 1.0f, 1.0f, 0.1f })
+        //    .setDiffuse(glm::vec4{ 1.0f, 1.0f, 1.0f, 5.0f })
+        //    .setSpecular(glm::vec4{ 1.0f, 1.0f, 1.0f, 5.0f })
+        //    .build());
     }
 }
 
