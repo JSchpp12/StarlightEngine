@@ -22,6 +22,10 @@ layout(binding = 0, set = 1) uniform uniformBufferObject{
 	mat4 normalModelMatrix; 
 } objectUbo;
 
+//layout(binding = 0, set = 2) uniform ObjectRenderingOptions{
+//	bool useTexture;
+//};
+
 layout(location = 0) out vec3 fragColor; 
 layout(location = 1) out vec2 fragTextureCoordinate; 
 layout(location = 2) out vec3 fragPositionWorld;	//fragment's position in world space
