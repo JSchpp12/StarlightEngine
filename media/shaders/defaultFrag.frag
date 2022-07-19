@@ -35,7 +35,7 @@ layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
 //	bool useTexture;
 //};
 
-layout(binding = 1, set = 2) uniform sampler2D textureSampler; 
+layout(binding = 0, set = 2) uniform sampler2D textureSampler; 
 
 void main() {
 	vec3 ambientLight = vec3(0.0); 
