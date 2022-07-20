@@ -1,6 +1,7 @@
 #include "SC/Application.hpp"
 #include "SC/Time.hpp"
 #include "SC/Camera.hpp"
+#include "SC/RenderOptions.hpp"
 
 #include "StarlightEngine.h"
 #include "ShaderManager.h"
@@ -35,6 +36,7 @@ int main() {
     auto defaultFragShader = configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "shaders/defaultFrag.frag";
     auto defaultCube = configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "models/cube/cub.obj";
     auto defaultCubeTexture = configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "models/cube/cubeTexture.png";
+    std::unique_ptr<star::common::RenderOptions> renderOptions(new star::common::RenderOptions); 
     std::unique_ptr<star::core::ShaderManager> shaderManager(new star::core::ShaderManager(defaultVertShader, defaultFragShader));
     std::unique_ptr<star::core::ObjectManager> objectManager(new star::core::ObjectManager());
     std::unique_ptr<star::core::TextureManager> textureManager(new star::core::TextureManager(configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "images/texture.png"));
@@ -59,7 +61,7 @@ int main() {
      
     //prepare renderer 
     auto window = star::core::StarWindow(WIDTH, HEIGHT, "Starlight", star::InteractionSystem::glfwKeyHandle, star::InteractionSystem::glfwMouseButtonCallback, star::InteractionSystem::glfwMouseMovement, star::InteractionSystem::glfwScrollCallback);
-    auto renderer = star::core::VulkanRenderer(*configFile, *shaderManager, *objectManager, *textureManager, *materialManager, *camera, *objectList, mainLightList, window);
+    auto renderer = star::core::VulkanRenderer(*configFile, *renderOptions, *shaderManager, *objectManager, *textureManager, *materialManager, *camera, *objectList, mainLightList, window);
     renderer.prepare();
 
     //register user application callbacks
