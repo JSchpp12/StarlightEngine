@@ -16,6 +16,14 @@ namespace star {
 				std::cout << "Enabling render material option: draw ambient property" << std::endl; 
 				renderOptions.setRenderMaterialSetting(common::Render_Settings::ambient);
 			}
+			else if (key == GLFW_KEY_2) {
+				std::cout << "Enabling render material option: draw diffuse property" << std::endl;
+				renderOptions.setRenderMaterialSetting(common::Render_Settings::diffuse); 
+			}
+			else if (key == GLFW_KEY_3) {
+				std::cout << "Enabling render material option: draw specular property" << std::endl; 
+				renderOptions.setRenderMaterialSetting(common::Render_Settings::specular); 
+			}
 		}
 	}
 	void OptionsController::printHelp()
@@ -24,5 +32,7 @@ namespace star {
 		std::cout << "Controls: " << std::endl;
 		std::cout << "NUM: 0 - Normal Draw" << std::endl;
 		std::cout << "NUM: 1 - Draw Ambient Properties" << std::endl;
+		std::cout << "NUM: 2 - Draw Diffuse Properties" << std::endl; 
+		std::cout << "NUM: 3 - Draw Specular Properties" << std::endl; 
 	}
 }

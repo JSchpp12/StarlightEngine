@@ -46,7 +46,6 @@ int main() {
     std::unique_ptr<std::vector<star::common::Handle>> objectList(new std::vector<star::common::Handle>());
     std::unique_ptr<std::vector<common::Handle>> lightList(new std::vector<star::common::Handle>()); 
     std::unique_ptr<star::CameraController> camera(new star::CameraController());
-    std::unique_ptr<star::OptionsController> optionsController(new star::OptionsController(*renderOptions)); 
 
     SceneBuilder sceneBuilder(*objectManager, *materialManager, *textureManager, *lightManager); 
 
@@ -54,6 +53,8 @@ int main() {
         shaderManager.get(), textureManager.get(), lightManager.get(), sceneBuilder,
         camera.get());
     application.Load();
+
+    std::unique_ptr<star::OptionsController> optionsController(new star::OptionsController(*renderOptions));
 
     //TODO: implement better management system 
     std::vector<star::common::Light*> mainLightList(lightList->size());
