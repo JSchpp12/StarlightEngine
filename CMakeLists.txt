@@ -50,7 +50,7 @@ set(${PROJECT_NAME}_SOURCE
 	"src/StarlightEngine.cpp"
 	"src/Callback.cpp"
 	"src/CameraController.cpp"
-	"src/Controller.cpp"
+	"src/OptionsController.cpp"
 	"src/InteractionSystem.cpp"
 	"src/SceneBuilder.cpp"
 	#applications
@@ -64,7 +64,7 @@ set(${PROJECT_NAME}_HEADERS
 	"src/StarlightEngine.h"
 	"src/Callback.h"
 	"src/CameraController.h" 
-	"src/Controller.h"
+	"src/OptionsController.h"
 	"src/InteractionSystem.h"
 	"src/SceneBuilder.hpp"
 	#applications

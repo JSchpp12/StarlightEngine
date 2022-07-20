@@ -12,6 +12,7 @@
 #include "BasicVulkanRenderer.h"
 #include "InteractionSystem.h"
 #include "CameraController.h"
+#include "OptionsController.h"
 #include "Star_Window.hpp"
 
 #include "TextureApp.h"
@@ -45,6 +46,7 @@ int main() {
     std::unique_ptr<std::vector<star::common::Handle>> objectList(new std::vector<star::common::Handle>());
     std::unique_ptr<std::vector<common::Handle>> lightList(new std::vector<star::common::Handle>()); 
     std::unique_ptr<star::CameraController> camera(new star::CameraController());
+    std::unique_ptr<star::OptionsController> optionsController(new star::OptionsController(*renderOptions)); 
 
     SceneBuilder sceneBuilder(*objectManager, *materialManager, *textureManager, *lightManager); 
 
@@ -88,6 +90,9 @@ int main() {
 
     std::unique_ptr<std::function<void(int, int, int)>> camMouseButtonCallback = std::make_unique<std::function<void(int, int, int)>>(std::bind(&star::CameraController::Interactivity::mouseButtonCallback, camera.get(), std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)); 
     star::InteractionSystem::registerMouseButtonCallback(std::move(camMouseButtonCallback)); 
+
+    std::unique_ptr<std::function<void(int, int, int, int)>> optionsButtonCallback = std::make_unique<std::function<void(int, int, int, int)>>(std::bind(&star::OptionsController::Interactivity::keyCallback, optionsController.get(), std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4)); 
+    star::InteractionSystem::registerKeyCallback(std::move(optionsButtonCallback)); 
 
     try {
         //init time 
