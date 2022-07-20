@@ -10,16 +10,12 @@ layout(location = 5) in vec3 inMatDiffuse;
 layout(location = 6) in vec3 inMatSpecular; 
 layout(location = 7) in float inMatShininess; 
 
-struct RenderSettings{
-	bool drawMatAmbient; 
-}; 
-
 layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
 	mat4 proj;
 	mat4 view;  
 	mat4 inverseView; 
 	int numLights;
-	RenderSettings renderSettings; 
+	int renderSettings; 
 } globalUbo; 
 
 //TODO: combine with above 

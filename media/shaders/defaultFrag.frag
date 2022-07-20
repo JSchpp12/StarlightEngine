@@ -12,8 +12,9 @@ layout(location = 7) in float inFragMatShininess;
 layout(location = 0) out vec4 outColor;
 
 struct RenderSettings{
-	bool drawMatAmbient; 
-}; 
+	uint draw;				//standard draw
+	uint drawMatAmbient;  
+};
 
 struct Light{
 	vec4 position;
@@ -28,8 +29,8 @@ layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
 	mat4 proj;
 	mat4 view;  
 	mat4 inverseView; 
-	int numLights; 
-	RenderSettings renderSettings;
+	uint numLights; 
+	uint renderSettings;
 } globalUbo; 
 
  layout(binding = 1, set = 0) buffer globalLightBuffer{
@@ -42,6 +43,14 @@ layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
 
 layout(binding = 0, set = 2) uniform sampler2D textureSampler; 
 
+RenderSettings generateDefaultSettings(){
+	RenderSettings settings = {
+		0, 
+		1
+	};
+	return(settings);
+}
+
 void main() {
 	vec3 ambientLight = vec3(0.0); 
 	vec3 diffuseLight = vec3(0.0);  
@@ -51,40 +60,46 @@ void main() {
 	vec3 cameraPosWorld = globalUbo.inverseView[3].xyz; 
 	vec3 viewDirection = normalize(cameraPosWorld - inFragPositionWorld); 
 
-	for (int i = 0; i < globalUbo.numLights; i++){
-		//distance calculations 
-		vec3 directionToLight = lights[i].position.xyz - inFragPositionWorld.xyz; 
-		float attenuation = 1.0 / dot(directionToLight, directionToLight);					//distance of direction vector squared
+	RenderSettings settings = generateDefaultSettings(); 
 
-		//ambient light 
-		ambientLight += (lights[i].ambient.xyz * lights[i].ambient.w) * attenuation; 
+	if (globalUbo.renderSettings == 0){
+		for (int i = 0; i < globalUbo.numLights; i++){
+			//distance calculations 
+			vec3 directionToLight = lights[i].position.xyz - inFragPositionWorld.xyz; 
+			float attenuation = 1.0 / dot(directionToLight, directionToLight);					//distance of direction vector squared
 
-		//need to normalize this after the attenuation calculation 
-		directionToLight = normalize(directionToLight); 
+			//ambient light 
+			ambientLight += (lights[i].ambient.xyz * lights[i].ambient.w) * attenuation; 
 
-		float cosAngleIncidence = max(dot(surfaceNormal, directionToLight), 0);
-		vec3 lightColor = lights[i].ambient.xyz * lights[i].ambient.w * attenuation;
+			//need to normalize this after the attenuation calculation 
+			directionToLight = normalize(directionToLight); 
 
-		//diffuse light 
-		diffuseLight += (lightColor * cosAngleIncidence) * attenuation; 
+			float cosAngleIncidence = max(dot(surfaceNormal, directionToLight), 0);
+			vec3 lightColor = lights[i].ambient.xyz * lights[i].ambient.w * attenuation;
 
-		//specular light
-		vec3 halfAngle = normalize(directionToLight + viewDirection); 
-		float blinnTerm = dot(surfaceNormal, halfAngle); 
-		blinnTerm = clamp(blinnTerm, 0, 1);	
-		blinnTerm = cosAngleIncidence != 0.0 ? blinnTerm : 0; 
-		//apply arbitrary power "s" -- high values results in sharper highlight
-		blinnTerm = pow(blinnTerm, inFragMatShininess); 
+			//diffuse light 
+			diffuseLight += (lightColor * cosAngleIncidence) * attenuation; 
 
-		specularLight += ((lights[i].specular.xyz * lights[i].specular.w) * blinnTerm) * attenuation; 
+			//specular light
+			vec3 halfAngle = normalize(directionToLight + viewDirection); 
+			float blinnTerm = dot(surfaceNormal, halfAngle); 
+			blinnTerm = clamp(blinnTerm, 0, 1);	
+			blinnTerm = cosAngleIncidence != 0.0 ? blinnTerm : 0; 
+			//apply arbitrary power "s" -- high values results in sharper highlight
+			blinnTerm = pow(blinnTerm, inFragMatShininess); 
 
-	}
+			specularLight += ((lights[i].specular.xyz * lights[i].specular.w) * blinnTerm) * attenuation; 
+		}
+
 	ambientLight *= inFragMatAmbient; 
 	diffuseLight *= inFragMatDiffuse; 
 	specularLight *= inFragMatSpecular; 
 
-
 	vec3 totalSurfaceColor = (ambientLight + diffuseLight + specularLight) * vec3(texture(textureSampler, inFragTextureCoordinate)); 
 	outColor = vec4(totalSurfaceColor, 1.0); 
 
+	}else{
+		//apply frag ambient value 
+		outColor = vec4(inFragMatAmbient, 1.0); 
+	}
 }
