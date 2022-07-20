@@ -4,16 +4,22 @@ layout(location = 0) in vec3 inPosition;
 layout(location = 1) in vec3 inNormal; 
 layout(location = 2) in vec3 inColor;		//vertex color
 layout(location = 3) in vec2 inTexCoord;	//texture coordinate for vertex 
+//per veterx materials
 layout(location = 4) in vec3 inMatAmbient; 
 layout(location = 5) in vec3 inMatDiffuse; 
 layout(location = 6) in vec3 inMatSpecular; 
 layout(location = 7) in float inMatShininess; 
 
+struct RenderSettings{
+	bool drawMatAmbient; 
+}; 
+
 layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
 	mat4 proj;
 	mat4 view;  
 	mat4 inverseView; 
-	int numLights; 
+	int numLights;
+	RenderSettings renderSettings; 
 } globalUbo; 
 
 //TODO: combine with above 
