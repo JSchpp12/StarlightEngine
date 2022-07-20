@@ -11,6 +11,13 @@ layout(location = 7) in float inFragMatShininess;
 
 layout(location = 0) out vec4 outColor;
 
+struct RenderSettings{
+	uint draw;				//standard draw
+	uint drawMatAmbient;  
+	uint drawMatDiffuse; 
+	uint drawMatSpecular; 
+};
+
 struct Light{
 	vec4 position;
 
@@ -24,7 +31,8 @@ layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
 	mat4 proj;
 	mat4 view;  
 	mat4 inverseView; 
-	int numLights; 
+	uint numLights; 
+	uint renderSettings;
 } globalUbo; 
 
  layout(binding = 1, set = 0) buffer globalLightBuffer{
@@ -37,7 +45,18 @@ layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
 
 layout(binding = 0, set = 2) uniform sampler2D textureSampler; 
 
+RenderSettings createSettingsStruct(){
+	RenderSettings settingsChecker = {
+		0, 
+		1, 
+		2, 
+		3
+	};
+	return(settingsChecker); 
+}
 void main() {
+	RenderSettings settingsChecker = createSettingsStruct(); 
+
 	vec3 ambientLight = vec3(0.0); 
 	vec3 diffuseLight = vec3(0.0);  
 	vec3 specularLight = vec3(0.0);															//container for summation of light contributions to specular lighting result
@@ -46,39 +65,47 @@ void main() {
 	vec3 cameraPosWorld = globalUbo.inverseView[3].xyz; 
 	vec3 viewDirection = normalize(cameraPosWorld - inFragPositionWorld); 
 
-	for (int i = 0; i < globalUbo.numLights; i++){
-		//ambient light 
-		ambientLight += (lights[i].ambient.xyz * lights[i].ambient.w); 
+	if ((globalUbo.renderSettings & settingsChecker.drawMatAmbient) != 0){
+		//apply frag ambient value 
+		outColor = vec4(inFragMatAmbient, 1.0); 
+	}else if ((globalUbo.renderSettings & settingsChecker.drawMatDiffuse) != 0){
+		outColor = vec4(inFragMatDiffuse, 1.0); 
+	}else if ((globalUbo.renderSettings & settingsChecker.drawMatSpecular) != 0){
+		outColor = vec4(inFragMatSpecular, 1.0); 
+	}else{
+		for (int i = 0; i < globalUbo.numLights; i++){
+			//distance calculations 
+			vec3 directionToLight = lights[i].position.xyz - inFragPositionWorld.xyz; 
+			float attenuation = 1.0 / dot(directionToLight, directionToLight);					//distance of direction vector squared
 
-		//diffuse lighting calculation
-		vec3 directionToLight = lights[i].position.xyz - inFragPositionWorld.xyz; 
-		float attenuation = 1.0 / dot(directionToLight, directionToLight);					//distance of direction vector squared
+			//ambient light 
+			ambientLight += (lights[i].ambient.xyz * lights[i].ambient.w) * attenuation; 
 
-		//need to normalize this after the attenuation calculation 
-		directionToLight = normalize(directionToLight); 
+			//need to normalize this after the attenuation calculation 
+			directionToLight = normalize(directionToLight); 
 
-		float cosAngleIncidence = max(dot(surfaceNormal, directionToLight), 0);
-		vec3 lightColor = lights[i].ambient.xyz * lights[i].ambient.w * attenuation;
+			float cosAngleIncidence = max(dot(surfaceNormal, directionToLight), 0);
+			vec3 lightColor = lights[i].ambient.xyz * lights[i].ambient.w * attenuation;
 
-		diffuseLight += lightColor * cosAngleIncidence; 
+			//diffuse light 
+			diffuseLight += (lightColor * cosAngleIncidence) * attenuation; 
 
-		//specular lighting calculation 
-		vec3 halfAngle = normalize(directionToLight + viewDirection); 
-		float blinnTerm = dot(surfaceNormal, halfAngle); 
-		blinnTerm = clamp(blinnTerm, 0, 1);	
-		blinnTerm = cosAngleIncidence != 0.0 ? blinnTerm : 0; 
-		//apply arbitrary power "s" -- high values results in sharper highlight
-		blinnTerm = pow(blinnTerm, inFragMatShininess); 
+			//specular light
+			vec3 halfAngle = normalize(directionToLight + viewDirection); 
+			float blinnTerm = dot(surfaceNormal, halfAngle); 
+			blinnTerm = clamp(blinnTerm, 0, 1);	
+			blinnTerm = cosAngleIncidence != 0.0 ? blinnTerm : 0; 
+			//apply arbitrary power "s" -- high values results in sharper highlight
+			blinnTerm = pow(blinnTerm, inFragMatShininess); 
 
-		specularLight += (lights[i].specular.xyz * lights[i].specular.w) * blinnTerm; 
+			specularLight += ((lights[i].specular.xyz * lights[i].specular.w) * blinnTerm) * attenuation; 
+		}
 
-	}
 	ambientLight *= inFragMatAmbient; 
 	diffuseLight *= inFragMatDiffuse; 
 	specularLight *= inFragMatSpecular; 
 
-
 	vec3 totalSurfaceColor = (ambientLight + diffuseLight + specularLight) * vec3(texture(textureSampler, inFragTextureCoordinate)); 
-	outColor = vec4(totalSurfaceColor, 1.0); 
-//	outColor = vec4(inFragMatAmbient, 1.0); 
+	outColor = vec4(totalSurfaceColor, 1.0);
+	}
 }
