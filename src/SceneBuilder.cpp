@@ -175,14 +175,18 @@ namespace star {
 		this->texture = texture; 
 		return *this;
 	}
+	SceneBuilder::Materials::Builder& SceneBuilder::Materials::Builder::setBumpMap(const common::Handle& bumpHandle) {
+		this->bumpMap = bumpHandle; 
+		return *this; 
+	}
 	common::Handle SceneBuilder::Materials::Builder::build() {
 		return this->sceneBuilder.addMaterial(this->surfaceColor, this->highlightColor, this->diffuse,
-			this->diffuse, this->specular, this->shinyCoefficient,&this->texture);
+			this->diffuse, this->specular, this->shinyCoefficient,&this->texture, &this->bumpMap);
 	}
 	common::Material& SceneBuilder::Materials::Builder::buildGet() {
 		common::Handle newHandle = this->sceneBuilder.addMaterial(this->surfaceColor, this->highlightColor, this->ambient, this->diffuse,
 			this->specular, this->shinyCoefficient, 
-			&this->texture); 
+			&this->texture, &this->bumpMap); 
 		return this->sceneBuilder.getMaterial(newHandle); 
 	}
 	
@@ -273,12 +277,23 @@ namespace star {
 							currMaterial->specular[2],
 							1.0f })
 					.setShinyCoefficient(currMaterial->shininess); 
+				//check if need to override texture 
 				if (matPropOverride != nullptr && matPropOverride->baseColorTexture != nullptr) {
 					builder.setTexture(*matPropOverride->baseColorTexture);
 				}else if (currMaterial->diffuse_texname != "") {
 					loadMaterialTexture = this->textureManager.add(texturePath + common::FileHelpers::GetFileNameWithExtension(currMaterial->diffuse_texname));
 					builder.setTexture(loadMaterialTexture); 
 				}
+
+				//apply maps 
+				if (currMaterial->bump_texname != "") {
+					auto bumpTexture = this->textureManager.add(texturePath + common::FileHelpers::GetFileNameWithExtension(currMaterial->bump_texname));
+					builder.setBumpMap(bumpTexture);
+				}
+				else {
+					builder.setBumpMap(this->mapManager.getDefaultHandle());
+				}
+
 				objectMaterialHandles.push_back(builder.build());
 				//record material to avoid multiple fetches
 				objectMaterials.push_back(this->materialManager.get(objectMaterialHandles.at(i))); 
@@ -338,10 +353,10 @@ namespace star {
 					};
 					if (loadMaterials && shape.mesh.material_ids.at(faceIndex) != -1) {
 						//use the overridden material if provided, otherwise use the prop from mtl file
-						triangleVerticies[i].matAmbient = (matPropOverride != nullptr && matPropOverride->ambient != nullptr)	 ? *matPropOverride->ambient	: objectMaterials.at(shape.mesh.material_ids.at(faceIndex)).get().ambient;
-						triangleVerticies[i].matDiffuse = (matPropOverride != nullptr && matPropOverride->diffuse != nullptr)	 ? *matPropOverride->diffuse	: objectMaterials.at(shape.mesh.material_ids.at(faceIndex)).get().diffuse;
-						triangleVerticies[i].matSpecular = (matPropOverride != nullptr && matPropOverride->specular != nullptr)	 ? *matPropOverride->specular	: objectMaterials.at(shape.mesh.material_ids.at(faceIndex)).get().specular;
-						triangleVerticies[i].matShininess = (matPropOverride != nullptr && matPropOverride->shiny != nullptr)	 ? *matPropOverride->shiny		: objectMaterials.at(shape.mesh.material_ids.at(faceIndex)).get().shinyCoefficient;
+						triangleVerticies[i].matAmbient = (matPropOverride != nullptr && matPropOverride->ambient != nullptr) ? *matPropOverride->ambient		 : objectMaterials.at(shape.mesh.material_ids.at(faceIndex)).get().ambient;
+						triangleVerticies[i].matDiffuse = (matPropOverride != nullptr && matPropOverride->diffuse != nullptr) ? *matPropOverride->diffuse		 : objectMaterials.at(shape.mesh.material_ids.at(faceIndex)).get().diffuse;
+						triangleVerticies[i].matSpecular = (matPropOverride != nullptr && matPropOverride->specular != nullptr) ? *matPropOverride->specular	 : objectMaterials.at(shape.mesh.material_ids.at(faceIndex)).get().specular;
+						triangleVerticies[i].matShininess = (matPropOverride != nullptr && matPropOverride->shiny != nullptr) ? *matPropOverride->shiny			 : objectMaterials.at(shape.mesh.material_ids.at(faceIndex)).get().shinyCoefficient;
 					}
 					else {
 						//use either the overriden material property or the passed material
@@ -379,9 +394,10 @@ namespace star {
 
 	common::Handle SceneBuilder::addMaterial(const glm::vec4& surfaceColor, const glm::vec4& hightlightColor, const glm::vec4& ambient, 
 		const glm::vec4& diffuse, const glm::vec4& specular, 
-		const int& shinyCoefficient, common::Handle* texture) {
-		if (texture != nullptr) {
-			return this->materialManager.add(surfaceColor, hightlightColor, ambient, diffuse, specular, shinyCoefficient, *texture);
+		const int& shinyCoefficient, common::Handle* texture, 
+		common::Handle* bumpMap) {
+		if (texture != nullptr && bumpMap != nullptr) {
+			return this->materialManager.add(surfaceColor, hightlightColor, ambient, diffuse, specular, shinyCoefficient, *texture, *bumpMap);
 		}
 		return this->materialManager.add(surfaceColor, hightlightColor, ambient, diffuse, specular, shinyCoefficient); 
 	}
@@ -389,7 +405,7 @@ namespace star {
 	common::Handle SceneBuilder::addLight(const common::Type::Light& type, const glm::vec3& position, const common::Handle& linkedHandle, 
 		const glm::vec4* ambient, const glm::vec4* diffuse, 
 		const glm::vec4* specular) {
-		auto& linkedObject = this->objectManager.get(linkedHandle); 
+		common::GameObject& linkedObject = this->objectManager.get(linkedHandle); 
 		linkedObject.setPosition(position); 
 		return this->lightManager.addResource(std::make_unique<common::Light>(type, position, linkedObject.getScale(), linkedHandle, linkedObject, ambient, diffuse, specular));
 	}

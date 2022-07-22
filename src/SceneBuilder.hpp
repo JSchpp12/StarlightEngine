@@ -10,6 +10,7 @@
 #include "MaterialManager.hpp"
 #include "LightManager.hpp"
 #include "TextureManager.h"
+#include "MapManager.hpp"
 
 #include <glm/glm.hpp>
 #include <tiny_obj_loader.h>
@@ -95,7 +96,7 @@ namespace star {
 			private:
 				SceneBuilder& sceneBuilder; 
 				const common::Handle* linkedHandle = nullptr; 
-				const common::Type::Light* type; 
+				const common::Type::Light* type = nullptr; 
 				const glm::vec3* position = nullptr; 
 				const glm::vec4* ambient = nullptr; 
 				const glm::vec4* diffuse = nullptr; 
@@ -121,6 +122,7 @@ namespace star {
 				Builder& setShinyCoefficient(const int& shinyCoefficient);
 				Builder& setBaseColorTexture(const std::string& path);
 				Builder& setTexture(common::Handle texture); 
+				Builder& setBumpMap(const common::Handle& bumpHandle);
 				common::Handle build();
 				common::Material& buildGet(); 
 
@@ -133,13 +135,15 @@ namespace star {
 				glm::vec4 ambient; 
 				int shinyCoefficient = sceneBuilder.defaultMaterial->shinyCoefficient;
 				common::Handle texture = common::Handle::getDefault(); 
+				common::Handle bumpMap = common::Handle::getDefault(); 
 			};
 		};
 
-		SceneBuilder(core::ObjectManager& objectManager, core::MaterialManager& materialManager, core::TextureManager& textureManager, core::LightManager& lightManager) 
+		SceneBuilder(core::ObjectManager& objectManager, core::MaterialManager& materialManager, core::TextureManager& textureManager, 
+			core::MapManager& mapManager, core::LightManager& lightManager) 
 			: objectManager(objectManager), materialManager(materialManager), 
 			defaultMaterial(materialManager.getDefault()), textureManager(textureManager), 
-			lightManager(lightManager) { }
+			mapManager(mapManager), lightManager(lightManager) { }
 		~SceneBuilder() = default;
 
 		common::GameObject& getObject(const common::Handle& handle);
@@ -150,6 +154,7 @@ namespace star {
 		core::MaterialManager& materialManager; 
 		core::TextureManager& textureManager; 
 		core::LightManager& lightManager;
+		core::MapManager& mapManager; 
 
 		//defaults -- TODO: remove this in favor of each manager having its own default 
 		common::Material* defaultMaterial = nullptr; 
@@ -162,7 +167,7 @@ namespace star {
 
 		common::Handle addMaterial(const glm::vec4& surfaceColor, const glm::vec4& hightlightColor, const glm::vec4& ambient, 
 			const glm::vec4& diffuse, const glm::vec4& specular,
-			const int& shinyCoefficient, common::Handle* texture);
+			const int& shinyCoefficient, common::Handle* texture, common::Handle* bumpMap);
 		/// <summary>
 		/// Create a light object with a linked game object
 		/// </summary>

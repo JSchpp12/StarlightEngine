@@ -13,6 +13,7 @@
 #include "InteractionSystem.h"
 #include "CameraController.h"
 #include "OptionsController.h"
+#include "MapManager.hpp"
 #include "Star_Window.hpp"
 
 #include "TextureApp.h"
@@ -43,11 +44,14 @@ int main() {
     std::unique_ptr<star::core::TextureManager> textureManager(new star::core::TextureManager(configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "images/texture.png"));
     std::unique_ptr<star::core::LightManager> lightManager(new star::core::LightManager()); 
     std::unique_ptr<star::core::MaterialManager> materialManager(new star::core::MaterialManager(std::make_unique<common::Material>(common::Material())));
+    //std::unique_ptr<unsigned char> defaultMap(new unsigned char[] {0x0f, 0x0f, 0xff, 0xff});  //texture color for normal map that would not result in any changes to lighting
+    std::unique_ptr<unsigned char> defaultMap(new unsigned char[] {0x00, 0x00, 0x00, 0x00});
+    std::unique_ptr<star::core::MapManager> mapManager(new star::core::MapManager(std::make_unique<common::Texture>(std::move(defaultMap), 1, 1, 4)));
     std::unique_ptr<std::vector<star::common::Handle>> objectList(new std::vector<star::common::Handle>());
     std::unique_ptr<std::vector<common::Handle>> lightList(new std::vector<star::common::Handle>()); 
     std::unique_ptr<star::CameraController> camera(new star::CameraController());
 
-    SceneBuilder sceneBuilder(*objectManager, *materialManager, *textureManager, *lightManager); 
+    SceneBuilder sceneBuilder(*objectManager, *materialManager, *textureManager, *mapManager, *lightManager); 
 
     auto application = star::TextureApp(configFile.get(), objectList.get(), lightList.get(), 
         shaderManager.get(), textureManager.get(), lightManager.get(), sceneBuilder,
@@ -64,7 +68,7 @@ int main() {
      
     //prepare renderer 
     auto window = star::core::StarWindow(WIDTH, HEIGHT, "Starlight", star::InteractionSystem::glfwKeyHandle, star::InteractionSystem::glfwMouseButtonCallback, star::InteractionSystem::glfwMouseMovement, star::InteractionSystem::glfwScrollCallback);
-    auto renderer = star::core::VulkanRenderer(*configFile, *renderOptions, *shaderManager, *objectManager, *textureManager, *materialManager, *camera, *objectList, mainLightList, window);
+    auto renderer = star::core::VulkanRenderer(*configFile, *renderOptions, *shaderManager, *objectManager, *textureManager, *mapManager, *materialManager, *camera, *objectList, mainLightList, window);
     renderer.prepare();
 
     //register user application callbacks

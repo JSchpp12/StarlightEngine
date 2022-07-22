@@ -7,7 +7,8 @@ layout(location = 3) in vec3 inFragNormalWorld;
 layout(location = 4) in vec3 inFragMatAmbient; 
 layout(location = 5) in vec3 inFragMatDiffuse; 
 layout(location = 6) in vec3 inFragMatSpecular; 
-layout(location = 7) in float inFragMatShininess; 
+layout(location = 7) in float inFragMatShininess;
+layout(location = 8) in mat3 inTBNMat;
 
 layout(location = 0) out vec4 outColor;
 
@@ -16,6 +17,10 @@ struct RenderSettings{
 	uint drawMatAmbient;  
 	uint drawMatDiffuse; 
 	uint drawMatSpecular; 
+	uint drawMapBump; 
+
+	//rendering features
+	uint bumpMapping; 
 };
 
 struct Light{
@@ -39,18 +44,18 @@ layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
 	Light lights[];
  };
 
-// layout(binding = 0, set = 2) uniform ObjectRenderingOptions{
-//	bool useTexture;
-//};
-
 layout(binding = 0, set = 2) uniform sampler2D textureSampler; 
+layout(binding = 1, set = 2) uniform sampler2D normalMapSampler; 
 
 RenderSettings createSettingsStruct(){
 	RenderSettings settingsChecker = {
-		0, 
-		1, 
-		2, 
-		3
+		0x0, 
+		0x1,
+		0x2,
+		0x3,
+		0x4, 
+		//render features
+		0x10000
 	};
 	return(settingsChecker); 
 }
@@ -62,6 +67,15 @@ void main() {
 	vec3 specularLight = vec3(0.0);															//container for summation of light contributions to specular lighting result
 	vec3 surfaceNormal = normalize(inFragNormalWorld);										//using same normal for all frags on surface -- rather than calculating for each one
 
+	//Bump Mapping Calculations
+	//TODO: this needs to be broken out into a seperate shader 
+	//check if the sampled normal is 0, as this means that no bump map was supplied 
+	vec3 sampledNormal = texture(normalMapSampler, inFragTextureCoordinate).rgb; 
+	if (((globalUbo.renderSettings & settingsChecker.bumpMapping) != 0) && sampledNormal.r != 0 && sampledNormal.g != 0 && sampledNormal.b != 0){
+		sampledNormal = sampledNormal * 2.0 - 1.0; 
+		surfaceNormal = normalize(inTBNMat * sampledNormal); 
+	}
+
 	vec3 cameraPosWorld = globalUbo.inverseView[3].xyz; 
 	vec3 viewDirection = normalize(cameraPosWorld - inFragPositionWorld); 
 
@@ -72,6 +86,8 @@ void main() {
 		outColor = vec4(inFragMatDiffuse, 1.0); 
 	}else if ((globalUbo.renderSettings & settingsChecker.drawMatSpecular) != 0){
 		outColor = vec4(inFragMatSpecular, 1.0); 
+	}else if ((globalUbo.renderSettings & settingsChecker.drawMapBump) != 0){
+		outColor = vec4(vec3(texture(normalMapSampler, inFragTextureCoordinate)), 1.0);
 	}else{
 		for (int i = 0; i < globalUbo.numLights; i++){
 			//distance calculations 
@@ -106,6 +122,7 @@ void main() {
 	specularLight *= inFragMatSpecular; 
 
 	vec3 totalSurfaceColor = (ambientLight + diffuseLight + specularLight) * vec3(texture(textureSampler, inFragTextureCoordinate)); 
+
 	outColor = vec4(totalSurfaceColor, 1.0);
 	}
 }

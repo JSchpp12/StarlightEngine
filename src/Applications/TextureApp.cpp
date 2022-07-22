@@ -56,6 +56,7 @@ void star::TextureApp::Load() {
             .overrideShiny(512)
             .setMaterial(SceneBuilder::Materials::Builder(this->sceneBuilder)
                 .setTexture(this->textureManager->add(common::FileHelpers::GetBaseFileDirectory(objectPath) + "textures/rock_low_Base_Color.png"))
+                .setBumpMap(this->textureManager->add(common::FileHelpers::GetBaseFileDirectory(objectPath) + "textures/rock_low_Normal_DirectX.png"))
                 .build())
             .build());        
     }
