@@ -2,12 +2,13 @@
 #include "SC/Time.hpp"
 #include "SC/Camera.hpp"
 #include "SC/RenderOptions.hpp"
+#include "SC/Handle.hpp"
 
 #include "StarlightEngine.h"
 #include "ShaderManager.h"
 #include "SceneBuilder.hpp"
 #include "ObjectManager.hpp"
-#include "TextureManager.h"
+#include "TextureManager.hpp"
 #include "LightManager.hpp"
 #include "BasicVulkanRenderer.h"
 #include "InteractionSystem.h"
@@ -19,6 +20,9 @@
 #include "TextureApp.h"
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
+
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 
 #include <memory>
 #include <chrono>
@@ -63,7 +67,7 @@ int main() {
     //TODO: implement better management system 
     std::vector<star::common::Light*> mainLightList(lightList->size());
     for (size_t i = 0; i < lightList->size(); i++) {
-        mainLightList.at(i) = &lightManager->getResource(lightList->at(i)); 
+        mainLightList.at(i) = &lightManager->resource(lightList->at(i)); 
     }
      
     //prepare renderer 

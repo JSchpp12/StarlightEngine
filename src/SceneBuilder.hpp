@@ -9,7 +9,7 @@
 #include "ObjectManager.hpp"
 #include "MaterialManager.hpp"
 #include "LightManager.hpp"
-#include "TextureManager.h"
+#include "TextureManager.hpp"
 #include "MapManager.hpp"
 
 #include <glm/glm.hpp>
@@ -64,9 +64,9 @@ namespace star {
 				const glm::vec4* color = nullptr; 
 				glm::vec3 scale = glm::vec3{ 1.0f, 1.0f, 1.0f };
 				glm::vec3 position = glm::vec3{ 0.0f, 0.0f, 0.0f };
-				common::Handle vertShader = common::Handle{ 0 };
-				common::Handle fragShader = common::Handle{ 1 };
-				common::Handle texture = common::Handle{ 0 };
+				common::Handle vertShader = common::Handle::getDefault(); 
+				common::Handle fragShader = common::Handle::getDefault();
+				common::Handle texture = common::Handle::getDefault();
 				common::Handle* materialHandle = nullptr;
 				std::unique_ptr<std::string> path;
 				std::unique_ptr<std::string> materialFilePath;
@@ -146,7 +146,8 @@ namespace star {
 			mapManager(mapManager), lightManager(lightManager) { }
 		~SceneBuilder() = default;
 
-		common::GameObject& getObject(const common::Handle& handle);
+		//todo: currently this only returns game objects, see if there is way to expand this
+		common::GameObject& entity(const common::Handle& handle);
 		common::Material& getMaterial(const common::Handle& handle);
 
 	private:
