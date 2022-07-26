@@ -49,7 +49,7 @@ int main() {
     std::unique_ptr<star::core::LightManager> lightManager(new star::core::LightManager()); 
     std::unique_ptr<star::core::MaterialManager> materialManager(new star::core::MaterialManager(std::make_unique<common::Material>(common::Material())));
     //std::unique_ptr<unsigned char> defaultMap(new unsigned char[] {0x0f, 0x0f, 0xff, 0xff});  //texture color for normal map that would not result in any changes to lighting
-    std::unique_ptr<unsigned char> defaultMap(new unsigned char[] {0x00, 0x00, 0x00, 0x00});
+    std::unique_ptr<std::vector<unsigned char>> defaultMap(new std::vector<unsigned char>{0x00, 0x00, 0x00, 0x00});
     std::unique_ptr<star::core::MapManager> mapManager(new star::core::MapManager(std::make_unique<common::Texture>(std::move(defaultMap), 1, 1, 4)));
     std::unique_ptr<std::vector<star::common::Handle>> objectList(new std::vector<star::common::Handle>());
     std::unique_ptr<std::vector<common::Handle>> lightList(new std::vector<star::common::Handle>()); 

@@ -34,7 +34,10 @@ namespace star {
 					const float* shiny = nullptr; 
 				};
 
-				Builder(SceneBuilder& sceneBuilder) : sceneBuilder(sceneBuilder) {};
+				Builder(SceneBuilder& sceneBuilder) : sceneBuilder(sceneBuilder) {
+					vertShader.shaderStage = common::Shader_Stage::vertex; 
+					fragShader.shaderStage = common::Shader_Stage::fragment; 
+				};
 				Builder& setPosition(const glm::vec3 position);
 				//override vertex colors from file with a predefined one
 				Builder& setColor(const glm::vec4& color); 
