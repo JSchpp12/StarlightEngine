@@ -113,24 +113,17 @@ void star::TextureApp::Load() {
         this->lightList->push_back(SceneBuilder::Lights::Builder(this->sceneBuilder)
             .setType(common::Type::Light::point)
             .setPosition(glm::vec3{ 1.0f, 0.4f, -0.2f })
-            .setAmbient(glm::vec4{ 0.5f, 1.0f, 1.0f, 0.5f })
+            .setAmbient(glm::vec4{ 0.5f, 1.0f, 1.0f, 0.2f })
             .setDiffuse(glm::vec4{ 0.5f, 1.0f, 1.0f, 5.0f })
-            .setSpecular(glm::vec4{ 1.0f, 1.0f, 1.0f, 0.5f })
+            .setSpecular(glm::vec4{ 1.0f, 1.0f, 1.0f, 0.2f })
             .setPosition(glm::vec3{ 1.0f, 1.0f, 0.0f })
             .setLinkedObject(SceneBuilder::GameObjects::Builder(this->sceneBuilder)
                 .setPath(objectPath)
                 .setScale(glm::vec3{ 0.07f, 0.07f, 0.07f })
-                .setColor(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f })
+                .setColor(glm::vec4{ 0.5f, 1.0f, 1.0f, 1.0f })
                 .setVertShader(this->shaderManager->addResource(vertShaderPath, std::make_unique<common::Shader>(vertShaderPath)))
                 .setFragShader(this->shaderManager->addResource(fragShaderPath, std::make_unique<common::Shader>(fragShaderPath)))
                 .build(false))
-            .build());
-        this->lightList->push_back(SceneBuilder::Lights::Builder(this->sceneBuilder)
-            .setType(common::Type::Light::directional)
-            .setPosition(glm::vec3{ 0.0f, 0.4f, 0.0f })
-            .setAmbient(glm::vec4{ 1.0f, 1.0f, 1.0f, 0.1f })
-            .setDiffuse(glm::vec4{ 1.0f, 1.0f, 1.0f, 5.0f })
-            .setSpecular(glm::vec4{ 1.0f, 1.0f, 1.0f, 5.0f })
             .build());
     }
 }
