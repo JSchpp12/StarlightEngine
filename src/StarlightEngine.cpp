@@ -2,12 +2,13 @@
 #include "SC/Time.hpp"
 #include "SC/Camera.hpp"
 #include "SC/RenderOptions.hpp"
+#include "SC/Handle.hpp"
 
 #include "StarlightEngine.h"
 #include "ShaderManager.h"
 #include "SceneBuilder.hpp"
 #include "ObjectManager.hpp"
-#include "TextureManager.h"
+#include "TextureManager.hpp"
 #include "LightManager.hpp"
 #include "BasicVulkanRenderer.h"
 #include "InteractionSystem.h"
@@ -19,6 +20,9 @@
 #include "TextureApp.h"
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
+
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 
 #include <memory>
 #include <chrono>
@@ -45,7 +49,7 @@ int main() {
     std::unique_ptr<star::core::LightManager> lightManager(new star::core::LightManager()); 
     std::unique_ptr<star::core::MaterialManager> materialManager(new star::core::MaterialManager(std::make_unique<common::Material>(common::Material())));
     //std::unique_ptr<unsigned char> defaultMap(new unsigned char[] {0x0f, 0x0f, 0xff, 0xff});  //texture color for normal map that would not result in any changes to lighting
-    std::unique_ptr<unsigned char> defaultMap(new unsigned char[] {0x00, 0x00, 0x00, 0x00});
+    std::unique_ptr<std::vector<unsigned char>> defaultMap(new std::vector<unsigned char>{0x00, 0x00, 0x00, 0x00});
     std::unique_ptr<star::core::MapManager> mapManager(new star::core::MapManager(std::make_unique<common::Texture>(std::move(defaultMap), 1, 1, 4)));
     std::unique_ptr<std::vector<star::common::Handle>> objectList(new std::vector<star::common::Handle>());
     std::unique_ptr<std::vector<common::Handle>> lightList(new std::vector<star::common::Handle>()); 
@@ -63,7 +67,7 @@ int main() {
     //TODO: implement better management system 
     std::vector<star::common::Light*> mainLightList(lightList->size());
     for (size_t i = 0; i < lightList->size(); i++) {
-        mainLightList.at(i) = &lightManager->getResource(lightList->at(i)); 
+        mainLightList.at(i) = &lightManager->resource(lightList->at(i)); 
     }
      
     //prepare renderer 

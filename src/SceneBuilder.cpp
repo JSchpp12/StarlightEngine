@@ -95,17 +95,6 @@ namespace star {
 		}
 		throw std::runtime_error("Invalid parameters provided to complete build of object");
 	}
-	common::GameObject& SceneBuilder::GameObjects::Builder::buildGet(bool loadMaterials) {
-		if (!this->verticies && !this->indicies && this->path) {
-			auto handle = this->sceneBuilder.addObject(*this->path, this->position, this->scale, this->materialHandle, this->vertShader, this->fragShader, loadMaterials, this->materialFilePath.get(), this->textureDirectory.get(), this->color, this->matOverride.get());
-			return this->sceneBuilder.objectManager.getResource(handle); 
-		}
-		else if (this->verticies && this->verticies->size() != 0 && this->indicies && this->indicies->size() != 0) {
-
-			//return this->sceneBuilder.add(std::move(this->verticies), std::move(this->indicies), this->position, this->scale, this->material, this->texture, this->vertShader, this->fragShader);
-		}
-		throw std::runtime_error("Invalid parameters provided to complete build of object");
-	}
 #pragma endregion
 
 	/* Lights */
@@ -183,20 +172,14 @@ namespace star {
 		return this->sceneBuilder.addMaterial(this->surfaceColor, this->highlightColor, this->diffuse,
 			this->diffuse, this->specular, this->shinyCoefficient,&this->texture, &this->bumpMap);
 	}
-	common::Material& SceneBuilder::Materials::Builder::buildGet() {
-		common::Handle newHandle = this->sceneBuilder.addMaterial(this->surfaceColor, this->highlightColor, this->ambient, this->diffuse,
-			this->specular, this->shinyCoefficient, 
-			&this->texture, &this->bumpMap); 
-		return this->sceneBuilder.getMaterial(newHandle); 
-	}
 	
 	/* Mesh */
 
 	/* Scene Builder */
 
-	common::GameObject& SceneBuilder::getObject(const common::Handle& handle) {
-		if (handle.type & common::Handle_Type::object) {
-			return this->objectManager.get(handle);
+	common::GameObject& SceneBuilder::entity(const common::Handle& handle) {
+		if (handle.type == common::Handle_Type::object) {
+			return this->objectManager.resource(handle);
 		}
 
 		throw std::runtime_error("Requested handle is not a game object handle");
@@ -204,7 +187,7 @@ namespace star {
 
 	common::Material& SceneBuilder::getMaterial(const common::Handle& handle) {
 		if (handle.type & common::Handle_Type::material) {
-			return this->materialManager.get(handle);
+			return this->materialManager.resource(handle);
 		}
 
 		throw std::runtime_error("Requested handle is not a material handle");
@@ -221,7 +204,7 @@ namespace star {
 		common::Handle selectedMaterial; 
 
 		if (materialHandle == nullptr) {
-			selectedMaterial = this->materialManager.getDefaultHandle();
+			selectedMaterial = common::Handle::getDefault();
 		}
 		else {
 			selectedMaterial = *materialHandle;
@@ -281,22 +264,22 @@ namespace star {
 				if (matPropOverride != nullptr && matPropOverride->baseColorTexture != nullptr) {
 					builder.setTexture(*matPropOverride->baseColorTexture);
 				}else if (currMaterial->diffuse_texname != "") {
-					loadMaterialTexture = this->textureManager.add(texturePath + common::FileHelpers::GetFileNameWithExtension(currMaterial->diffuse_texname));
+					loadMaterialTexture = this->textureManager.addResource(texturePath + common::FileHelpers::GetFileNameWithExtension(currMaterial->diffuse_texname));
 					builder.setTexture(loadMaterialTexture); 
 				}
 
 				//apply maps 
 				if (currMaterial->bump_texname != "") {
-					auto bumpTexture = this->textureManager.add(texturePath + common::FileHelpers::GetFileNameWithExtension(currMaterial->bump_texname));
+					auto bumpTexture = this->textureManager.addResource(texturePath + common::FileHelpers::GetFileNameWithExtension(currMaterial->bump_texname));
 					builder.setBumpMap(bumpTexture);
 				}
 				else {
-					builder.setBumpMap(this->mapManager.getDefaultHandle());
+					builder.setBumpMap(common::Handle::getDefault());
 				}
 
 				objectMaterialHandles.push_back(builder.build());
 				//record material to avoid multiple fetches
-				objectMaterials.push_back(this->materialManager.get(objectMaterialHandles.at(i))); 
+				objectMaterials.push_back(this->materialManager.resource(objectMaterialHandles.at(i))); 
 			}
 		}
 
@@ -360,10 +343,10 @@ namespace star {
 					}
 					else {
 						//use either the overriden material property or the passed material
-						triangleVerticies[i].matAmbient = (matPropOverride != nullptr && matPropOverride->ambient != nullptr)	 ? *matPropOverride->ambient	: this->materialManager.getResource(selectedMaterial).ambient;
-						triangleVerticies[i].matDiffuse = (matPropOverride != nullptr && matPropOverride->diffuse != nullptr)	 ? *matPropOverride->diffuse	: this->materialManager.getResource(selectedMaterial).diffuse;
-						triangleVerticies[i].matSpecular = (matPropOverride != nullptr && matPropOverride->specular != nullptr)	 ? *matPropOverride->specular	: this->materialManager.getResource(selectedMaterial).specular;
-						triangleVerticies[i].matShininess = (matPropOverride != nullptr && matPropOverride->shiny != nullptr)	 ? *matPropOverride->shiny		: this->materialManager.getResource(selectedMaterial).shinyCoefficient;
+						triangleVerticies[i].matAmbient = (matPropOverride != nullptr && matPropOverride->ambient != nullptr)	 ? *matPropOverride->ambient	: this->materialManager.resource(selectedMaterial).ambient;
+						triangleVerticies[i].matDiffuse = (matPropOverride != nullptr && matPropOverride->diffuse != nullptr)	 ? *matPropOverride->diffuse	: this->materialManager.resource(selectedMaterial).diffuse;
+						triangleVerticies[i].matSpecular = (matPropOverride != nullptr && matPropOverride->specular != nullptr)	 ? *matPropOverride->specular	: this->materialManager.resource(selectedMaterial).specular;
+						triangleVerticies[i].matShininess = (matPropOverride != nullptr && matPropOverride->shiny != nullptr)	 ? *matPropOverride->shiny		: this->materialManager.resource(selectedMaterial).shinyCoefficient;
 					}
 				}
 
@@ -389,7 +372,7 @@ namespace star {
 		std::cout << "Loaded: " << pathToFile << std::endl;
 
 		//TODO: give texture handle to material 
-		return this->objectManager.addUniqueResource(std::make_unique<common::GameObject>(position, scaleAmt, vertShader, fragShader, std::move(meshes)));
+		return this->objectManager.addResource(std::make_unique<common::GameObject>(position, scaleAmt, vertShader, fragShader, std::move(meshes)));
 	}
 
 	common::Handle SceneBuilder::addMaterial(const glm::vec4& surfaceColor, const glm::vec4& hightlightColor, const glm::vec4& ambient, 
@@ -405,8 +388,8 @@ namespace star {
 	common::Handle SceneBuilder::addLight(const common::Type::Light& type, const glm::vec3& position, const common::Handle& linkedHandle, 
 		const glm::vec4* ambient, const glm::vec4* diffuse, 
 		const glm::vec4* specular) {
-		common::GameObject& linkedObject = this->objectManager.get(linkedHandle); 
-		linkedObject.setPosition(position); 
+		common::GameObject& linkedObject = this->objectManager.resource(linkedHandle);
+		linkedObject.setPosition(position);
 		return this->lightManager.addResource(std::make_unique<common::Light>(type, position, linkedObject.getScale(), linkedHandle, linkedObject, ambient, diffuse, specular));
 	}
 

@@ -6,7 +6,7 @@
 #include "SC/Camera.hpp"
 #include "SC/Interactivity.hpp"
 #include "ShaderManager.h"
-#include "TextureManager.h"
+#include "TextureManager.hpp"
 #include "LightManager.hpp"
 #include "SceneBuilder.hpp"
 
