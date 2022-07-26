@@ -204,7 +204,7 @@ namespace star {
 		common::Handle selectedMaterial; 
 
 		if (materialHandle == nullptr) {
-			selectedMaterial = this->materialManager.getDefaultHandle();
+			selectedMaterial = common::Handle::getDefault();
 		}
 		else {
 			selectedMaterial = *materialHandle;
@@ -274,7 +274,7 @@ namespace star {
 					builder.setBumpMap(bumpTexture);
 				}
 				else {
-					builder.setBumpMap(this->mapManager.getDefaultHandle());
+					builder.setBumpMap(common::Handle::getDefault());
 				}
 
 				objectMaterialHandles.push_back(builder.build());

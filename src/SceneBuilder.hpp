@@ -145,7 +145,7 @@ namespace star {
 		SceneBuilder(core::ObjectManager& objectManager, core::MaterialManager& materialManager, core::TextureManager& textureManager, 
 			core::MapManager& mapManager, core::LightManager& lightManager) 
 			: objectManager(objectManager), materialManager(materialManager), 
-			defaultMaterial(materialManager.getDefault()), textureManager(textureManager), 
+			defaultMaterial(&materialManager.resource(common::Handle::getDefault())), textureManager(textureManager), 
 			mapManager(mapManager), lightManager(lightManager) { }
 		~SceneBuilder() = default;
 
