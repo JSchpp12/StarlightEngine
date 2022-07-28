@@ -58,7 +58,7 @@ set(${PROJECT_NAME}_SOURCE
 	"src/Applications/MultipleObjectApp.cpp"
 	"src/Applications/LightApp.cpp"
 	"src/Applications/TextureApp.cpp"
-	"src/Applications/BumpApp.cpp"
+	"src/Applications/LightTypeApp.cpp"
 )
 
 set(${PROJECT_NAME}_HEADERS 
@@ -73,7 +73,7 @@ set(${PROJECT_NAME}_HEADERS
 	"src/Applications/MultipleObjectApp.h"
 	"src/Applications/LightApp.h"
 	"src/Applications/TextureApp.h"
-	"src/Applications/BumpApp.h"
+	"src/Applications/LightTypeApp.h"
 )
 
 add_executable(${PROJECT_NAME} "${${PROJECT_NAME}_SOURCE};${${PROJECT_NAME}_HEADERS}")

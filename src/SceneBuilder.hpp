@@ -94,12 +94,17 @@ namespace star {
 				Builder& setAmbient(const glm::vec4& ambient);
 				Builder& setDiffuse(const glm::vec4& diffuse); 
 				Builder& setSpecular(const glm::vec4& position); 
+				//Set the direction wheree the light is pointing towards
+				Builder& setDirection(const glm::vec3& direction);
+				Builder& setDiameter(const float& diameter);
 				common::Handle build(); 
 
 			private:
 				SceneBuilder& sceneBuilder; 
 				const common::Handle* linkedHandle = nullptr; 
 				const common::Type::Light* type = nullptr; 
+				const float* lightDiameter = nullptr; 
+				const glm::vec3 lightDirection = nullptr; 
 				const glm::vec3* position = nullptr; 
 				const glm::vec4* ambient = nullptr; 
 				const glm::vec4* diffuse = nullptr; 
@@ -141,6 +146,8 @@ namespace star {
 				common::Handle bumpMap = common::Handle::getDefault(); 
 			};
 		};
+
+		std::vector<common::Light> lightList;
 
 		SceneBuilder(core::ObjectManager& objectManager, core::MaterialManager& materialManager, core::TextureManager& textureManager, 
 			core::MapManager& mapManager, core::LightManager& lightManager) 
