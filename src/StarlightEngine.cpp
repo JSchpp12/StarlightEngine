@@ -17,7 +17,7 @@
 #include "MapManager.hpp"
 #include "Star_Window.hpp"
 
-#include "TextureApp.h"
+#include "LightTypeApp.h"
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
@@ -57,7 +57,7 @@ int main() {
 
     SceneBuilder sceneBuilder(*objectManager, *materialManager, *textureManager, *mapManager, *lightManager); 
 
-    auto application = star::TextureApp(configFile.get(), objectList.get(), lightList.get(), 
+    auto application = star::LightTypeApp(configFile.get(), objectList.get(), lightList.get(), 
         shaderManager.get(), textureManager.get(), lightManager.get(), sceneBuilder,
         camera.get());
     application.Load();
@@ -76,16 +76,16 @@ int main() {
     renderer.prepare();
 
     //register user application callbacks
-    std::unique_ptr<std::function<void(int, int, int, int)>> keyCallback = std::make_unique<std::function<void(int, int, int, int)>>(std::bind(&star::TextureApp::Interactivity::keyCallback, application, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
+    std::unique_ptr<std::function<void(int, int, int, int)>> keyCallback = std::make_unique<std::function<void(int, int, int, int)>>(std::bind(&star::LightTypeApp::Interactivity::keyCallback, application, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
     star::InteractionSystem::registerKeyCallback(std::move(keyCallback));
 
-    std::unique_ptr<std::function<void(double, double)>> mouseMovementCallback = std::make_unique<std::function<void(double, double)>>(std::bind(&star::TextureApp::Interactivity::mouseMovementCallback, application, std::placeholders::_1, std::placeholders::_2));
+    std::unique_ptr<std::function<void(double, double)>> mouseMovementCallback = std::make_unique<std::function<void(double, double)>>(std::bind(&star::LightTypeApp::Interactivity::mouseMovementCallback, application, std::placeholders::_1, std::placeholders::_2));
     star::InteractionSystem::registerMouseMovementCallback(std::move(mouseMovementCallback));
 
-    std::unique_ptr<std::function<void(int, int, int)>> mouseButtonCallback = std::make_unique<std::function<void(int, int, int)>>(std::bind(&star::TextureApp::Interactivity::mouseButtonCallback, application, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)); 
+    std::unique_ptr<std::function<void(int, int, int)>> mouseButtonCallback = std::make_unique<std::function<void(int, int, int)>>(std::bind(&star::LightTypeApp::Interactivity::mouseButtonCallback, application, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)); 
     star::InteractionSystem::registerMouseButtonCallback(std::move(mouseButtonCallback)); 
 
-    std::unique_ptr<std::function<void(double, double)>> mouseScrollCallback = std::make_unique<std::function<void(double, double)>>(std::bind(&star::TextureApp::Interactivity::scrollCallback, application, std::placeholders::_1, std::placeholders::_2)); 
+    std::unique_ptr<std::function<void(double, double)>> mouseScrollCallback = std::make_unique<std::function<void(double, double)>>(std::bind(&star::LightTypeApp::Interactivity::scrollCallback, application, std::placeholders::_1, std::placeholders::_2)); 
     star::InteractionSystem::registerMouseScrollCallback(std::move(mouseScrollCallback)); 
 
     std::unique_ptr<std::function<void(int, int, int, int)>> camKeyCallback = std::make_unique<std::function<void(int, int, int, int)>>(std::bind(&star::CameraController::Interactivity::keyCallback, camera.get(), std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));

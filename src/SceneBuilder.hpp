@@ -103,12 +103,12 @@ namespace star {
 				SceneBuilder& sceneBuilder; 
 				const common::Handle* linkedHandle = nullptr; 
 				const common::Type::Light* type = nullptr; 
-				const float* lightDiameter = nullptr; 
-				const glm::vec3 lightDirection = nullptr; 
+				const glm::vec3* lightDirection = nullptr; 
 				const glm::vec3* position = nullptr; 
 				const glm::vec4* ambient = nullptr; 
 				const glm::vec4* diffuse = nullptr; 
 				const glm::vec4* specular = nullptr; 
+				const float* lightDiameter = nullptr;
 			};
 		private:
 

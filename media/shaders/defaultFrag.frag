@@ -23,6 +23,12 @@ struct RenderSettings{
 	uint bumpMapping; 
 };
 
+struct Light_Type{
+	uint point; 
+	uint directional; 
+	uint spot;
+};
+
 struct Light{
 	vec4 position;
 
@@ -30,6 +36,9 @@ struct Light{
 	vec4 ambient; 
 	vec4 diffuse;
 	vec4 specular; 
+	uint type; 
+	float diameter;
+	bool enabled; 
 };
 
 layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
@@ -47,6 +56,7 @@ layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
 layout(binding = 0, set = 2) uniform sampler2D textureSampler; 
 layout(binding = 1, set = 2) uniform sampler2D normalMapSampler; 
 
+//TODO: move struct init to a different place - not good idea to do this for every fragment
 RenderSettings createSettingsStruct(){
 	RenderSettings settingsChecker = {
 		0x0, 
@@ -59,8 +69,19 @@ RenderSettings createSettingsStruct(){
 	};
 	return(settingsChecker); 
 }
+//TODO: same move here 
+Light_Type createLightTypeStruct(){
+	Light_Type lightChecker = {
+		0x0, 
+		0x1, 
+		0x2
+	};
+	return(lightChecker);
+}
+
 void main() {
 	RenderSettings settingsChecker = createSettingsStruct(); 
+	Light_Type lightChecker = createLightTypeStruct(); 
 
 	vec3 ambientLight = vec3(0.0); 
 	vec3 diffuseLight = vec3(0.0);  
@@ -92,6 +113,14 @@ void main() {
 		for (int i = 0; i < globalUbo.numLights; i++){
 			//distance calculations 
 			vec3 directionToLight = lights[i].position.xyz - inFragPositionWorld.xyz; 
+//			if ((lights[i].type & lightChecker.directional) != 0){
+//				//Directional light 
+//				directionToLight = normalize(lights[i].position.xyz);
+//			}else{
+//				directionToLight = lights[i].position.xyz - inFragPositionWorld.xyz; 
+//			}
+//			
+			lights[i].position.xyz - inFragPositionWorld.xyz; 
 			float attenuation = 1.0 / dot(directionToLight, directionToLight);					//distance of direction vector squared
 
 			//ambient light 

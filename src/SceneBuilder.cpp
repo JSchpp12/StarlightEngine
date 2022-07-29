@@ -123,7 +123,15 @@ namespace star {
 	{
 		this->specular = &specular; 
 		return *this; 
-	}	
+	}
+	SceneBuilder::Lights::Builder& SceneBuilder::Lights::Builder::setDirection(const glm::vec3& direction) {
+		this->lightDirection = &direction;
+		return *this; 
+	}
+	SceneBuilder::Lights::Builder& SceneBuilder::Lights::Builder::setDiameter(const float& diameter) {
+		this->lightDiameter = &diameter; 
+		return *this; 
+	}
 	common::Handle SceneBuilder::Lights::Builder::build() {
 		assert(this->position && this->type && "A light must have a position and type"); 
 
