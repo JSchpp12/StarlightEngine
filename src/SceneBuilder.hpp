@@ -158,6 +158,7 @@ namespace star {
 
 		//todo: currently this only returns game objects, see if there is way to expand this
 		common::GameObject& entity(const common::Handle& handle);
+		common::Light& light(const common::Handle& handle);
 		common::Material& getMaterial(const common::Handle& handle);
 
 	private:

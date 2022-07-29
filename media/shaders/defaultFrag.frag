@@ -36,9 +36,10 @@ struct Light{
 	vec4 ambient; 
 	vec4 diffuse;
 	vec4 specular; 
-	uint type; 
-	float diameter;
-	bool enabled; 
+	vec4 pointDirection;
+	vec4 controls; 
+//	float diameter;
+//	bool enabled; 
 };
 
 layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
@@ -81,7 +82,7 @@ Light_Type createLightTypeStruct(){
 
 void main() {
 	RenderSettings settingsChecker = createSettingsStruct(); 
-	Light_Type lightChecker = createLightTypeStruct(); 
+//	Light_Type lightChecker = createLightTypeStruct(); 
 
 	vec3 ambientLight = vec3(0.0); 
 	vec3 diffuseLight = vec3(0.0);  
@@ -112,7 +113,9 @@ void main() {
 	}else{
 		for (int i = 0; i < globalUbo.numLights; i++){
 			//distance calculations 
-			vec3 directionToLight = lights[i].position.xyz - inFragPositionWorld.xyz; 
+			if (lights[i].controls.x == 1){
+			//light is enabled
+				vec3 directionToLight = lights[i].position.xyz - inFragPositionWorld.xyz; 
 //			if ((lights[i].type & lightChecker.directional) != 0){
 //				//Directional light 
 //				directionToLight = normalize(lights[i].position.xyz);
@@ -120,7 +123,7 @@ void main() {
 //				directionToLight = lights[i].position.xyz - inFragPositionWorld.xyz; 
 //			}
 //			
-			lights[i].position.xyz - inFragPositionWorld.xyz; 
+//			lights[i].position.xyz - inFragPositionWorld.xyz; 
 			float attenuation = 1.0 / dot(directionToLight, directionToLight);					//distance of direction vector squared
 
 			//ambient light 
@@ -144,6 +147,7 @@ void main() {
 			blinnTerm = pow(blinnTerm, inFragMatShininess); 
 
 			specularLight += ((lights[i].specular.xyz * lights[i].specular.w) * blinnTerm) * attenuation; 
+			}
 		}
 
 	ambientLight *= inFragMatAmbient; 

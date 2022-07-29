@@ -49,10 +49,7 @@ namespace star {
         common::Light* pointLight = nullptr;
         std::vector<common::Handle>* lightList = nullptr;
 
-        const float speed = 10.0f;
-        float max = 2.0f;
-        float min = -2.0f;
-        bool movingRight = true;
-
+        static int disabledLightCounter;
+        static bool upCounter; 
     };
 }

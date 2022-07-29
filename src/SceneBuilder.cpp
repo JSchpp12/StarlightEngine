@@ -383,6 +383,12 @@ namespace star {
 		return this->objectManager.addResource(std::make_unique<common::GameObject>(position, scaleAmt, vertShader, fragShader, std::move(meshes)));
 	}
 
+	common::Light& SceneBuilder::light(const common::Handle& handle) {
+		assert(handle.type == common::Handle_Type::light && "The requested handle is not associated with a light object"); 
+
+		return lightManager.resource(handle);
+	}
+
 	common::Handle SceneBuilder::addMaterial(const glm::vec4& surfaceColor, const glm::vec4& hightlightColor, const glm::vec4& ambient, 
 		const glm::vec4& diffuse, const glm::vec4& specular, 
 		const int& shinyCoefficient, common::Handle* texture, 

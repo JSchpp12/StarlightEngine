@@ -7,6 +7,9 @@ star::LightTypeApp::LightTypeApp(common::ConfigFile* configFile, std::vector<com
     lightList(lightList), star::common::Application<core::ShaderManager,
     core::TextureManager, core::LightManager, SceneBuilder>(configFile, objectList, shaderManager, textureManager, lightManager, sceneBuilder, inCamera) { }
 
+int star::LightTypeApp::disabledLightCounter = int(0); 
+bool star::LightTypeApp::upCounter = true; 
+
 void star::LightTypeApp::Load() {
     //load lion 
     auto mediaDirectoryPath = this->configFile->GetSetting(star::common::Config_Settings::mediadirectory);
@@ -125,13 +128,29 @@ void star::LightTypeApp::Load() {
                 .setFragShader(this->shaderManager->addResource(fragShaderPath, std::make_unique<common::Shader>(fragShaderPath)))
                 .build(false))
             .build());
+
+        std::cout << "Press M to switch lights off and on in order" << std::endl; 
     }
 }
 
 void star::LightTypeApp::Update() {
 }
 
+//TODO: these callbacks are not able to effect the actual instance of the object as the copy of them is given to the interaction system on init...
+//will need own interaction system to make these callbacks
 void star::LightTypeApp::keyCallback(int key, int scancode, int action, int mods) {
+    if (key == GLFW_KEY_M && action == GLFW_PRESS) {
+        auto& light = sceneBuilder.light(lightList->at(disabledLightCounter));
+        light.setEnabled(light.enabled ? false : true);
+        if (!upCounter && disabledLightCounter == 0) {
+            upCounter = true;
+        }
+        else if (upCounter && disabledLightCounter == lightList->size() - 1) {
+            upCounter = false; 
+        }
+        std::cout << disabledLightCounter << " : " << light.enabled << std::endl;
+        disabledLightCounter = upCounter ? disabledLightCounter + 1 : disabledLightCounter - 1; 
+    }
 }
 
 void star::LightTypeApp::mouseMovementCallback(double xpos, double ypos) {
