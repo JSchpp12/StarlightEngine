@@ -96,19 +96,20 @@ namespace star {
 				Builder& setSpecular(const glm::vec4& position); 
 				//Set the direction wheree the light is pointing towards
 				Builder& setDirection(const glm::vec4& direction);
-				Builder& setDiameter(const float& diameter);
+				Builder& setDiameter(const float& innerDiameter, const float& outerDiameter);
 				common::Handle build(); 
 
 			private:
 				SceneBuilder& sceneBuilder; 
-				const common::Handle* linkedHandle = nullptr; 
-				const common::Type::Light* type = nullptr; 
-				const glm::vec4* lightDirection = nullptr; 
-				const glm::vec3* position = nullptr; 
-				const glm::vec4* ambient = nullptr; 
-				const glm::vec4* diffuse = nullptr; 
-				const glm::vec4* specular = nullptr; 
-				const float* lightDiameter = nullptr;
+				const common::Handle* linkedHandle	= nullptr; 
+				const common::Type::Light* type		= nullptr; 
+				const glm::vec4* lightDirection		= nullptr; 
+				const glm::vec3* position			= nullptr; 
+				const glm::vec4* ambient			= nullptr; 
+				const glm::vec4* diffuse			= nullptr; 
+				const glm::vec4* specular			= nullptr; 
+				const float* innerDiameter			= nullptr;
+				const float* outerDiameter			= nullptr; 
 			};
 		private:
 
@@ -190,11 +191,13 @@ namespace star {
 		/// <param name="diffuse"></param>
 		/// <param name="specular"></param>
 		/// <param name="direction"></param>
-		/// <param name="cutoff"></param>
+		/// <param name="innerCutoff"></param>
+		/// <param name="outerCutoff"></param>
 		/// <returns></returns>
 		common::Handle addLight(const common::Type::Light& type, const glm::vec3& position, const common::Handle& linkedHandle, 
 			const glm::vec4& ambient, const glm::vec4& diffuse, 
-			const glm::vec4& specular, const glm::vec4* direction = nullptr, const float* cutoff = nullptr); 
+			const glm::vec4& specular, const glm::vec4* direction = nullptr, 
+			const float* innerCutoff = nullptr, const float* outerCutoff = nullptr); 
 		/// <summary>
 		/// Create a light object with no linked game object
 		/// </summary>
@@ -204,10 +207,13 @@ namespace star {
 		/// <param name="diffuse"></param>
 		/// <param name="specular"></param>
 		/// <param name="direction"></param>
-		/// <param name="cutoff"></param>
+		/// <param name="innerCutoff"></param>
+		/// <param name="outerCutoff"></param>
 		/// <returns></returns>
 		common::Handle addLight(const common::Type::Light& type, const glm::vec3& position, const glm::vec4& ambient,
-			const glm::vec4& diffuse, const glm::vec4& specular, const glm::vec4* direction = nullptr, const float* cutoff = nullptr);
+			const glm::vec4& diffuse, const glm::vec4& specular, 
+			const glm::vec4* direction = nullptr, const float* innerCutoff = nullptr,
+			const float* outerCutoff = nullptr);
 
 		friend class common::Mesh::Builder; 
 		friend class GameObjects::Builder;

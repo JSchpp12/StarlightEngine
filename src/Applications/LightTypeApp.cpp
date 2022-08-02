@@ -92,7 +92,7 @@ void star::LightTypeApp::Load() {
             .setType(common::Type::Light::spot)
             .setPosition(glm::vec3{ -1.0f, 1.0f, 0.0f })
             .setDirection(glm::vec4{ -0.05f, -0.95f, 0.0f, 0.0f })
-            .setDiameter(17.0f)
+            .setDiameter(17.0f, 30.0f)
             .setAmbient(glm::vec4{ 1.0f, 1.0f, 1.0f, 0.6f })
             .setDiffuse(glm::vec4{ 1.0f, 1.0f, 1.0f, 0.6f })
             .setSpecular(glm::vec4{ 1.0f, 1.0f, 1.0f, 0.6f })
@@ -178,10 +178,10 @@ void star::LightTypeApp::Update() {
     }
 
     if (pressUp) {
-        spot->diameter = spot->diameter + (spotSpeed * elapsedTime);
+        //spot->diameter = spot->diameter + (spotSpeed * elapsedTime);
     }
     else if (pressDown) {
-        spot->diameter = spot->diameter - (spotSpeed * elapsedTime);
+        //spot->diameter = spot->diameter - (spotSpeed * elapsedTime);
     }
     timeSinceLastUpdate = std::chrono::steady_clock::now(); 
 }

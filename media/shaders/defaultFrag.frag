@@ -37,7 +37,8 @@ struct Light{
 	vec4 ambient; 
 	vec4 diffuse;
 	vec4 specular; 
-	//controls.x = cutoff angle
+	//controls.x = inner cutoff angle 
+	//controls.y = outer cutoff angle
 	vec4 controls; 
 	//settings.x = enabled
 	//settings.y = type
