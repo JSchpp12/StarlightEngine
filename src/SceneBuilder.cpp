@@ -123,14 +123,23 @@ namespace star {
 	{
 		this->specular = &specular; 
 		return *this; 
-	}	
+	}
+	SceneBuilder::Lights::Builder& SceneBuilder::Lights::Builder::setDirection(const glm::vec4& direction) {
+		this->lightDirection = &direction;
+		return *this; 
+	}
+	SceneBuilder::Lights::Builder& SceneBuilder::Lights::Builder::setDiameter(const float& diameter) {
+		this->lightDiameter = &diameter; 
+		return *this; 
+	}
 	common::Handle SceneBuilder::Lights::Builder::build() {
 		assert(this->position && this->type && "A light must have a position and type"); 
+		assert(ambient != nullptr && diffuse != nullptr && specular != nullptr && "A light must have all properties defined"); 
 
 		if (this->linkedHandle != nullptr) {
-			return this->sceneBuilder.addLight(*this->type, *this->position, *this->linkedHandle, this->ambient, this->diffuse, this->specular);
+			return this->sceneBuilder.addLight(*this->type, *this->position, *this->linkedHandle, *this->ambient, *this->diffuse, *this->specular, this->lightDirection, lightDiameter);
 		}
-		return this->sceneBuilder.addLight(*this->type, *this->position, this->ambient, this->diffuse, this->specular);
+		return this->sceneBuilder.addLight(*this->type, *this->position, *this->ambient, *this->diffuse, *this->specular, this->lightDirection, lightDiameter);
 	}
 	
 	/* Material */
@@ -375,6 +384,13 @@ namespace star {
 		return this->objectManager.addResource(std::make_unique<common::GameObject>(position, scaleAmt, vertShader, fragShader, std::move(meshes)));
 	}
 
+
+	common::Light& SceneBuilder::light(const common::Handle& handle) {
+		assert(handle.type == common::Handle_Type::light && "The requested handle is not associated with a light object"); 
+
+		return lightManager.resource(handle);
+	}
+
 	common::Handle SceneBuilder::addMaterial(const glm::vec4& surfaceColor, const glm::vec4& hightlightColor, const glm::vec4& ambient, 
 		const glm::vec4& diffuse, const glm::vec4& specular, 
 		const int& shinyCoefficient, common::Handle* texture, 
@@ -386,15 +402,15 @@ namespace star {
 	}
 
 	common::Handle SceneBuilder::addLight(const common::Type::Light& type, const glm::vec3& position, const common::Handle& linkedHandle, 
-		const glm::vec4* ambient, const glm::vec4* diffuse, 
-		const glm::vec4* specular) {
+		const glm::vec4& ambient, const glm::vec4& diffuse, 
+		const glm::vec4& specular, const glm::vec4* direction, const float* cutoff) {
 		common::GameObject& linkedObject = this->objectManager.resource(linkedHandle);
 		linkedObject.setPosition(position);
-		return this->lightManager.addResource(std::make_unique<common::Light>(type, position, linkedObject.getScale(), linkedHandle, linkedObject, ambient, diffuse, specular));
+		return this->lightManager.addResource(std::make_unique<common::Light>(type, position, linkedObject.getScale(), linkedHandle, linkedObject, ambient, diffuse, specular, direction, cutoff));
 	}
 
-	common::Handle SceneBuilder::addLight(const common::Type::Light& type, const glm::vec3& position, const glm::vec4* ambient,
-		const glm::vec4* diffuse, const glm::vec4* specular) {
-		return this->lightManager.addResource(std::make_unique<common::Light>(type, position, ambient, diffuse, specular));
+	common::Handle SceneBuilder::addLight(const common::Type::Light& type, const glm::vec3& position, const glm::vec4& ambient,
+		const glm::vec4& diffuse, const glm::vec4& specular, const glm::vec4* direction, const float* cutoff) {
+		return this->lightManager.addResource(std::make_unique<common::Light>(type, position, ambient, diffuse, specular, direction, cutoff));
 	}
 }
