@@ -189,10 +189,12 @@ namespace star {
 		/// <param name="ambient"></param>
 		/// <param name="diffuse"></param>
 		/// <param name="specular"></param>
+		/// <param name="direction"></param>
+		/// <param name="cutoff"></param>
 		/// <returns></returns>
 		common::Handle addLight(const common::Type::Light& type, const glm::vec3& position, const common::Handle& linkedHandle, 
 			const glm::vec4& ambient, const glm::vec4& diffuse, 
-			const glm::vec4& specular, const glm::vec4* direction = nullptr); 
+			const glm::vec4& specular, const glm::vec4* direction = nullptr, const float* cutoff = nullptr); 
 		/// <summary>
 		/// Create a light object with no linked game object
 		/// </summary>
@@ -201,9 +203,11 @@ namespace star {
 		/// <param name="ambient"></param>
 		/// <param name="diffuse"></param>
 		/// <param name="specular"></param>
+		/// <param name="direction"></param>
+		/// <param name="cutoff"></param>
 		/// <returns></returns>
 		common::Handle addLight(const common::Type::Light& type, const glm::vec3& position, const glm::vec4& ambient,
-			const glm::vec4& diffuse, const glm::vec4& specular, const glm::vec4* direction = nullptr);
+			const glm::vec4& diffuse, const glm::vec4& specular, const glm::vec4* direction = nullptr, const float* cutoff = nullptr);
 
 		friend class common::Mesh::Builder; 
 		friend class GameObjects::Builder;
