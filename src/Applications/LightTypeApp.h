@@ -47,7 +47,7 @@ namespace star {
 
     private:
         const int sunSpeed = 50;
-        const int spotSpeed = 1;
+        const float spotSpeed = 2;
         double scaleAmt = 0.1;
         common::GameObject* rock = nullptr;
         common::Light* sun = nullptr;
@@ -64,5 +64,9 @@ namespace star {
         static bool pressLeft; 
         static bool pressUp; 
         static bool pressDown; 
+        static bool pressU; 
+        static bool pressY; 
+        static bool pressJ; 
+        static bool pressH; 
     };
 }

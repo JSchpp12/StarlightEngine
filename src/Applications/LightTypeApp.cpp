@@ -14,6 +14,10 @@ bool star::LightTypeApp::pressLeft = false;
 bool star::LightTypeApp::pressRight = false; 
 bool star::LightTypeApp::pressUp = false; 
 bool star::LightTypeApp::pressDown = false; 
+bool star::LightTypeApp::pressU = false; 
+bool star::LightTypeApp::pressY = false; 
+bool star::LightTypeApp::pressJ = false; 
+bool star::LightTypeApp::pressH = false; 
 
 std::chrono::steady_clock::time_point star::LightTypeApp::timeSinceLastUpdate = std::chrono::steady_clock::now();
 
@@ -32,7 +36,6 @@ void star::LightTypeApp::Load() {
         );
         sceneBuilder.entity(objectList->at(0)).rotateGolbal(common::Type::Axis::x, -90);
     }
-
 
     //load plant 
     {
@@ -59,11 +62,8 @@ void star::LightTypeApp::Load() {
         auto objectPath = mediaDirectoryPath + "models/rock/898927_rock.obj";
         this->objectList->push_back(SceneBuilder::GameObjects::Builder(this->sceneBuilder)
             .setPath(objectPath)
-            .setPosition(glm::vec3{ 0.0f, 0.0f, 0.0f })
+            .setPosition(glm::vec3{ 0.0f, 0.0f, -0.85f })
             .setScale(glm::vec3{ 0.05f, 0.05f, 0.05f })
-            .overrideDiffuse(glm::vec3{ 10.0f, 10.0f, 10.0f })
-            .overrideSpecular(glm::vec3{ 10.0f, 10.0f, 10.0f })
-            .overrideShiny(512)
             .setMaterial(SceneBuilder::Materials::Builder(this->sceneBuilder)
                 .setTexture(this->textureManager->addResource(common::FileHelpers::GetBaseFileDirectory(objectPath) + "textures/rock_low_Base_Color.png"))
                 .setBumpMap(this->textureManager->addResource(common::FileHelpers::GetBaseFileDirectory(objectPath) + "textures/rock_low_Normal_DirectX.png"))
@@ -77,13 +77,13 @@ void star::LightTypeApp::Load() {
         auto vertShaderPath = mediaDirectoryPath + "models/icoSphere/icoSphere.vert";
         auto fragShaderPath = mediaDirectoryPath + "models/icoSphere/icoSphere.frag";
 
-        //load light
+        ////load light
         this->lightList->push_back(SceneBuilder::Lights::Builder(this->sceneBuilder)
             .setType(common::Type::Light::directional)
             .setPosition(glm::vec3{ -2.0f, 2.0f, 0.0f })
-            .setAmbient(glm::vec4{ 1.0f, 1.0f, 0.7f, 0.6f })
-            .setDiffuse(glm::vec4{ 1.0f, 1.0f, 0.7, 0.6f })
-            .setSpecular(glm::vec4{ 1.0f, 1.0f, 0.7f, 0.6f })
+            .setAmbient(glm::vec4{ 1.0f, 1.0f, 0.7f, 0.4f })
+            .setDiffuse(glm::vec4{ 1.0f, 1.0f, 0.7, 1.0f })
+            .setSpecular(glm::vec4{ 1.0f, 1.0f, 0.7f, 1.0f })
             .setDirection(glm::vec4{ 0.0f, -1.0f, 0.0f, 0.0f })
             .build());
         sun = &sceneBuilder.light(lightList->at(0));
@@ -91,11 +91,11 @@ void star::LightTypeApp::Load() {
         this->lightList->push_back(SceneBuilder::Lights::Builder(this->sceneBuilder)
             .setType(common::Type::Light::spot)
             .setPosition(glm::vec3{ -1.0f, 1.0f, 0.0f })
-            .setDirection(glm::vec4{ -0.05f, -0.95f, 0.0f, 0.0f })
-            .setDiameter(17.0f)
-            .setAmbient(glm::vec4{ 1.0f, 1.0f, 1.0f, 0.6f })
-            .setDiffuse(glm::vec4{ 1.0f, 1.0f, 1.0f, 0.6f })
-            .setSpecular(glm::vec4{ 1.0f, 1.0f, 1.0f, 0.6f })
+            .setDirection(glm::vec4{ 0.0f, -1.0f, 0.0f, 0.0f })
+            .setDiameter(14.0f, 14.0f)
+            .setAmbient(glm::vec4{ 1.0f, 1.0f, 1.0f, 0.01f })
+            .setDiffuse(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f })
+            .setSpecular(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f })
             .setLinkedObject(SceneBuilder::GameObjects::Builder(this->sceneBuilder)
                 .setPath(objectPath)
                 .setScale(glm::vec3{ 0.07f, 0.07f, 0.07f })
@@ -104,14 +104,14 @@ void star::LightTypeApp::Load() {
                 .setFragShader(this->shaderManager->addResource(fragShaderPath, std::make_unique<common::Shader>(fragShaderPath)))
                 .build(false))
             .build());
-        spot = &sceneBuilder.light(lightList->at(1));
+        spot = &sceneBuilder.light(lightList->at(lightList->size() - 1));
 
         this->lightList->push_back(SceneBuilder::Lights::Builder(this->sceneBuilder)
             .setType(common::Type::Light::point)
             .setPosition(glm::vec3{ 0.4f, 0.4f, 0.0f })
-            .setAmbient(glm::vec4{ 1.0f, 0.0f, 0.0f, 0.03f })
-            .setDiffuse(glm::vec4{ 1.0f, 0.0f, 0.0f, 20.0f })
-            .setSpecular(glm::vec4{ 1.0f, 0.0f, 0.0f, 2.0f })
+            .setAmbient(glm::vec4{ 1.0f, 0.0f, 0.0f, 0.01f })
+            .setDiffuse(glm::vec4{ 1.0f, 0.0f, 0.0f, 0.2f })
+            .setSpecular(glm::vec4{ 1.0f, 0.0f, 0.0f, 0.2f })
             .setLinkedObject(SceneBuilder::GameObjects::Builder(this->sceneBuilder)
                 .setPath(objectPath)
                 .setScale(glm::vec3{ 0.07f, 0.07f, 0.07f })
@@ -124,27 +124,12 @@ void star::LightTypeApp::Load() {
             .setType(common::Type::Light::point)
             .setPosition(glm::vec3{ -1.0f, 0.4f, 0.5f })
             .setAmbient(glm::vec4{ 0.0f, 0.0f, 1.0f, 0.15f })
-            .setDiffuse(glm::vec4{ 0.0f, 0.0f, 1.0f, 0.5f })
-            .setSpecular(glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f })
+            .setDiffuse(glm::vec4{ 0.0f, 0.0f, 1.0f, 0.2f })
+            .setSpecular(glm::vec4{ 0.0f, 0.0f, 1.0f, 0.2f })
             .setLinkedObject(SceneBuilder::GameObjects::Builder(this->sceneBuilder)
                 .setPath(objectPath)
                 .setScale(glm::vec3{ 0.07f, 0.07f, 0.07f })
                 .setColor(glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f })
-                .setVertShader(this->shaderManager->addResource(vertShaderPath, std::make_unique<common::Shader>(vertShaderPath)))
-                .setFragShader(this->shaderManager->addResource(fragShaderPath, std::make_unique<common::Shader>(fragShaderPath)))
-                .build(false))
-            .build());
-        this->lightList->push_back(SceneBuilder::Lights::Builder(this->sceneBuilder)
-            .setType(common::Type::Light::point)
-            .setPosition(glm::vec3{ 1.0f, 0.4f, -0.2f })
-            .setAmbient(glm::vec4{ 0.5f, 1.0f, 1.0f, 0.2f })
-            .setDiffuse(glm::vec4{ 0.5f, 1.0f, 1.0f, 5.0f })
-            .setSpecular(glm::vec4{ 1.0f, 1.0f, 1.0f, 0.2f })
-            .setPosition(glm::vec3{ 1.0f, 1.0f, 0.0f })
-            .setLinkedObject(SceneBuilder::GameObjects::Builder(this->sceneBuilder)
-                .setPath(objectPath)
-                .setScale(glm::vec3{ 0.07f, 0.07f, 0.07f })
-                .setColor(glm::vec4{ 0.5f, 1.0f, 1.0f, 1.0f })
                 .setVertShader(this->shaderManager->addResource(vertShaderPath, std::make_unique<common::Shader>(vertShaderPath)))
                 .setFragShader(this->shaderManager->addResource(fragShaderPath, std::make_unique<common::Shader>(fragShaderPath)))
                 .build(false))
@@ -157,6 +142,11 @@ void star::LightTypeApp::Load() {
     std::cout << "Left Arrow: rotate sun light counter clockwise" << std::endl;
     std::cout << "Up Arrow: increase diameter of spot light" << std::endl; 
     std::cout << "Down Arrow: decrease diameter of spot light" << std::endl;
+    std::cout << "U: Increase outer diam of spot light" << std::endl; 
+    std::cout << "Y: Decrease outer diam of spot light" << std::endl; 
+    std::cout << "J: Increase inner diam of spot light" << std::endl; 
+    std::cout << "H: Decrease inner diam of spot light" << std::endl;
+    std::cout << "Z: Enable/Disable sun" << std::endl;
 }
 
 void star::LightTypeApp::Update() {
@@ -177,11 +167,22 @@ void star::LightTypeApp::Update() {
         sun->direction = rot * sun->direction;
     }
 
-    if (pressUp) {
-        spot->diameter = spot->diameter + (spotSpeed * elapsedTime);
+    if (pressU) {
+        spot->setOuterDiameter(spot->getOuterDiameter() + (spotSpeed * elapsedTime));
+        std::cout << spot->getOuterDiameter() << std::endl; 
     }
-    else if (pressDown) {
-        spot->diameter = spot->diameter - (spotSpeed * elapsedTime);
+    else if (pressY) {
+        spot->setOuterDiameter(spot->getOuterDiameter() - (spotSpeed * elapsedTime)); 
+        std::cout << spot->getOuterDiameter() << std::endl;
+    }
+
+    if (pressJ) {
+        spot->setInnerDiameter(spot->getInnerDiameter() + (spotSpeed * elapsedTime)); 
+        std::cout << spot->getInnerDiameter() << std::endl;
+    }
+    else if (pressH) {
+        spot->setInnerDiameter(spot->getInnerDiameter() - (spotSpeed * elapsedTime));
+        std::cout << spot->getInnerDiameter() << std::endl;
     }
     timeSinceLastUpdate = std::chrono::steady_clock::now(); 
 }
@@ -191,14 +192,13 @@ void star::LightTypeApp::Update() {
 void star::LightTypeApp::keyCallback(int key, int scancode, int action, int mods) {
     if (key == GLFW_KEY_M && action == GLFW_PRESS) {
         auto& light = sceneBuilder.light(lightList->at(disabledLightCounter));
-        light.setEnabled(light.enabled ? false : true);
+        light.setEnabled();
         if (!upCounter && disabledLightCounter == 0) {
             upCounter = true;
         }
         else if (upCounter && disabledLightCounter == lightList->size() - 1) {
             upCounter = false; 
         }
-        std::cout << disabledLightCounter << " : " << light.enabled << std::endl;
         disabledLightCounter = upCounter ? disabledLightCounter + 1 : disabledLightCounter - 1; 
     }
     if (action == GLFW_PRESS && key == GLFW_KEY_RIGHT) {
@@ -226,6 +226,36 @@ void star::LightTypeApp::keyCallback(int key, int scancode, int action, int mods
     }
     else if (key == GLFW_KEY_DOWN && action == GLFW_RELEASE) {
         pressDown = false; 
+    }
+
+    if (key == GLFW_KEY_U && action == GLFW_PRESS) {
+        pressU = true;
+    }
+    else if (key == GLFW_KEY_Y && action == GLFW_PRESS) {
+        pressY = true;
+    }
+    else if (key == GLFW_KEY_U && action == GLFW_RELEASE) {
+        pressU = false;
+    }
+    else if (key == GLFW_KEY_Y && action == GLFW_RELEASE) {
+        pressY = false;
+    }
+
+    if (key == GLFW_KEY_J && action == GLFW_PRESS) {
+        pressJ = true;
+    }
+    else if (key == GLFW_KEY_H && action == GLFW_PRESS) {
+        pressH = true;
+    }
+    else if (key == GLFW_KEY_J && action == GLFW_RELEASE) {
+        pressJ = false;
+    }
+    else if (key == GLFW_KEY_H && action == GLFW_RELEASE) {
+        pressH = false;
+    }
+
+    if (key == GLFW_KEY_Z && action == GLFW_PRESS) {
+        sun->setEnabled(); 
     }
 }
 
