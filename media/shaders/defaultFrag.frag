@@ -31,15 +31,16 @@ struct Light_Type{
 
 struct Light{
 	vec4 position;
+	vec4 direction;
 
 	//properties
 	vec4 ambient; 
 	vec4 diffuse;
 	vec4 specular; 
-	vec4 pointDirection;
-	vec4 controls; 
-//	float diameter;
-//	bool enabled; 
+	//controls.x = enabled
+	//controls.y = type
+	//controls.z = diameter
+	uvec4 controls; 
 };
 
 layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
@@ -82,7 +83,7 @@ Light_Type createLightTypeStruct(){
 
 void main() {
 	RenderSettings settingsChecker = createSettingsStruct(); 
-//	Light_Type lightChecker = createLightTypeStruct(); 
+	Light_Type lightChecker = createLightTypeStruct(); 
 
 	vec3 ambientLight = vec3(0.0); 
 	vec3 diffuseLight = vec3(0.0);  
@@ -115,14 +116,14 @@ void main() {
 			//distance calculations 
 			if (lights[i].controls.x == 1){
 			//light is enabled
-				vec3 directionToLight = lights[i].position.xyz - inFragPositionWorld.xyz; 
-//			if ((lights[i].type & lightChecker.directional) != 0){
-//				//Directional light 
-//				directionToLight = normalize(lights[i].position.xyz);
-//			}else{
-//				directionToLight = lights[i].position.xyz - inFragPositionWorld.xyz; 
-//			}
-//			
+			vec3 directionToLight = lights[i].position.xyz - inFragPositionWorld.xyz; 
+			if ((lights[i].controls.y & lightChecker.directional) != 0){
+				//Directional light 
+				directionToLight = normalize(-lights[i].direction.xyz); 
+			}else{
+				directionToLight = lights[i].position.xyz - inFragPositionWorld.xyz; 
+			}
+		
 //			lights[i].position.xyz - inFragPositionWorld.xyz; 
 			float attenuation = 1.0 / dot(directionToLight, directionToLight);					//distance of direction vector squared
 

@@ -95,7 +95,7 @@ namespace star {
 				Builder& setDiffuse(const glm::vec4& diffuse); 
 				Builder& setSpecular(const glm::vec4& position); 
 				//Set the direction wheree the light is pointing towards
-				Builder& setDirection(const glm::vec3& direction);
+				Builder& setDirection(const glm::vec4& direction);
 				Builder& setDiameter(const float& diameter);
 				common::Handle build(); 
 
@@ -103,7 +103,7 @@ namespace star {
 				SceneBuilder& sceneBuilder; 
 				const common::Handle* linkedHandle = nullptr; 
 				const common::Type::Light* type = nullptr; 
-				const glm::vec3* lightDirection = nullptr; 
+				const glm::vec4* lightDirection = nullptr; 
 				const glm::vec3* position = nullptr; 
 				const glm::vec4* ambient = nullptr; 
 				const glm::vec4* diffuse = nullptr; 
@@ -191,8 +191,8 @@ namespace star {
 		/// <param name="specular"></param>
 		/// <returns></returns>
 		common::Handle addLight(const common::Type::Light& type, const glm::vec3& position, const common::Handle& linkedHandle, 
-			const glm::vec4* ambient = nullptr, const glm::vec4* diffuse = nullptr, 
-			const glm::vec4* specular = nullptr); 
+			const glm::vec4& ambient, const glm::vec4& diffuse, 
+			const glm::vec4& specular, const glm::vec4* direction = nullptr); 
 		/// <summary>
 		/// Create a light object with no linked game object
 		/// </summary>
@@ -202,8 +202,8 @@ namespace star {
 		/// <param name="diffuse"></param>
 		/// <param name="specular"></param>
 		/// <returns></returns>
-		common::Handle addLight(const common::Type::Light& type, const glm::vec3& position, const glm::vec4* ambient = nullptr, 
-			const glm::vec4* diffuse = nullptr, const glm::vec4* specular = nullptr);
+		common::Handle addLight(const common::Type::Light& type, const glm::vec3& position, const glm::vec4& ambient,
+			const glm::vec4& diffuse, const glm::vec4& specular, const glm::vec4* direction = nullptr);
 
 		friend class common::Mesh::Builder; 
 		friend class GameObjects::Builder;

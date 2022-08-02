@@ -5,6 +5,7 @@
 #include "SC/Time.hpp"
 #include "SC/Camera.hpp"
 #include "SC/Interactivity.hpp"
+#include "SC/DebugHelpers.hpp"
 #include "ShaderManager.h"
 #include "TextureManager.hpp"
 #include "LightManager.hpp"
@@ -14,6 +15,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include <string> 
 #include <memory> 
@@ -44,12 +46,18 @@ namespace star {
     protected:
 
     private:
+        const int sunSpeed = 50;
         double scaleAmt = 0.1;
-        common::GameObject* lion = nullptr;
-        common::Light* pointLight = nullptr;
+        common::GameObject* rock = nullptr;
+        common::Light* sun = nullptr;
         std::vector<common::Handle>* lightList = nullptr;
+
 
         static int disabledLightCounter;
         static bool upCounter; 
+        static bool rotatingCounterClock; 
+
+        static bool pressRight; 
+        static bool pressLeft; 
     };
 }

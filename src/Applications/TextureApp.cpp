@@ -22,7 +22,7 @@ void star::TextureApp::Load() {
         );
     }
     this->lion = &this->sceneBuilder.entity(this->objectList->at(0));
-    this->lion->rotateRelative(-90, glm::vec3{ 1.0f, 0.0f, 0.0f });
+    this->lion->rotateRelative(common::Type::Axis::x, -90);
 
     //load plant 
     {

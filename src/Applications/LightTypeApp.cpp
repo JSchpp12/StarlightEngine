@@ -9,6 +9,9 @@ star::LightTypeApp::LightTypeApp(common::ConfigFile* configFile, std::vector<com
 
 int star::LightTypeApp::disabledLightCounter = int(0); 
 bool star::LightTypeApp::upCounter = true; 
+bool star::LightTypeApp::rotatingCounterClock = true;
+bool star::LightTypeApp::pressLeft = false; 
+bool star::LightTypeApp::pressRight = false; 
 
 void star::LightTypeApp::Load() {
     //load lion 
@@ -23,9 +26,9 @@ void star::LightTypeApp::Load() {
             .overrideAmbient(glm::vec3{ 0.5f, 0.5f, 0.5f })
             .build(true)
         );
+        sceneBuilder.entity(objectList->at(0)).rotateGolbal(common::Type::Axis::x, -90);
     }
-    this->lion = &this->sceneBuilder.entity(this->objectList->at(0));
-    this->lion->rotateRelative(-90, glm::vec3{ 1.0f, 0.0f, 0.0f });
+
 
     //load plant 
     {
@@ -62,6 +65,7 @@ void star::LightTypeApp::Load() {
                 .setBumpMap(this->textureManager->addResource(common::FileHelpers::GetBaseFileDirectory(objectPath) + "textures/rock_low_Normal_DirectX.png"))
                 .build())
             .build());
+        this->rock = &this->sceneBuilder.entity(this->objectList->at(3));
     }
 
     {
@@ -71,19 +75,14 @@ void star::LightTypeApp::Load() {
 
         //load light
         this->lightList->push_back(SceneBuilder::Lights::Builder(this->sceneBuilder)
-            .setType(common::Type::Light::point)
+            .setType(common::Type::Light::directional)
             .setPosition(glm::vec3{ -2.0f, 2.0f, 0.0f })
-            .setAmbient(glm::vec4{ 1.0f, 1.0f, 0.1f, 0.3f })
-            .setDiffuse(glm::vec4{ 1.0f, 1.0f, 0.1f, 0.0f })
-            .setSpecular(glm::vec4{ 1.0f, 1.0f, 0.1f, 5.0f })
-            .setLinkedObject(SceneBuilder::GameObjects::Builder(this->sceneBuilder)
-                .setPath(objectPath)
-                .setScale(glm::vec3{ 0.07f, 0.07f, 0.07f })
-                .setColor(glm::vec4{ 1.0f, 1.0f, 0.0f, 1.0f })
-                .setVertShader(this->shaderManager->addResource(vertShaderPath, std::make_unique<common::Shader>(vertShaderPath)))
-                .setFragShader(this->shaderManager->addResource(fragShaderPath, std::make_unique<common::Shader>(fragShaderPath)))
-                .build(false))
+            .setAmbient(glm::vec4{ 1.0f, 1.0f, 0.7f, 0.6f })
+            .setDiffuse(glm::vec4{ 1.0f, 1.0f, 0.7, 0.6f })
+            .setSpecular(glm::vec4{ 1.0f, 1.0f, 0.7f, 0.6f })
+            .setDirection(glm::vec4{0.0f, -1.0f, 0.0f, 0.0f})
             .build());
+        sun = &sceneBuilder.light(lightList->at(0)); 
 
         this->lightList->push_back(SceneBuilder::Lights::Builder(this->sceneBuilder)
             .setType(common::Type::Light::point)
@@ -129,11 +128,28 @@ void star::LightTypeApp::Load() {
                 .build(false))
             .build());
 
+        std::cout << "App Controls" << std::endl; 
         std::cout << "Press M to switch lights off and on in order" << std::endl; 
+        std::cout << "Right Arrow: rotate sun light clockwise" << std::endl; 
+        std::cout << "Left Arrow: rotate sun light counter clockwise" << std::endl;
     }
 }
 
 void star::LightTypeApp::Update() {
+    rock->rotateRelative(common::Type::Axis::y, (float)common::Time::timeElapsedLastFrameSeconds() * 20);
+
+    if (pressRight) {
+        auto rot = glm::mat4(1.0f);
+        float rotationAmt = (float)common::Time::timeElapsedLastFrameSeconds() * sunSpeed;
+        rot = glm::rotate(rot, rotationAmt, glm::vec3{ 0.0f, 0.0f, -1.0f });
+        sun->direction = rot * sun->direction;
+    }
+    else if (pressLeft) {
+        auto rot = glm::mat4(1.0f);
+        float rotationAmt = (float)common::Time::timeElapsedLastFrameSeconds() * sunSpeed;
+        rot = glm::rotate(rot, rotationAmt, glm::vec3{ 0.0f, 0.0f, 1.0f });
+        sun->direction = rot * sun->direction;
+    }
 }
 
 //TODO: these callbacks are not able to effect the actual instance of the object as the copy of them is given to the interaction system on init...
@@ -150,6 +166,18 @@ void star::LightTypeApp::keyCallback(int key, int scancode, int action, int mods
         }
         std::cout << disabledLightCounter << " : " << light.enabled << std::endl;
         disabledLightCounter = upCounter ? disabledLightCounter + 1 : disabledLightCounter - 1; 
+    }
+    if (action == GLFW_PRESS && key == GLFW_KEY_RIGHT) {
+        pressRight = true; 
+    }
+    else if (action == GLFW_PRESS && key == GLFW_KEY_LEFT) {
+        pressLeft = true;
+    }
+    else if (action == GLFW_RELEASE && key == GLFW_KEY_RIGHT) {
+        pressRight = false; 
+    }
+    else if (action == GLFW_RELEASE && key == GLFW_KEY_LEFT) {
+        pressLeft = false; 
     }
 }
 
