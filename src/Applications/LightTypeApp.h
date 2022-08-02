@@ -47,17 +47,22 @@ namespace star {
 
     private:
         const int sunSpeed = 50;
+        const int spotSpeed = 1;
         double scaleAmt = 0.1;
         common::GameObject* rock = nullptr;
         common::Light* sun = nullptr;
+        common::Light* spot = nullptr; 
         std::vector<common::Handle>* lightList = nullptr;
 
 
         static int disabledLightCounter;
         static bool upCounter; 
         static bool rotatingCounterClock; 
+        static std::chrono::steady_clock::time_point timeSinceLastUpdate; 
 
         static bool pressRight; 
         static bool pressLeft; 
+        static bool pressUp; 
+        static bool pressDown; 
     };
 }
