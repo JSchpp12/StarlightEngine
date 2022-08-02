@@ -39,7 +39,7 @@ struct Light{
 	vec4 specular; 
 	//controls.x = enabled
 	//controls.y = type
-	//controls.z = diameter
+	//controls.z = cutoff angle
 	uvec4 controls; 
 };
 
