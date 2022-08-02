@@ -129,6 +129,7 @@ namespace star {
 		return *this; 
 	}
 	SceneBuilder::Lights::Builder& SceneBuilder::Lights::Builder::setDiameter(const float& innerDiameter, const float& outerDiameter) {
+		assert(innerDiameter <= outerDiameter && "The inner diameter must be smaller than the outer diameter");
 		this->innerDiameter = &innerDiameter;
 		this->outerDiameter = &outerDiameter; 
 		return *this; 
