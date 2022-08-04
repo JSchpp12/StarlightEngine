@@ -150,8 +150,7 @@ void star::LightTypeApp::Load() {
 }
 
 void star::LightTypeApp::Update() {
-    auto now = std::chrono::steady_clock::now(); 
-    float elapsedTime = std::chrono::duration<float>(now - timeSinceLastUpdate).count();
+    auto elapsedTime = time.timeElapsedLastFrameSeconds();
     rock->rotateRelative(common::Type::Axis::y, elapsedTime * 30);
 
     if (pressRight) {
@@ -184,7 +183,8 @@ void star::LightTypeApp::Update() {
         spot->setInnerDiameter(spot->getInnerDiameter() - (spotSpeed * elapsedTime));
         std::cout << spot->getInnerDiameter() << std::endl;
     }
-    timeSinceLastUpdate = std::chrono::steady_clock::now(); 
+
+    time.updateLastFrameTime();
 }
 
 //TODO: these callbacks are not able to effect the actual instance of the object as the copy of them is given to the interaction system on init...

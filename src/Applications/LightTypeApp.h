@@ -47,7 +47,7 @@ namespace star {
 
     private:
         common::Time time = common::Time();
-        const int sunSpeed = 50;
+        const int sunSpeed = 1;
         const float spotSpeed = 2;
         double scaleAmt = 0.1;
         common::GameObject* rock = nullptr;
