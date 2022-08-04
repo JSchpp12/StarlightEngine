@@ -20,7 +20,7 @@ layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
 	int renderSettings; 
 } globalUbo; 
 
-//TODO: combine with above 
+//TODO: there needs to be one of these for each swap chain image
 layout(binding = 0, set = 1) uniform uniformBufferObject{
 	mat4 modelMatrix; 
 	mat4 normalModelMatrix; 
