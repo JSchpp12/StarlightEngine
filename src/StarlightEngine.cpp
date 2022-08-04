@@ -30,9 +30,6 @@
 
 using namespace star;
 
-//setup timing 
-std::chrono::steady_clock::time_point common::Time::lastFrameTime = std::chrono::steady_clock::now(); 
-
 const uint32_t WIDTH = 800;
 const uint32_t HEIGHT = 600;
 
@@ -42,7 +39,7 @@ int main() {
     auto defaultFragShader = configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "shaders/defaultFrag.frag";
     auto defaultCube = configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "models/cube/cub.obj";
     auto defaultCubeTexture = configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "models/cube/cubeTexture.png";
-    std::unique_ptr<star::common::RenderOptions> renderOptions(new star::common::RenderOptions); 
+    std::unique_ptr<star::common::RenderOptions> renderOptions(new star::common::RenderOptions);
     std::unique_ptr<star::core::ShaderManager> shaderManager(new star::core::ShaderManager(defaultVertShader, defaultFragShader));
     std::unique_ptr<star::core::ObjectManager> objectManager(new star::core::ObjectManager());
     std::unique_ptr<star::core::TextureManager> textureManager(new star::core::TextureManager(configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "images/texture.png"));
@@ -70,9 +67,11 @@ int main() {
         mainLightList.at(i) = &lightManager->resource(lightList->at(i)); 
     }
      
+    star::common::Handle shadowVert = shaderManager->addResource(std::make_unique<common::Shader>(configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "shaders/shadowRender.vert"));
+    star::common::Handle shadowFrag = shaderManager->addResource(std::make_unique<common::Shader>(configFile->GetSetting(star::common::Config_Settings::mediadirectory) + "shaders/shadowRender.frag"));
     //prepare renderer 
     auto window = star::core::StarWindow(WIDTH, HEIGHT, "Starlight", star::InteractionSystem::glfwKeyHandle, star::InteractionSystem::glfwMouseButtonCallback, star::InteractionSystem::glfwMouseMovement, star::InteractionSystem::glfwScrollCallback);
-    auto renderer = star::core::VulkanRenderer(*configFile, *renderOptions, *shaderManager, *objectManager, *textureManager, *mapManager, *materialManager, *camera, *objectList, mainLightList, window);
+    auto renderer = star::core::VulkanRenderer(*configFile, *renderOptions, *shaderManager, *objectManager, *textureManager, *mapManager, *materialManager, *camera, *objectList, mainLightList, window, shadowVert, shadowFrag);
     renderer.prepare();
 
     //register user application callbacks
@@ -105,15 +104,12 @@ int main() {
 
     try {
         //init time 
-        common::Time::updateLastFrameTime();
 
         while (!window.shouldClose()) {
             renderer.pollEvents();
             star::InteractionSystem::callWorldUpdates(); 
             application.Update();
             renderer.draw();
-
-            common::Time::updateLastFrameTime();
         }
     }
     catch (const std::exception& e) {

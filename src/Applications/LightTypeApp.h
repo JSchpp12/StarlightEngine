@@ -46,6 +46,7 @@ namespace star {
     protected:
 
     private:
+        common::Time time = common::Time();
         const int sunSpeed = 50;
         const float spotSpeed = 2;
         double scaleAmt = 0.1;

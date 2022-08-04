@@ -80,7 +80,7 @@ void star::LightTypeApp::Load() {
         ////load light
         this->lightList->push_back(SceneBuilder::Lights::Builder(this->sceneBuilder)
             .setType(common::Type::Light::directional)
-            .setPosition(glm::vec3{ -2.0f, 2.0f, 0.0f })
+            .setPosition(glm::vec3{ 0.0f, 2.0f, 0.0f })
             .setAmbient(glm::vec4{ 1.0f, 1.0f, 0.7f, 0.4f })
             .setDiffuse(glm::vec4{ 1.0f, 1.0f, 0.7, 1.0f })
             .setSpecular(glm::vec4{ 1.0f, 1.0f, 0.7f, 1.0f })
@@ -156,13 +156,13 @@ void star::LightTypeApp::Update() {
 
     if (pressRight) {
         auto rot = glm::mat4(1.0f);
-        float rotationAmt = (float)common::Time::timeElapsedLastFrameSeconds() * sunSpeed;
+        float rotationAmt = (float)time.timeElapsedLastFrameSeconds() * sunSpeed;
         rot = glm::rotate(rot, rotationAmt, glm::vec3{ 0.0f, 0.0f, -1.0f });
         sun->direction = rot * sun->direction;
     }
     else if (pressLeft) {
         auto rot = glm::mat4(1.0f);
-        float rotationAmt = (float)common::Time::timeElapsedLastFrameSeconds() * sunSpeed;
+        float rotationAmt = (float)time.timeElapsedLastFrameSeconds() * sunSpeed;
         rot = glm::rotate(rot, rotationAmt, glm::vec3{ 0.0f, 0.0f, 1.0f });
         sun->direction = rot * sun->direction;
     }

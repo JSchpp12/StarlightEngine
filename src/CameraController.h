@@ -49,6 +49,8 @@ namespace star {
 	protected:
 
 	private: 
+		common::Time time = common::Time(); 
+
 		const float sensitivity = 0.1f; 
 		bool init = false; 
 

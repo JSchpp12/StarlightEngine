@@ -63,8 +63,7 @@ void star::CameraController::mouseButtonCallback(int button, int action, int mod
 void star::CameraController::worldUpdate() {
 	//TODO: improve time var allocation 
 	if (this->moveLeft || this->moveRight || this->moveForward || this->moveBack) {
-		auto time = common::Time::timeElapsedLastFrameSeconds();
-		float moveAmt = 50.0f * time;
+		float moveAmt = 50.0f * time.timeElapsedLastFrameSeconds();
 
 		glm::vec3 cameraPos = this->getPosition();
 		glm::vec3 cameraLookDir = -this->getLookDirection();
@@ -82,6 +81,8 @@ void star::CameraController::worldUpdate() {
 			this->moveRelative(-*this->lookDirection, moveAmt);
 		}
 		//std::cout << cameraPos.x << "," << cameraPos.y << "," << cameraPos.z << std::endl;
+
+		time.updateLastFrameTime();
 	}
 
 	if (this->click) {
